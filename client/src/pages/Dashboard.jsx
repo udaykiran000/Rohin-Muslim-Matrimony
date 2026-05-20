@@ -7,6 +7,7 @@ import {
   FaBriefcase, FaPhoneAlt, FaUserFriends, FaCheckCircle, 
   FaTimes, FaGraduationCap, FaSave, FaUserShield 
 } from 'react-icons/fa';
+import LogoLoader from '../components/LogoLoader';
 
 const Dashboard = () => {
   const { user, profile, refreshUser } = useContext(AuthContext);
@@ -53,7 +54,7 @@ const Dashboard = () => {
     }
   }, [profile]);
 
-  if (!user || !profile) return <div className="text-center p-10 text-crimson-950 font-semibold">Loading...</div>;
+  if (!user || !profile) return <LogoLoader fullScreen text="Loading Dashboard..." />;
 
   // Calculate profile completeness score
   const getCompleteness = () => {

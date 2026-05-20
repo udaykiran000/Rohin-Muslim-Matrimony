@@ -52,6 +52,17 @@ app.use('/api/reports', require('./routes/reportRoutes'));
 // Public Platform Settings (Pricing)
 app.get('/api/settings', require('./controllers/adminController').getSettings);
 
+// Public Success Stories route
+const SuccessStory = require('./models/SuccessStory');
+app.get('/api/success-stories', async (req, res) => {
+  try {
+    const stories = await SuccessStory.find({ isPublished: true }).sort({ createdAt: -1 });
+    res.status(200).json({ success: true, count: stories.length, data: stories });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
 // Basic health check route
 app.get('/api/health', (req, res) => {
   res.status(200).json({ success: true, message: 'Muslim Matrimony API is healthy and running!' });

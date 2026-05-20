@@ -1,5 +1,20 @@
 const Profile = require('../models/Profile');
 const User = require('../models/User');
+const Settings = require('../models/Settings');
+
+const getPlanFeatures = async (plan) => {
+  let settings = await Settings.findOne();
+  if (!settings) {
+    settings = {
+      freePlanFeatures: { viewFullBio: false, viewContactDetails: false, chat: false, shortlist: false, dailyViewLimit: 5 },
+      premiumPlanFeatures: { viewFullBio: true, viewContactDetails: true, chat: true, shortlist: true, dailyViewLimit: 30 },
+      elitePlanFeatures: { viewFullBio: true, viewContactDetails: true, chat: true, shortlist: true, dailyViewLimit: 99999 }
+    };
+  }
+  if (plan === 'premium') return settings.premiumPlanFeatures;
+  if (plan === 'elite') return settings.elitePlanFeatures;
+  return settings.freePlanFeatures;
+};
 
 // @desc    Get all profiles with advanced search filters
 // @route   GET /api/profiles
@@ -71,23 +86,19 @@ exports.getProfileById = async (req, res) => {
 
     const isAdmin = viewer.role === 'admin';
     const isOwnProfile = targetUserId === currentUserId;
+    const planFeatures = await getPlanFeatures(viewer.plan);
 
     if (!isAdmin && !isOwnProfile) {
       const hasViewedBefore = viewer.viewedProfiles.includes(targetUserId);
 
       if (!hasViewedBefore) {
-        if (viewer.plan === 'free' && viewer.viewedProfiles.length >= viewer.viewLimit) {
+        const currentViews = viewer.viewedProfiles.length;
+        const allowedViews = planFeatures.dailyViewLimit;
+        
+        if (currentViews >= allowedViews) {
           return res.status(403).json({
             success: false,
-            message: `Profile view limit reached (${viewer.viewLimit} profiles). Upgrade your plan to unlock more matches!`,
-            limitExceeded: true,
-          });
-        }
-
-        if (viewer.plan === 'premium' && viewer.viewedProfiles.length >= 30) {
-          return res.status(403).json({
-            success: false,
-            message: 'You have reached your daily Premium limit of 30 profiles. Upgrade to Elite for unlimited access!',
+            message: `Profile view limit reached (${allowedViews} profiles). Upgrade your plan to unlock more matches!`,
             limitExceeded: true,
           });
         }
@@ -113,26 +124,27 @@ exports.getProfileById = async (req, res) => {
       profileData.gallery = [];
     }
 
-    // Free Tier Masking
-    if (viewer.plan === 'free' && !isOwnProfile && !isAdmin) {
-      profileData.locked = true;
-      profileData.about = '🔒 Detailed profile description is locked. Upgrade your subscription plan to unlock full details!';
-      profileData.education = '🔒 Locked (Premium feature)';
-      profileData.profession = '🔒 Locked (Premium feature)';
-      profileData.sect = '🔒 Locked';
-      profileData.familyDetails = { fatherOccupation: '🔒 Locked', motherOccupation: '🔒 Locked', siblingsCount: 0 };
-      profileData.phoneNumber = '🔒 Locked (Premium feature)';
-      if (profileData.user) {
-        profileData.user.email = '🔒 Locked';
+    // Dynamic Masking based on plan features
+    if (!isOwnProfile && !isAdmin) {
+      if (!planFeatures.viewFullBio) {
+        profileData.locked = true;
+        profileData.about = '🔒 Detailed profile description is locked. Upgrade your subscription plan to unlock full details!';
+        profileData.education = '🔒 Locked (Premium feature)';
+        profileData.profession = '🔒 Locked (Premium feature)';
+        profileData.sect = '🔒 Locked';
+        profileData.familyDetails = { fatherOccupation: '🔒 Locked', motherOccupation: '🔒 Locked', siblingsCount: 0 };
+      } else {
+        profileData.locked = false;
+      }
+
+      if (!planFeatures.viewContactDetails || !isConnected) {
+        profileData.phoneNumber = '🔒 Contact details locked (requires Premium & Connection)';
+        if (profileData.user) {
+          profileData.user.email = '🔒 Email locked';
+        }
       }
     } else {
       profileData.locked = false;
-      if (!isConnected && !isAdmin && !isOwnProfile) {
-        profileData.phoneNumber = '🔒 Connected connection required';
-        if (profileData.user) {
-          profileData.user.email = '🔒 Connected connection required';
-        }
-      }
     }
 
     return res.status(200).json({
@@ -140,7 +152,7 @@ exports.getProfileById = async (req, res) => {
       data: profileData,
       isConnected,
       viewedCount: viewer.viewedProfiles.length,
-      viewLimit: viewer.viewLimit,
+      viewLimit: planFeatures.dailyViewLimit,
       plan: viewer.plan
     });
   } catch (error) {
@@ -225,10 +237,15 @@ exports.toggleShortlist = async (req, res) => {
     const targetUserId = req.params.id;
     const currentUserId = req.user.id;
 
-    // Must be premium or elite to shortlist
+    // Check plan features
     const currentUser = await User.findById(currentUserId);
-    if (!currentUser || (currentUser.plan !== 'premium' && currentUser.plan !== 'elite')) {
-      return res.status(403).json({ success: false, message: 'Shortlisting requires a Premium or Elite plan.' });
+    if (!currentUser) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    const planFeatures = await getPlanFeatures(currentUser.plan);
+    if (!planFeatures.shortlist) {
+      return res.status(403).json({ success: false, message: 'Shortlisting is not enabled for your subscription plan. Please upgrade!' });
     }
 
     const profile = await Profile.findOne({ user: targetUserId });

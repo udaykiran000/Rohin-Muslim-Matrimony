@@ -4,6 +4,7 @@ import api from '../services/api';
 import ProfileCard from '../components/ProfileCard';
 import { FaFilter, FaSearch, FaTimes } from 'react-icons/fa';
 import toast from 'react-hot-toast';
+import LogoLoader from '../components/LogoLoader';
 
 const SearchProfiles = () => {
   const { user, profile } = useContext(AuthContext);
@@ -206,9 +207,7 @@ const SearchProfiles = () => {
           </div>
 
           {loading ? (
-            <div className="flex justify-center items-center h-64">
-              <span className="w-10 h-10 border-4 border-crimson-950 border-t-transparent rounded-full animate-spin"></span>
-            </div>
+            <LogoLoader text="Finding your matches..." />
           ) : profiles.length === 0 ? (
             <div className="glass-card p-12 rounded-3xl text-center border border-crimson-900/10 flex flex-col items-center justify-center h-64">
                <span className="text-4xl mb-4">🔍</span>

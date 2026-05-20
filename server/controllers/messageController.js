@@ -1,6 +1,21 @@
 const Message = require('../models/Message');
 const Profile = require('../models/Profile');
 const User = require('../models/User');
+const Settings = require('../models/Settings');
+
+const getPlanFeatures = async (plan) => {
+  let settings = await Settings.findOne();
+  if (!settings) {
+    settings = {
+      freePlanFeatures: { viewFullBio: false, viewContactDetails: false, chat: false, shortlist: false, dailyViewLimit: 5 },
+      premiumPlanFeatures: { viewFullBio: true, viewContactDetails: true, chat: true, shortlist: true, dailyViewLimit: 30 },
+      elitePlanFeatures: { viewFullBio: true, viewContactDetails: true, chat: true, shortlist: true, dailyViewLimit: 99999 }
+    };
+  }
+  if (plan === 'premium') return settings.premiumPlanFeatures;
+  if (plan === 'elite') return settings.elitePlanFeatures;
+  return settings.freePlanFeatures;
+};
 
 // @desc    Send a message to a connected user
 // @route   POST /api/messages
@@ -14,12 +29,17 @@ exports.sendMessage = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Message content is required' });
     }
 
-    // 1. Enforce that sender is on a paid plan (Premium or Elite)
+    // 1. Enforce that sender has chat feature enabled on their plan
     const senderUser = await User.findById(senderId);
-    if (!senderUser || (senderUser.plan !== 'premium' && senderUser.plan !== 'elite')) {
+    if (!senderUser) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    const planFeatures = await getPlanFeatures(senderUser.plan);
+    if (!planFeatures.chat) {
       return res.status(403).json({
         success: false,
-        message: 'Messaging requires a Premium or Elite subscription. Please upgrade your plan!'
+        message: 'Messaging is not enabled for your subscription plan. Please upgrade your plan!'
       });
     }
 
@@ -59,10 +79,15 @@ exports.getMessages = async (req, res) => {
 
     // Enforce paid plan
     const currentUser = await User.findById(currentUserId);
-    if (!currentUser || (currentUser.plan !== 'premium' && currentUser.plan !== 'elite')) {
+    if (!currentUser) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    const planFeatures = await getPlanFeatures(currentUser.plan);
+    if (!planFeatures.chat) {
       return res.status(403).json({
         success: false,
-        message: 'Accessing chat messages requires a Premium or Elite subscription.'
+        message: 'Accessing chat messages is not enabled for your subscription plan.'
       });
     }
 

@@ -1,13 +1,41 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { FaHeart, FaShieldAlt, FaComments, FaCrown, FaUsers, FaArrowRight, FaMoon, FaLock, FaPhoneAlt, FaMosque } from 'react-icons/fa';
 import logo3 from '../assets/logo3.png';
 import bannerMatrimony from '../assets/banner_matrimony.png';
 import premiumBanner from '../assets/transparent_banner.png';
+import api, { SOCKET_BASE_URL } from '../services/api';
 
 const LandingPage = () => {
   const { user } = useContext(AuthContext);
+  const [successStories, setSuccessStories] = useState([]);
+
+  useEffect(() => {
+    const fetchStories = async () => {
+      try {
+        const res = await api.get('/success-stories');
+        if (res.data.success && res.data.data.length > 0) {
+          setSuccessStories(res.data.data);
+        } else {
+          setSuccessStories(staticTestimonials);
+        }
+      } catch (err) {
+        console.error('Failed to fetch success stories:', err);
+        setSuccessStories(staticTestimonials);
+      }
+    };
+    fetchStories();
+  }, []);
+
+  const staticTestimonials = [
+    { partnerOne: "Fariha", partnerTwo: "Imran", story: "A blessing. I loved the privacy features. We connected on Premium, chatted with family involvement, and got married last Shawwal. Jazakallah Khair!", location: "Connected in Hyd" },
+    { partnerOne: "Dr. Khalid", partnerTwo: "Yasmin", story: "Using the advanced filters on the Elite plan allowed me to find highly educated, family-oriented Sunni profiles in Lucknow. Excellent platform!", location: "Connected in Delhi" },
+    { partnerOne: "Aisha", partnerTwo: "Sameer", story: "Alhamdulillah, we found each other through the sectarian filters. Sameer's profile matched my expectations. Married after Eid!", location: "Connected in Mumbai" },
+    { partnerOne: "Zara", partnerTwo: "Farhan", story: "The secure chat framework kept everything completely respectful and halal. Highly recommended for practicing Muslims!", location: "Connected in Blr" },
+    { partnerOne: "Sana", partnerTwo: "Riaz", story: "Finding someone with the same professional background and level of deen was simple. Families were involved from day one!", location: "Connected in Chennai" },
+    { partnerOne: "Hina", partnerTwo: "Zayan", story: "We connected on the Elite tier. The match compatibility reports helped our families immensely. Alhamdulillah!", location: "Connected in Lucknow" }
+  ];
 
   return (
     <div className="bg-cream-50 overflow-hidden">
@@ -282,101 +310,44 @@ const LandingPage = () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          {/* Testimonial 1 */}
-          <div className="relative bg-[#faf6ea] p-4 md:p-5 rounded-2xl border border-gold-200/30 shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-[0_12px_32px_rgba(0,0,0,0.05)] hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between text-left group">
-            {/* Decorative Quote Icon */}
-            <div className="absolute -top-4 -left-2 w-8 h-8 rounded-full bg-gold-gradient border border-gold-400/60 flex items-center justify-center shadow-md">
-              <span className="text-crimson-950 font-serif font-extrabold text-xl leading-none">“</span>
-            </div>
+          {successStories.map((storyItem, idx) => (
+            <div key={storyItem._id || idx} className="relative bg-[#faf6ea] p-4 md:p-5 rounded-2xl border border-gold-200/30 shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-[0_12px_32px_rgba(0,0,0,0.05)] hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between text-left group">
+              {/* Decorative Quote Icon */}
+              <div className="absolute -top-4 -left-2 w-8 h-8 rounded-full bg-gold-gradient border border-gold-400/60 flex items-center justify-center shadow-md z-10">
+                <span className="text-crimson-950 font-serif font-extrabold text-xl leading-none">“</span>
+              </div>
 
-            <p className="text-slate-700 italic leading-relaxed text-xs mb-4 relative z-10">
-              "A blessing. I loved the privacy features. We connected on Premium, chatted with family involvement, and got married last Shawwal. Jazakallah Khair!"
-            </p>
-            <div className="border-t border-gold-500/10 pt-3 mt-auto">
-              <h4 className="font-serif font-bold text-slate-900 text-sm group-hover:text-[#4f080e] transition-colors">Fariha & Imran</h4>
-              <span className="text-[10px] text-[#4f080e] font-bold uppercase tracking-wider block mt-0.5">Connected in Hyd</span>
-            </div>
-          </div>
+              {/* Couple Image (if exists) */}
+              {storyItem.images && storyItem.images.length > 0 ? (
+                <div className="relative w-full h-24 mb-4 rounded-xl overflow-hidden bg-slate-200 border border-gold-200/20 flex gap-0.5">
+                  {storyItem.images.map((imgUrl, i) => (
+                    <img 
+                      key={i} 
+                      src={`${SOCKET_BASE_URL}${imgUrl}`} 
+                      alt="Couple" 
+                      className="h-full object-cover flex-1 min-w-[20%] hover:flex-[2] transition-all duration-300"
+                    />
+                  ))}
+                </div>
+              ) : storyItem.image ? (
+                <div className="w-full h-24 mb-4 rounded-xl overflow-hidden bg-slate-200 border border-gold-200/20">
+                  <img src={`${SOCKET_BASE_URL}${storyItem.image}`} alt="Couple" className="w-full h-full object-cover" />
+                </div>
+              ) : null}
 
-          {/* Testimonial 2 */}
-          <div className="relative bg-[#faf6ea] p-4 md:p-5 rounded-2xl border border-gold-200/30 shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-[0_12px_32px_rgba(0,0,0,0.05)] hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between text-left group">
-            {/* Decorative Quote Icon */}
-            <div className="absolute -top-4 -left-2 w-8 h-8 rounded-full bg-gold-gradient border border-gold-400/60 flex items-center justify-center shadow-md">
-              <span className="text-crimson-950 font-serif font-extrabold text-xl leading-none">“</span>
+              <p className="text-slate-700 italic leading-relaxed text-xs mb-4 relative z-10">
+                "{storyItem.story}"
+              </p>
+              <div className="border-t border-gold-500/10 pt-3 mt-auto">
+                <h4 className="font-serif font-bold text-slate-900 text-sm group-hover:text-[#4f080e] transition-colors">
+                  {storyItem.partnerOne} & {storyItem.partnerTwo}
+                </h4>
+                <span className="text-[10px] text-[#4f080e] font-bold uppercase tracking-wider block mt-0.5">
+                  {storyItem.location}
+                </span>
+              </div>
             </div>
-
-            <p className="text-slate-700 italic leading-relaxed text-xs mb-4 relative z-10">
-              "Using the advanced filters on the Elite plan allowed me to find highly educated, family-oriented Sunni profiles in Lucknow. Excellent platform!"
-            </p>
-            <div className="border-t border-gold-500/10 pt-3 mt-auto">
-              <h4 className="font-serif font-bold text-slate-900 text-sm group-hover:text-[#4f080e] transition-colors">Dr. Khalid & Yasmin</h4>
-              <span className="text-[10px] text-[#4f080e] font-bold uppercase tracking-wider block mt-0.5">Connected in Delhi</span>
-            </div>
-          </div>
-
-          {/* Testimonial 3 */}
-          <div className="relative bg-[#faf6ea] p-4 md:p-5 rounded-2xl border border-gold-200/30 shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-[0_12px_32px_rgba(0,0,0,0.05)] hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between text-left group">
-            {/* Decorative Quote Icon */}
-            <div className="absolute -top-4 -left-2 w-8 h-8 rounded-full bg-gold-gradient border border-gold-400/60 flex items-center justify-center shadow-md">
-              <span className="text-crimson-950 font-serif font-extrabold text-xl leading-none">“</span>
-            </div>
-
-            <p className="text-slate-700 italic leading-relaxed text-xs mb-4 relative z-10">
-              "Alhamdulillah, we found each other through the sectarian filters. Sameer's profile matched my expectations. Married after Eid!"
-            </p>
-            <div className="border-t border-gold-500/10 pt-3 mt-auto">
-              <h4 className="font-serif font-bold text-slate-900 text-sm group-hover:text-[#4f080e] transition-colors">Aisha & Sameer</h4>
-              <span className="text-[10px] text-[#4f080e] font-bold uppercase tracking-wider block mt-0.5">Connected in Mumbai</span>
-            </div>
-          </div>
-
-          {/* Testimonial 4 */}
-          <div className="relative bg-[#faf6ea] p-4 md:p-5 rounded-2xl border border-gold-200/30 shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-[0_12px_32px_rgba(0,0,0,0.05)] hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between text-left group">
-            {/* Decorative Quote Icon */}
-            <div className="absolute -top-4 -left-2 w-8 h-8 rounded-full bg-gold-gradient border border-gold-400/60 flex items-center justify-center shadow-md">
-              <span className="text-crimson-950 font-serif font-extrabold text-xl leading-none">“</span>
-            </div>
-
-            <p className="text-slate-700 italic leading-relaxed text-xs mb-4 relative z-10">
-              "The secure chat framework kept everything completely respectful and halal. Highly recommended for practicing Muslims!"
-            </p>
-            <div className="border-t border-gold-500/10 pt-3 mt-auto">
-              <h4 className="font-serif font-bold text-slate-900 text-sm group-hover:text-[#4f080e] transition-colors">Zara & Farhan</h4>
-              <span className="text-[10px] text-[#4f080e] font-bold uppercase tracking-wider block mt-0.5">Connected in Blr</span>
-            </div>
-          </div>
-
-          {/* Testimonial 5 */}
-          <div className="relative bg-[#faf6ea] p-4 md:p-5 rounded-2xl border border-gold-200/30 shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-[0_12px_32px_rgba(0,0,0,0.05)] hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between text-left group">
-            {/* Decorative Quote Icon */}
-            <div className="absolute -top-4 -left-2 w-8 h-8 rounded-full bg-gold-gradient border border-gold-400/60 flex items-center justify-center shadow-md">
-              <span className="text-crimson-950 font-serif font-extrabold text-xl leading-none">“</span>
-            </div>
-
-            <p className="text-slate-700 italic leading-relaxed text-xs mb-4 relative z-10">
-              "Finding someone with the same professional background and level of deen was simple. Families were involved from day one!"
-            </p>
-            <div className="border-t border-gold-500/10 pt-3 mt-auto">
-              <h4 className="font-serif font-bold text-slate-900 text-sm group-hover:text-[#4f080e] transition-colors">Sana & Riaz</h4>
-              <span className="text-[10px] text-[#4f080e] font-bold uppercase tracking-wider block mt-0.5">Connected in Chennai</span>
-            </div>
-          </div>
-
-          {/* Testimonial 6 */}
-          <div className="relative bg-[#faf6ea] p-4 md:p-5 rounded-2xl border border-gold-200/30 shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-[0_12px_32px_rgba(0,0,0,0.05)] hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between text-left group">
-            {/* Decorative Quote Icon */}
-            <div className="absolute -top-4 -left-2 w-8 h-8 rounded-full bg-gold-gradient border border-gold-400/60 flex items-center justify-center shadow-md">
-              <span className="text-crimson-950 font-serif font-extrabold text-xl leading-none">“</span>
-            </div>
-
-            <p className="text-slate-700 italic leading-relaxed text-xs mb-4 relative z-10">
-              "We connected on the Elite tier. The match compatibility reports helped our families immensely. Alhamdulillah!"
-            </p>
-            <div className="border-t border-gold-500/10 pt-3 mt-auto">
-              <h4 className="font-serif font-bold text-slate-900 text-sm group-hover:text-[#4f080e] transition-colors">Hina & Zayan</h4>
-              <span className="text-[10px] text-[#4f080e] font-bold uppercase tracking-wider block mt-0.5">Connected in Lucknow</span>
-            </div>
-          </div>
+          ))}
         </div>
       </section>
 

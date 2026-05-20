@@ -2,6 +2,7 @@ const User = require('../models/User');
 const Profile = require('../models/Profile');
 const InterestRequest = require('../models/InterestRequest');
 const Message = require('../models/Message');
+const Settings = require('../models/Settings');
 
 // @desc    Get Admin dashboard analytics metrics
 // @route   GET /api/admin/metrics
@@ -28,6 +29,15 @@ exports.getMetrics = async (req, res) => {
     // Total messages exchanged
     const totalMessages = await Message.countDocuments();
 
+    // Revenue Calculation from Settings prices
+    const settings = await Settings.findOne();
+    const premiumPrice = settings?.premiumPrice || 999;
+    const elitePrice = settings?.elitePrice || 1999;
+
+    const premiumRevenue = premiumPlanCount * premiumPrice;
+    const eliteRevenue = elitePlanCount * elitePrice;
+    const totalRevenue = premiumRevenue + eliteRevenue;
+
     return res.status(200).json({
       success: true,
       metrics: {
@@ -48,6 +58,13 @@ exports.getMetrics = async (req, res) => {
           pending: pendingRequests,
         },
         messagesCount: totalMessages,
+        revenue: {
+          premiumPrice,
+          elitePrice,
+          premiumRevenue,
+          eliteRevenue,
+          totalRevenue,
+        },
       },
     });
   } catch (error) {
@@ -270,11 +287,11 @@ exports.verifyUser = async (req, res) => {
   }
 };
 
-const Settings = require('../models/Settings');
+const SuccessStory = require('../models/SuccessStory');
 
-// @desc    Get platform settings (pricing)
+// @desc    Get platform settings (pricing & plan features)
 // @route   GET /api/admin/settings
-// @access  Public (So frontend can display prices without auth if needed, but we keep it under /api/settings or /api/admin/settings)
+// @access  Public
 exports.getSettings = async (req, res) => {
   try {
     let settings = await Settings.findOne();
@@ -300,10 +317,209 @@ exports.updateSettings = async (req, res) => {
     if (req.body.premiumPrice !== undefined) settings.premiumPrice = req.body.premiumPrice;
     if (req.body.elitePrice !== undefined) settings.elitePrice = req.body.elitePrice;
     if (req.body.paymentGatewayMode !== undefined) settings.paymentGatewayMode = req.body.paymentGatewayMode;
+    
+    if (req.body.freePlanFeatures !== undefined) settings.freePlanFeatures = req.body.freePlanFeatures;
+    if (req.body.premiumPlanFeatures !== undefined) settings.premiumPlanFeatures = req.body.premiumPlanFeatures;
+    if (req.body.elitePlanFeatures !== undefined) settings.elitePlanFeatures = req.body.elitePlanFeatures;
 
     await settings.save();
     return res.status(200).json({ success: true, data: settings, message: 'Settings updated successfully' });
   } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// @desc    Get all success stories (Admin)
+// @route   GET /api/admin/success-stories
+// @access  Private/Admin
+exports.getAllSuccessStories = async (req, res) => {
+  try {
+    const stories = await SuccessStory.find().sort({ createdAt: -1 });
+    return res.status(200).json({ success: true, count: stories.length, data: stories });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// @desc    Create a success story (Admin)
+// @route   POST /api/admin/success-stories
+// @access  Private/Admin
+exports.createSuccessStory = async (req, res) => {
+  try {
+    const { partnerOne, partnerTwo, story, location, marriageDate, isPublished } = req.body;
+    
+    if (!partnerOne || !partnerTwo || !story || !location) {
+      return res.status(400).json({ success: false, message: 'Please provide all required fields.' });
+    }
+
+    // Process files uploaded via multer
+    let images = [];
+    if (req.files && req.files.length > 0) {
+      images = req.files.map(file => `/uploads/${file.filename}`);
+    }
+
+    const newStory = await SuccessStory.create({
+      partnerOne,
+      partnerTwo,
+      story,
+      location,
+      marriageDate: marriageDate || '',
+      images: images,
+      image: images.length > 0 ? images[0] : '',
+      isPublished: isPublished === 'true' || isPublished === true,
+    });
+
+    return res.status(201).json({ success: true, data: newStory, message: 'Success story created successfully.' });
+  } catch (error) {
+    console.error('CreateSuccessStory Error:', error);
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// @desc    Update a success story (Admin)
+// @route   PUT /api/admin/success-stories/:id
+// @access  Private/Admin
+exports.updateSuccessStory = async (req, res) => {
+  try {
+    const storyId = req.params.id;
+    let storyItem = await SuccessStory.findById(storyId);
+
+    if (!storyItem) {
+      return res.status(404).json({ success: false, message: 'Success story not found.' });
+    }
+
+    const { partnerOne, partnerTwo, story, location, marriageDate, isPublished, existingImages } = req.body;
+
+    let images = [];
+    if (existingImages) {
+      try {
+        images = typeof existingImages === 'string' ? JSON.parse(existingImages) : existingImages;
+      } catch (err) {
+        images = [];
+      }
+    } else {
+      images = storyItem.images || [];
+    }
+
+    // Append new uploaded images
+    if (req.files && req.files.length > 0) {
+      const newImages = req.files.map(file => `/uploads/${file.filename}`);
+      images = [...images, ...newImages];
+    }
+
+    // Prepare update payload
+    const updateData = {
+      partnerOne: partnerOne !== undefined ? partnerOne : storyItem.partnerOne,
+      partnerTwo: partnerTwo !== undefined ? partnerTwo : storyItem.partnerTwo,
+      story: story !== undefined ? story : storyItem.story,
+      location: location !== undefined ? location : storyItem.location,
+      marriageDate: marriageDate !== undefined ? marriageDate : storyItem.marriageDate,
+      isPublished: isPublished !== undefined ? (isPublished === 'true' || isPublished === true) : storyItem.isPublished,
+      images: images,
+      image: images.length > 0 ? images[0] : '',
+    };
+
+    storyItem = await SuccessStory.findByIdAndUpdate(storyId, updateData, {
+      new: true,
+      runValidators: true,
+    });
+
+    return res.status(200).json({ success: true, data: storyItem, message: 'Success story updated successfully.' });
+  } catch (error) {
+    console.error('UpdateSuccessStory Error:', error);
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// @desc    Delete a success story (Admin)
+// @route   DELETE /api/admin/success-stories/:id
+// @access  Private/Admin
+exports.deleteSuccessStory = async (req, res) => {
+  try {
+    const storyId = req.params.id;
+    const storyItem = await SuccessStory.findById(storyId);
+
+    if (!storyItem) {
+      return res.status(404).json({ success: false, message: 'Success story not found.' });
+    }
+
+    await SuccessStory.findByIdAndDelete(storyId);
+
+    return res.status(200).json({ success: true, message: 'Success story deleted successfully.' });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// @desc    Create a user manually (Offline registration) (Admin)
+// @route   POST /api/admin/users/create
+// @access  Private/Admin
+exports.createOfflineUser = async (req, res) => {
+  try {
+    const { email, password, plan, profile } = req.body;
+
+    if (!email || !password || !plan || !profile) {
+      return res.status(400).json({ success: false, message: 'Email, password, plan, and profile details are required.' });
+    }
+
+    // Check if user already exists
+    const userExists = await User.findOne({ email });
+    if (userExists) {
+      return res.status(400).json({ success: false, message: 'User with this email already exists.' });
+    }
+
+    // Setup viewLimit according to selected plan
+    let viewLimit = 5;
+    if (plan === 'premium') {
+      viewLimit = 30;
+    } else if (plan === 'elite') {
+      viewLimit = 99999;
+    }
+
+    // Create user
+    const user = await User.create({
+      email,
+      password,
+      role: 'user',
+      plan,
+      viewLimit,
+      isManuallyVerified: true
+    });
+
+    // Create profile linked to user
+    const newProfile = await Profile.create({
+      user: user._id,
+      name: profile.name,
+      age: profile.age,
+      gender: profile.gender,
+      height: profile.height || "5'5\"",
+      maritalStatus: profile.maritalStatus || 'Never Married',
+      motherTongue: profile.motherTongue || 'Urdu',
+      religion: profile.religion || 'Islam',
+      sect: profile.sect || 'Sunni',
+      namazFrequency: profile.namazFrequency || 'Always Praying',
+      profession: profile.profession,
+      education: profile.education,
+      city: profile.city,
+      about: profile.about || `Profile for ${profile.name} created by Admin.`,
+      phoneNumber: profile.phoneNumber || '+91 98765 43210',
+    });
+
+    return res.status(201).json({
+      success: true,
+      message: 'Offline user and profile created successfully.',
+      data: {
+        user: {
+          _id: user._id,
+          email: user.email,
+          plan: user.plan,
+          isManuallyVerified: user.isManuallyVerified
+        },
+        profile: newProfile
+      }
+    });
+  } catch (error) {
+    console.error('CreateOfflineUser Error:', error);
     return res.status(500).json({ success: false, message: error.message });
   }
 };

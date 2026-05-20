@@ -5,6 +5,7 @@ import { AuthContext, AuthProvider } from './context/AuthContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ProfileCompletenessBanner from './components/ProfileCompletenessBanner';
+import LogoLoader from './components/LogoLoader';
 
 // Page Imports
 import LandingPage from './pages/LandingPage';
@@ -23,11 +24,7 @@ const ProtectedRoute = ({ children }) => {
   const { user, loading } = useContext(AuthContext);
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-cream-50 flex items-center justify-center">
-        <div className="w-10 h-10 border-4 border-gold-500 border-t-transparent rounded-full animate-spin"></div>
-      </div>
-    );
+    return <LogoLoader fullScreen text="Verifying Credentials..." />;
   }
 
   if (!user) {
@@ -42,11 +39,7 @@ const AdminRoute = ({ children }) => {
   const { user, loading } = useContext(AuthContext);
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-cream-50 flex items-center justify-center">
-        <div className="w-10 h-10 border-4 border-gold-500 border-t-transparent rounded-full animate-spin"></div>
-      </div>
-    );
+    return <LogoLoader fullScreen text="Checking Permissions..." />;
   }
 
   if (!user || user.role !== 'admin') {
@@ -57,8 +50,12 @@ const AdminRoute = ({ children }) => {
 };
 
 function AppContent() {
-  const { user, profile } = useContext(AuthContext);
+  const { user, profile, loading } = useContext(AuthContext);
   const location = useLocation();
+
+  if (loading) {
+    return <LogoLoader fullScreen text="Loading Blessings..." />;
+  }
 
   // Calculate completeness to determine if banner is shown
   const getCompleteness = () => {

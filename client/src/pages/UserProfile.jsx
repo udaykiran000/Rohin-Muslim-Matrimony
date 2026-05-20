@@ -8,6 +8,7 @@ import {
   FaUserLock, FaHeart, FaExclamationTriangle, FaStar, 
   FaPhoneAlt, FaEnvelope, FaMosque, FaUsers, FaRulerVertical, FaLanguage
 } from 'react-icons/fa';
+import LogoLoader from '../components/LogoLoader';
 
 const UserProfile = () => {
   const { id } = useParams();
@@ -75,11 +76,7 @@ const UserProfile = () => {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-cream-50 pt-24 pb-12 flex justify-center items-center">
-        <span className="w-12 h-12 border-4 border-crimson-950 border-t-transparent rounded-full animate-spin"></span>
-      </div>
-    );
+    return <LogoLoader fullScreen text="Loading Profile Details..." />;
   }
 
   if (!profile) return null;

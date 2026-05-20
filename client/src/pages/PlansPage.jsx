@@ -39,7 +39,6 @@ const PlansPage = () => {
 
     setLoading(true);
     try {
-      // Mock Payment Delay
       toast.loading(`Processing payment via ${import.meta.env.VITE_PAYMENT_MODE || 'Mock Gateway'}...`, { id: 'payment' });
       await new Promise(resolve => setTimeout(resolve, 1500));
       
@@ -81,31 +80,10 @@ const PlansPage = () => {
               <span className="text-4xl font-serif font-bold text-crimson-950">Free</span>
             </div>
           </div>
-          <ul className="flex-1 space-y-4 mb-8">
-            <li className="flex items-start gap-3 text-sm text-slate-700">
-              <FaCheckCircle className="text-crimson-600 text-lg mt-0.5" />
-              <span>Create profile & add photos</span>
-            </li>
-            <li className="flex items-start gap-3 text-sm text-slate-700">
-              <FaCheckCircle className="text-crimson-600 text-lg mt-0.5" />
-              <span>Basic grid search filters</span>
-            </li>
-            <li className="flex items-start gap-3 text-sm text-slate-700">
-              <FaCheckCircle className="text-crimson-600 text-lg mt-0.5" />
-              <span>View up to <strong>5 profiles daily</strong></span>
-            </li>
-            <li className="flex items-start gap-3 text-sm text-slate-400">
-              <FaShieldAlt className="text-slate-300 text-lg mt-0.5" />
-              <span>Cannot view full biodata (Blurred)</span>
-            </li>
-            <li className="flex items-start gap-3 text-sm text-slate-400">
-              <FaShieldAlt className="text-slate-300 text-lg mt-0.5" />
-              <span>Cannot message directly</span>
-            </li>
-          </ul>
+          <DynamicFeatureList planKey="freePlanFeatures" />
           <button 
             disabled={user?.plan === 'free'}
-            className="w-full py-3.5 rounded-full font-bold text-crimson-900 bg-crimson-900/10 hover:bg-crimson-900/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full py-3.5 rounded-full font-bold text-crimson-900 bg-crimson-900/10 hover:bg-crimson-900/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-8"
           >
             {user?.plan === 'free' ? 'Current Plan' : 'Select Free'}
           </button>
@@ -123,32 +101,11 @@ const PlansPage = () => {
               <span className="text-slate-400 text-sm mb-1">/ month</span>
             </div>
           </div>
-          <ul className="flex-1 space-y-4 mb-8">
-            <li className="flex items-start gap-3 text-sm text-slate-300">
-              <FaCheckCircle className="text-crimson-400 text-lg mt-0.5" />
-              <span className="text-white font-medium">View up to <strong>30 profiles daily</strong></span>
-            </li>
-            <li className="flex items-start gap-3 text-sm text-slate-300">
-              <FaCheckCircle className="text-crimson-400 text-lg mt-0.5" />
-              <span>Unlock full biodata details</span>
-            </li>
-            <li className="flex items-start gap-3 text-sm text-slate-300">
-              <FaCheckCircle className="text-crimson-400 text-lg mt-0.5" />
-              <span>Real-time Chat with mutual connections</span>
-            </li>
-            <li className="flex items-start gap-3 text-sm text-slate-300">
-              <FaCheckCircle className="text-crimson-400 text-lg mt-0.5" />
-              <span>See connected users' phone numbers</span>
-            </li>
-            <li className="flex items-start gap-3 text-sm text-slate-300">
-              <FaCheckCircle className="text-crimson-400 text-lg mt-0.5" />
-              <span>Shortlist & Save Profiles</span>
-            </li>
-          </ul>
+          <DynamicFeatureList planKey="premiumPlanFeatures" dark />
           <button 
             onClick={() => handleUpgrade('premium')}
             disabled={loading || user?.plan === 'premium' || user?.plan === 'elite'}
-            className="w-full py-3.5 rounded-full font-bold bg-gold-gradient text-crimson-950 hover:shadow-gold-500/30 hover:scale-105 transition-all disabled:opacity-50 disabled:scale-100 disabled:cursor-not-allowed"
+            className="w-full py-3.5 rounded-full font-bold bg-gold-gradient text-crimson-950 hover:shadow-gold-500/30 hover:scale-105 transition-all disabled:opacity-50 disabled:scale-100 disabled:cursor-not-allowed mt-8"
           >
             {user?.plan === 'premium' ? 'Current Plan' : 'Upgrade to Premium'}
           </button>
@@ -166,32 +123,11 @@ const PlansPage = () => {
               <span className="text-slate-500 text-sm mb-1">/ month</span>
             </div>
           </div>
-          <ul className="flex-1 space-y-4 mb-8 relative z-10">
-            <li className="flex items-start gap-3 text-sm text-slate-700">
-              <FaCheckCircle className="text-gold-500 text-lg mt-0.5" />
-              <span className="font-bold text-crimson-900">Unlimited profile views</span>
-            </li>
-            <li className="flex items-start gap-3 text-sm text-slate-700">
-              <FaCheckCircle className="text-gold-500 text-lg mt-0.5" />
-              <span>Priority placement in search results</span>
-            </li>
-            <li className="flex items-start gap-3 text-sm text-slate-700">
-              <FaCheckCircle className="text-gold-500 text-lg mt-0.5" />
-              <span>All Premium features included</span>
-            </li>
-            <li className="flex items-start gap-3 text-sm text-slate-700">
-              <FaCheckCircle className="text-gold-500 text-lg mt-0.5" />
-              <span>Dedicated Relationship Manager</span>
-            </li>
-            <li className="flex items-start gap-3 text-sm text-slate-700">
-              <FaCheckCircle className="text-gold-500 text-lg mt-0.5" />
-              <span>Advanced Admin Moderation bypass</span>
-            </li>
-          </ul>
+          <DynamicFeatureList planKey="elitePlanFeatures" gold />
           <button 
             onClick={() => handleUpgrade('elite')}
             disabled={loading || user?.plan === 'elite'}
-            className="w-full py-3.5 rounded-full font-bold bg-crimson-950 text-gold-400 hover:bg-crimson-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed relative z-10 border border-crimson-800"
+            className="w-full py-3.5 rounded-full font-bold bg-crimson-950 text-gold-400 hover:bg-crimson-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed relative z-10 border border-crimson-800 mt-8"
           >
             {user?.plan === 'elite' ? 'Current Plan' : 'Get Elite Access'}
           </button>
@@ -199,6 +135,123 @@ const PlansPage = () => {
 
       </div>
     </div>
+  );
+};
+
+// ─── Dynamic Feature List Component ──────────────────────────────────────────
+const DynamicFeatureList = ({ planKey, dark = false, gold = false }) => {
+  const [features, setFeatures] = useState(null);
+
+  useEffect(() => {
+    const fetchFeatures = async () => {
+      try {
+        const res = await api.get('/settings');
+        if (res.data.success && res.data.data) {
+          setFeatures(res.data.data[planKey]);
+        }
+      } catch (err) {
+        // Fallback defaults if API unreachable
+        const defaults = {
+          freePlanFeatures:    { viewFullBio: false, viewContactDetails: false, chat: false, shortlist: false, dailyViewLimit: 5 },
+          premiumPlanFeatures: { viewFullBio: true,  viewContactDetails: true,  chat: true,  shortlist: true,  dailyViewLimit: 30 },
+          elitePlanFeatures:   { viewFullBio: true,  viewContactDetails: true,  chat: true,  shortlist: true,  dailyViewLimit: 99999 },
+        };
+        setFeatures(defaults[planKey]);
+      }
+    };
+    fetchFeatures();
+  }, [planKey]);
+
+  const tickClass = dark ? 'text-crimson-400' : gold ? 'text-gold-500' : 'text-crimson-600';
+  const lockClass = dark ? 'text-slate-600'   : 'text-slate-300';
+  const textBase  = dark ? 'text-slate-300'   : 'text-slate-700';
+  const dimText   = dark ? 'text-slate-500'   : 'text-slate-400';
+  const subText   = dark ? 'text-slate-500'   : 'text-slate-400';
+
+  const FeatureRow = ({ enabled, label, subLabel }) => (
+    <li className={`flex items-start gap-3 text-sm ${textBase}`}>
+      {enabled ? (
+        <FaCheckCircle className={`${tickClass} text-lg mt-0.5 flex-shrink-0`} />
+      ) : (
+        <FaShieldAlt className={`${lockClass} text-lg mt-0.5 flex-shrink-0`} />
+      )}
+      <span className={!enabled ? dimText : dark ? 'text-white font-medium' : ''}>
+        {label}
+        {subLabel && (
+          <span className={`block text-xs mt-0.5 ${subText}`}>{subLabel}</span>
+        )}
+      </span>
+    </li>
+  );
+
+  // Loading skeleton
+  if (!features) {
+    return (
+      <ul className="flex-1 space-y-4">
+        {[1,2,3,4,5,6,7].map(i => (
+          <li key={i} className="h-5 bg-slate-200/40 rounded animate-pulse" />
+        ))}
+      </ul>
+    );
+  }
+
+  const viewLabel = features.dailyViewLimit >= 99999
+    ? 'Unlimited profile views'
+    : `View up to ${features.dailyViewLimit} profiles daily`;
+
+  return (
+    <ul className="flex-1 space-y-4">
+
+      {/* Always-on base features */}
+      <FeatureRow enabled label="Create profile & add photos" />
+      <FeatureRow enabled label="Basic search & filters" />
+
+      {/* Admin-controlled: Daily View Limit */}
+      <FeatureRow
+        enabled
+        label={<strong>{viewLabel}</strong>}
+      />
+
+      {/* Admin-controlled: View Full Bio */}
+      <FeatureRow
+        enabled={features.viewFullBio}
+        label={features.viewFullBio
+          ? 'Full biodata & all details visible'
+          : 'Full biodata hidden (Blurred)'}
+        subLabel={features.viewFullBio
+          ? 'Education, profession, family details visible'
+          : 'Upgrade to unlock complete profile'}
+      />
+
+      {/* Admin-controlled: Contact Details */}
+      <FeatureRow
+        enabled={features.viewContactDetails}
+        label={features.viewContactDetails
+          ? 'View phone & email on connection'
+          : 'Contact details locked'}
+        subLabel={features.viewContactDetails
+          ? 'Visible after mutual interest accepted'
+          : 'Cannot see phone number or email'}
+      />
+
+      {/* Admin-controlled: Halal Chat */}
+      <FeatureRow
+        enabled={features.chat}
+        label={features.chat
+          ? 'Halal Chat with mutual connections'
+          : 'Messaging not available'}
+        subLabel={features.chat ? 'Safe, monitored chat system' : null}
+      />
+
+      {/* Admin-controlled: Shortlist */}
+      <FeatureRow
+        enabled={features.shortlist}
+        label={features.shortlist
+          ? 'Shortlist & save profiles'
+          : 'Cannot shortlist profiles'}
+      />
+
+    </ul>
   );
 };
 

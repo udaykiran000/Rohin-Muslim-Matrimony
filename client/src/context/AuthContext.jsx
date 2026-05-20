@@ -12,6 +12,7 @@ export const AuthProvider = ({ children }) => {
   // Validate token and fetch currently logged-in user details on load
   useEffect(() => {
     const initAuth = async () => {
+      const startTime = Date.now();
       const token = localStorage.getItem('token');
       if (token) {
         try {
@@ -27,6 +28,10 @@ export const AuthProvider = ({ children }) => {
           setProfile(null);
         }
       }
+      const elapsed = Date.now() - startTime;
+      if (elapsed < 3000) {
+        await new Promise(r => setTimeout(r, 3000 - elapsed));
+      }
       setLoading(false);
     };
 
@@ -36,7 +41,6 @@ export const AuthProvider = ({ children }) => {
   // Login handler
   const login = async (email, password) => {
     try {
-      setLoading(true);
       const res = await api.post('/auth/login', { email, password });
       
       if (res.data.success) {
@@ -50,15 +54,12 @@ export const AuthProvider = ({ children }) => {
       const msg = error.response?.data?.message || 'Login failed. Invalid credentials.';
       toast.error(msg);
       return { success: false, error: msg };
-    } finally {
-      setLoading(false);
     }
   };
 
   // Register handler
   const register = async (formData) => {
     try {
-      setLoading(true);
       const res = await api.post('/auth/register', formData);
       
       if (res.data.success) {
@@ -72,8 +73,6 @@ export const AuthProvider = ({ children }) => {
       const msg = error.response?.data?.message || 'Registration failed.';
       toast.error(msg);
       return { success: false, error: msg };
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -88,8 +87,6 @@ export const AuthProvider = ({ children }) => {
   // Update profile details locally and trigger state reload
   const updateProfile = async (formData) => {
     try {
-      setLoading(true);
-      
       // Axios request with multipart/form-data support if uploading a file
       const config = {
         headers: {
@@ -107,8 +104,6 @@ export const AuthProvider = ({ children }) => {
       const msg = error.response?.data?.message || 'Failed to update profile.';
       toast.error(msg);
       return { success: false, error: msg };
-    } finally {
-      setLoading(false);
     }
   };
 
