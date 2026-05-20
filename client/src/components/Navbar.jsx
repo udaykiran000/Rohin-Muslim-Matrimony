@@ -9,6 +9,7 @@ import logo3 from '../assets/logo3.png';
 const Navbar = () => {
   const { user, profile, logout } = useContext(AuthContext);
   const [isOpen, setIsOpen] = useState(false);
+  const [showMobileUserMenu, setShowMobileUserMenu] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -110,10 +111,55 @@ const Navbar = () => {
           )}
         </div>
 
-        {/* Mobile menu toggle */}
-        <button onClick={() => setIsOpen(!isOpen)} className="lg:hidden text-slate-700 hover:text-slate-900 text-2xl focus:outline-none p-1.5">
-          {isOpen ? <FaTimes /> : <FaBars />}
-        </button>
+        {/* Mobile Control Icons */}
+        <div className="flex items-center gap-3 lg:hidden">
+          {user && (
+            <div className="relative">
+              <button 
+                onClick={() => {
+                  setShowMobileUserMenu(!showMobileUserMenu);
+                  setIsOpen(false);
+                }} 
+                className="w-8 h-8 rounded-full overflow-hidden border border-gold-500 bg-crimson-950 flex items-center justify-center hover:scale-105 transition-transform"
+                aria-label="User menu"
+              >
+                {profile?.profilePhoto && profile.profilePhoto !== '/uploads/default-avatar.png' ? (
+                  <img src={`${SOCKET_BASE_URL}${profile.profilePhoto}`} alt="Profile" className="w-full h-full object-cover" />
+                ) : (
+                  <FaUser className="text-slate-300 text-[10px]" />
+                )}
+              </button>
+
+              {/* Mobile User Menu Dropdown (Logout) */}
+              {showMobileUserMenu && (
+                <div className="absolute right-0 mt-2.5 w-32 bg-white rounded-lg shadow-xl border border-slate-100 py-1.5 z-50 animate-fadeIn">
+                  <button 
+                    onClick={() => {
+                      handleLogout();
+                      setShowMobileUserMenu(false);
+                    }} 
+                    className="w-full text-left px-4 py-2 text-xs font-serif font-extrabold text-red-600 hover:bg-slate-50 flex items-center gap-1.5 transition-colors"
+                  >
+                    <FaSignOutAlt className="text-xs" /> Logout
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Mobile menu toggle (hamburger) */}
+          {location.pathname !== '/login' && location.pathname !== '/register' && (
+            <button 
+              onClick={() => {
+                setIsOpen(!isOpen);
+                setShowMobileUserMenu(false);
+              }} 
+              className="text-slate-700 hover:text-slate-900 text-2xl focus:outline-none p-1.5"
+            >
+              {isOpen ? <FaTimes /> : <FaBars />}
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Mobile Menu Slider */}

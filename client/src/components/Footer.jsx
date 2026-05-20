@@ -4,7 +4,7 @@ import brandLogo from '../assets/brand-logo.png';
 
 const Footer = () => {
   return (
-    <footer className="bg-[#faf5ec] text-slate-800 py-8 md:py-16 px-4 md:px-8 border-t-2 border-gold-500/40 relative overflow-hidden">
+    <footer className="bg-[#faf5ec] text-slate-800 pt-8 pb-24 md:py-16 px-4 md:px-8 border-t-2 border-gold-500/40 relative overflow-hidden">
       {/* Subtle gold overlay */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(212,175,55,0.12)_0%,transparent_60%)] pointer-events-none"></div>
 
@@ -74,8 +74,19 @@ const Footer = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto border-t border-gold-500/20 mt-6 md:mt-12 pt-4 md:pt-8 text-center text-[10px] md:text-xs text-slate-500">
+      <div className="max-w-7xl mx-auto border-t border-gold-500/20 mt-6 md:mt-12 pt-4 md:pt-8 text-center text-[10px] md:text-xs text-slate-500 flex flex-col gap-2">
         <p>© {new Date().getFullYear()} Rohin Muslim Matrimony MVP. All Rights Reserved. Crafted with love and dedication.</p>
+        <p className="font-semibold text-slate-600 text-[10px] md:text-xs">
+          Designed by{' '}
+          <a 
+            href="https://webnappstudio.in/index.html" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="text-[#4f080e] hover:text-gold-700 transition-colors font-extrabold underline decoration-gold-500/50 underline-offset-2"
+          >
+            WebNappStudio
+          </a>
+        </p>
       </div>
     </footer>
   );

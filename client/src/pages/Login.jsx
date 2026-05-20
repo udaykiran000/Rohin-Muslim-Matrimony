@@ -1,13 +1,15 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { FaMoon, FaEnvelope, FaLock, FaArrowRight } from 'react-icons/fa';
+import { FaEnvelope, FaLock, FaArrowRight, FaEye, FaEyeSlash } from 'react-icons/fa';
 import logo3 from '../assets/logo3.png';
+import islamicBg from '../assets/islamic_bg_login.png';
 
 const Login = () => {
   const { login, user, loading } = useContext(AuthContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
@@ -36,108 +38,107 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center px-4 py-16 relative bg-cream-50 overflow-hidden">
-      {/* Background Glows */}
-      <div className="absolute top-[10%] left-[10%] w-80 h-80 bg-crimson-900/5 rounded-full blur-[80px]"></div>
-      <div className="absolute bottom-[10%] right-[10%] w-80 h-80 bg-gold-500/5 rounded-full blur-[80px]"></div>
+    <div 
+      className="min-h-[85vh] flex items-center justify-center px-4 py-10 sm:py-16 relative bg-cover bg-center overflow-hidden"
+      style={{ backgroundImage: `url(${islamicBg})` }}
+    >
+      {/* Dark Overlay to give depth and ensure card contrast */}
+      <div className="absolute inset-0 bg-black/30 z-0 pointer-events-none"></div>
 
-      <div className="w-full max-w-md glass-card rounded-3xl shadow-xl border border-crimson-950/5 overflow-hidden p-8 md:p-10 relative z-10">
-        {/* Logo and Greeting */}
-        <div className="flex flex-col items-center gap-2 mb-6 text-center">
-          <img src={logo3} alt="Rohin Muslim Matrimony Logo" className="h-16 w-auto object-contain" />
-          <h2 className="text-slate-900 text-2xl md:text-3xl font-bold font-serif mt-2">Welcome Back</h2>
-          <p className="text-slate-500 text-sm">Please log in to your halal matrimony account</p>
-        </div>
-
-        {/* Login Form */}
-        <form onSubmit={handleSubmit} className="space-y-5 text-left">
-          {/* Email Input */}
-          <div className="space-y-1.5">
-            <label className="text-slate-700 text-xs font-bold uppercase tracking-wider pl-1" htmlFor="email">
-              Email Address
-            </label>
-            <div className="relative">
-              <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">
-                <FaEnvelope className="text-sm" />
-              </span>
-              <input
-                id="email"
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="enter your email address"
-                className="w-full pl-10 pr-4 py-3 rounded-2xl bg-white/70 border border-slate-200 focus:border-gold-500 focus:ring-1 focus:ring-gold-500 focus:outline-none transition-all text-sm text-slate-800"
-              />
-            </div>
+      {/* Card Wrapper (Responsive, no overflow-hidden) */}
+      <div className="w-[92%] sm:w-full max-w-md relative z-10">
+        
+        {/* Login Card */}
+        <div className="w-full bg-[#180205]/18 backdrop-blur-[4px] rounded-2xl sm:rounded-3xl shadow-[0_30px_60px_rgba(0,0,0,0.8)] border border-gold-500/30 p-6 sm:p-8 md:p-10 relative">
+          
+          {/* Logo and Greeting */}
+          <div className="flex flex-col items-center gap-1.5 mb-4 sm:mb-6 text-center">
+            <Link to="/" className="group" title="Navigate to Home">
+              <img src={logo3} alt="Rohin Muslim Matrimony Logo" className="hidden sm:block h-16 w-auto object-contain hover:scale-105 transition-transform duration-300 brightness-110" />
+            </Link>
+            <h2 className="text-white text-xl sm:text-2xl md:text-3xl font-bold font-serif sm:mt-2 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">Welcome Back</h2>
+            <p className="text-white/80 text-xs sm:text-sm font-medium drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">Please log in to your halal matrimony account</p>
           </div>
 
-          {/* Password Input */}
-          <div className="space-y-1.5">
-            <div className="flex justify-between items-center px-1">
-              <label className="text-slate-700 text-xs font-bold uppercase tracking-wider" htmlFor="password">
-                Password
+          {/* Login Form */}
+          <form onSubmit={handleSubmit} className="space-y-4 text-left">
+            {/* Email Input */}
+            <div className="space-y-1.5">
+              <label className="text-[#ffd666] text-[10px] sm:text-xs font-bold uppercase tracking-wider pl-1 drop-shadow-[0_1.5px_2px_rgba(0,0,0,0.9)]" htmlFor="email">
+                Email Address
               </label>
+              <div className="relative">
+                <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-white/60">
+                  <FaEnvelope className="text-xs sm:text-sm" />
+                </span>
+                <input
+                  id="email"
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="enter your email address"
+                  className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-black/15 border border-white/20 focus:border-white/40 focus:ring-1 focus:ring-white/40 focus:outline-none transition-all text-xs sm:text-sm text-white placeholder-slate-400"
+                />
+              </div>
             </div>
-            <div className="relative">
-              <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">
-                <FaLock className="text-sm" />
-              </span>
-              <input
-                id="password"
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="enter password"
-                className="w-full pl-10 pr-4 py-3 rounded-2xl bg-white/70 border border-slate-200 focus:border-gold-500 focus:ring-1 focus:ring-gold-500 focus:outline-none transition-all text-sm text-slate-800"
-              />
-            </div>
-          </div>
 
-          {/* Login Button */}
-          <button
-            type="submit"
-            disabled={isSubmitting || loading}
-            className="w-full bg-gold-gradient text-crimson-950 font-bold py-3.5 rounded-2xl shadow-lg hover:shadow-gold-500/20 hover:scale-[1.01] transition-all flex items-center justify-center gap-2 mt-4 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isSubmitting ? (
-              <span className="w-5 h-5 border-2 border-crimson-950 border-t-transparent rounded-full animate-spin"></span>
-            ) : (
-              <>Log In Account <FaArrowRight /></>
-            )}
-          </button>
-        </form>
+            {/* Password Input */}
+            <div className="space-y-1.5">
+              <div className="flex justify-between items-center px-1">
+                <label className="text-[#ffd666] text-[10px] sm:text-xs font-bold uppercase tracking-wider drop-shadow-[0_1.5px_2px_rgba(0,0,0,0.9)]" htmlFor="password">
+                  Password
+                </label>
+              </div>
+              <div className="relative">
+                <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-white/60">
+                  <FaLock className="text-xs sm:text-sm" />
+                </span>
+                <input
+                  id="password"
+                  type={showPassword ? 'text' : 'password'}
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="enter password"
+                  className="w-full pl-9 pr-10 py-2.5 rounded-xl bg-black/15 border border-white/20 focus:border-white/40 focus:ring-1 focus:ring-white/40 focus:outline-none transition-all text-xs sm:text-sm text-white placeholder-slate-400"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-white/60 hover:text-white transition-colors"
+                  title={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? <FaEyeSlash className="text-xs sm:text-sm" /> : <FaEye className="text-xs sm:text-sm" />}
+                </button>
+              </div>
+            </div>
 
-        {/* Demo Users Section */}
-        <div className="border-t border-slate-150 pt-6 mt-8 text-center space-y-3">
-          <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider">Demo Access Details</p>
-          <div className="grid grid-cols-2 gap-2 text-[11px] text-slate-500 text-left bg-crimson-900/5 p-3.5 rounded-2xl border border-crimson-800/10">
-            <div>
-              <span className="font-bold text-crimson-900 block">Admin Access:</span>
-              <span>admin@matrimony.com</span>
-              <span className="block italic text-slate-400">pass: admin123</span>
-            </div>
-            <div>
-              <span className="font-bold text-crimson-900 block">Free Member:</span>
-              <span>zayd.khan@gmail.com</span>
-              <span className="block italic text-slate-400">pass: password123</span>
-            </div>
-            <div className="col-span-2 border-t border-crimson-900/10 pt-2 mt-1">
-              <span className="font-bold text-crimson-900 block">Premium Member:</span>
-              <span>riza.hussein@gmail.com</span>
-              <span className="block italic text-slate-400">pass: password123</span>
-            </div>
-          </div>
+            {/* Login Button */}
+            <button
+              type="submit"
+              disabled={isSubmitting || loading}
+              className="w-full bg-gold-gradient text-crimson-950 font-bold py-3 rounded-xl shadow-lg hover:shadow-gold-500/20 hover:scale-[1.01] transition-all flex items-center justify-center gap-2 mt-4 text-xs sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isSubmitting ? (
+                <span className="w-5 h-5 border-2 border-crimson-950 border-t-transparent rounded-full animate-spin"></span>
+              ) : (
+                <>Log In Account <FaArrowRight /></>
+              )}
+            </button>
+          </form>
+
+          {/* Divider separator */}
+          <div className="border-t border-white/10 mt-5 pt-5"></div>
+
+          {/* Call to Register */}
+          <p className="text-white/85 text-xs sm:text-sm text-center drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
+            Don't have a profile yet?{' '}
+            <Link to="/register" className="text-[#ffd666] font-bold hover:underline hover:text-white drop-shadow-[0_1.5px_2px_rgba(0,0,0,0.9)]">
+              Register Free
+            </Link>
+          </p>
         </div>
-
-        {/* Call to Register */}
-        <p className="text-slate-500 text-sm mt-8 text-center">
-          Don't have a profile yet?{' '}
-          <Link to="/register" className="text-crimson-900 font-bold hover:underline">
-            Register Free
-          </Link>
-        </p>
       </div>
     </div>
   );

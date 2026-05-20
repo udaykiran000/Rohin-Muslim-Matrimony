@@ -129,7 +129,7 @@ function AppContent() {
       <BottomNavigation />
 
       {/* Footer */}
-      <Footer />
+      {location.pathname !== '/login' && location.pathname !== '/register' && <Footer />}
     </div>
   );
 }

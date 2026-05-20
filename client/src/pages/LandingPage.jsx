@@ -449,36 +449,103 @@ const LandingPage = () => {
           </svg>
         </div>
 
-        {/* Holy Quran Book Underlay */}
-        <div className="absolute bottom-1 right-2 w-[90px] sm:w-[130px] h-[80px] sm:h-[110px] opacity-[0.95] pointer-events-none select-none z-0">
-          <svg className="w-full h-full text-[#4f080e]" fill="currentColor" viewBox="0 0 120 100">
-            {/* Stand / Rehal base in maroon */}
-            <polygon points="10,90 110,90 95,70 25,70" fill="#4f080e" stroke="#d4af37" strokeWidth="1" />
-            <polygon points="25,70 95,70 105,40 15,40" fill="#3d060a" stroke="#d4af37" strokeWidth="1" />
-            
-            {/* Quran pages (thick white/cream pages with gold edges) */}
-            {/* Left Page */}
-            <path d="M17 40 Q 40 33 60 41 L 60 67 Q 40 59 17 66 Z" fill="#fffdf5" stroke="#d4af37" strokeWidth="1.5" />
-            {/* Right Page */}
-            <path d="M103 40 Q 80 33 60 41 L 60 67 Q 80 59 103 66 Z" fill="#fffdf5" stroke="#d4af37" strokeWidth="1.5" />
-            
-            {/* Page text lines */}
-            <line x1="25" y1="46" x2="52" y2="48" stroke="#d4af37" strokeWidth="1" />
-            <line x1="24" y1="51" x2="51" y2="53" stroke="#4f080e" strokeWidth="1" />
-            <line x1="25" y1="56" x2="52" y2="58" stroke="#d4af37" strokeWidth="1" />
-
-            <line x1="95" y1="46" x2="68" y2="48" stroke="#d4af37" strokeWidth="1" />
-            <line x1="96" y1="51" x2="69" y2="53" stroke="#4f080e" strokeWidth="1" />
-            <line x1="95" y1="56" x2="68" y2="58" stroke="#d4af37" strokeWidth="1" />
-            
-            {/* Gold Ribbon bookmark */}
-            <path d="M 60 41 Q 63 68 55 82 Q 53 88 56 95" fill="none" stroke="#d4af37" strokeWidth="2.5" />
-          </svg>
-        </div>
-        
         <div className="max-w-6xl mx-auto relative z-10">
           {/* Heading Section */}
-          <div className="text-center max-w-3xl mx-auto mb-4 md:mb-8 flex flex-col items-center gap-1.5">
+          <div className="text-center max-w-3xl mx-auto mb-4 md:mb-8 flex flex-col items-center gap-1.5 relative px-12 sm:px-16 md:px-24">
+            
+            {/* Left Ornament - 3D Hanging Golden Lantern */}
+            <div className="absolute -left-2 sm:left-4 md:left-8 top-1/2 -translate-y-1/2 w-[45px] sm:w-[65px] md:w-[85px] h-[55px] sm:h-[75px] md:h-[95px] opacity-[0.9] pointer-events-none select-none z-10">
+              <svg className="w-full h-full" viewBox="0 0 100 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                {/* Hanging chain */}
+                <line x1="50" y1="0" x2="50" y2="30" stroke="#d4af37" strokeWidth="1.5" strokeDasharray="3,3" />
+                {/* Lantern dome cap */}
+                <path d="M 35 45 C 35 30, 65 30, 65 45 Z" fill="#4f080e" stroke="#d4af37" strokeWidth="1" />
+                {/* Dome tip */}
+                <path d="M 50 25 L 48 30 L 52 30 Z" fill="#d4af37" />
+                {/* Lantern glass body */}
+                <path d="M 35 45 L 30 75 L 70 75 L 65 45 Z" fill="#fffdf6" stroke="#d4af37" strokeWidth="1.2" opacity="0.95" />
+                {/* Inner gold glow */}
+                <circle cx="50" cy="60" r="10" fill="#eed182" opacity="0.8" />
+                <path d="M 50 50 Q 55 60 50 70 Q 45 60 50 50" fill="#d4af37" />
+                {/* Pattern lines on glass */}
+                <line x1="50" y1="45" x2="50" y2="75" stroke="#d4af37" strokeWidth="0.8" />
+                <line x1="42" y1="45" x2="38" y2="75" stroke="#d4af37" strokeWidth="0.5" />
+                <line x1="58" y1="45" x2="62" y2="75" stroke="#d4af37" strokeWidth="0.5" />
+                {/* Bottom base */}
+                <rect x="28" y="75" width="44" height="8" rx="2" fill="#4f080e" stroke="#d4af37" strokeWidth="1" />
+                <path d="M 35 83 L 50 95 L 65 83 Z" fill="#d4af37" />
+                {/* Bottom hanging ring */}
+                <circle cx="50" cy="98" r="3" fill="none" stroke="#d4af37" strokeWidth="1" />
+              </svg>
+            </div>
+
+            {/* Right Ornament - Redesigned 3D Holy Quran Book on Rehal Stand */}
+            <div className="absolute -right-2 sm:right-4 md:right-8 top-1/2 -translate-y-1/2 w-[60px] sm:w-[85px] md:w-[110px] h-[50px] sm:h-[70px] md:h-[90px] opacity-[0.98] pointer-events-none select-none z-10">
+              <svg className="w-full h-full" viewBox="0 0 160 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                {/* Soft Shadow under the stand */}
+                <ellipse cx="80" cy="98" rx="55" ry="6" fill="#3a1e05" opacity="0.35" />
+                
+                {/* Rehal Stand - Back Crossing Legs */}
+                <polygon points="32,95 50,75 58,75 40,95" fill="#200204" stroke="#d4af37" strokeWidth="0.5" />
+                <polygon points="128,95 110,75 102,75 120,95" fill="#200204" stroke="#d4af37" strokeWidth="0.5" />
+                
+                {/* Rehal Stand - Front Crossing Legs */}
+                <polygon points="40,95 76,55 86,55 50,95" fill="#4f080e" stroke="#d4af37" strokeWidth="1" />
+                <polygon points="120,95 84,55 74,55 110,95" fill="#4f080e" stroke="#d4af37" strokeWidth="1" />
+                
+                {/* Gold Diamond Carving details */}
+                <polygon points="58,75 62,70 66,75 62,80" fill="#d4af37" />
+                <polygon points="102,75 98,70 94,75 98,80" fill="#d4af37" />
+                
+                {/* Rehal Stand - Top Support Planks */}
+                <polygon points="15,55 80,55 60,38 15,38" fill="#380408" stroke="#d4af37" strokeWidth="0.8" />
+                <polygon points="145,55 80,55 100,38 145,38" fill="#380408" stroke="#d4af37" strokeWidth="0.8" />
+                
+                {/* 3D Quran Cover */}
+                <path d="M 12 37 C 35 32, 70 36, 80 43 L 80 49 C 70 42, 35 38, 12 43 Z" fill="#4f080e" stroke="#d4af37" strokeWidth="0.8" />
+                <path d="M 148 37 C 125 32, 90 36, 80 43 L 80 49 C 90 42, 125 38, 148 43 Z" fill="#4f080e" stroke="#d4af37" strokeWidth="0.8" />
+                
+                {/* 3D Gold Pages Edges */}
+                <path d="M 14 38 C 35 33, 70 37, 78 44 L 78 41 C 70 34, 35 30, 14 35 Z" fill="#d4af37" />
+                <path d="M 146 38 C 125 33, 90 37, 82 44 L 82 41 C 90 34, 125 30, 146 35 Z" fill="#d4af37" />
+                
+                {/* 3D Curved Quran Pages */}
+                <path d="M 16 35 C 35 30, 70 34, 78 41 L 78 39 C 70 32, 35 28, 16 33 Z" fill="#faf4e3" stroke="#d4af37" strokeWidth="0.5" />
+                <path d="M 144 35 C 125 30, 90 34, 82 41 L 82 39 C 90 32, 125 28, 144 33 Z" fill="#faf4e3" stroke="#d4af37" strokeWidth="0.5" />
+                
+                {/* Top Main Pages Layer */}
+                <path d="M 20 32 C 34 25, 62 31, 79 37 L 79 43 C 62 37, 34 31, 20 38 Z" fill="#fffdf6" stroke="#d4af37" strokeWidth="0.8" />
+                <path d="M 140 32 C 126 25, 98 31, 81 37 L 81 43 C 98 37, 126 31, 140 38 Z" fill="#fffdf6" stroke="#d4af37" strokeWidth="0.8" />
+                
+                {/* Very Top Surface Page */}
+                <path d="M 23 30 C 35 24, 60 30, 78 35 L 78 41 C 60 36, 35 30, 23 36 Z" fill="#fffdfb" stroke="#e8c86b" strokeWidth="0.5" />
+                <path d="M 137 30 C 125 24, 100 30, 82 35 L 82 41 C 100 36, 125 30, 137 36 Z" fill="#fffdfb" stroke="#e8c86b" strokeWidth="0.5" />
+                
+                {/* Ornate Gold Page Border Frames */}
+                <path d="M 26 31 C 36 26, 56 31, 74 35" fill="none" stroke="#d4af37" strokeWidth="0.4" />
+                <path d="M 134 31 C 124 26, 104 31, 86 35" fill="none" stroke="#d4af37" strokeWidth="0.4" />
+                
+                {/* Elegant Medallion / Center Embellishments */}
+                <circle cx="50" cy="31" r="2.5" fill="none" stroke="#d4af37" strokeWidth="0.6" />
+                <circle cx="50" cy="31" r="0.8" fill="#4f080e" />
+                <circle cx="110" cy="31" r="2.5" fill="none" stroke="#d4af37" strokeWidth="0.6" />
+                <circle cx="110" cy="31" r="0.8" fill="#4f080e" />
+                
+                {/* Script Text Lines */}
+                <path d="M 28 34 Q 50 30 72 35 M 29 36 Q 50 32 72 37 M 30 38 Q 50 34 72 39" fill="none" stroke="#4f080e" strokeWidth="0.6" strokeLinecap="round" />
+                <path d="M 132 34 Q 110 30 88 35 M 131 36 Q 110 32 88 37 M 130 38 Q 110 34 88 39" fill="none" stroke="#4f080e" strokeWidth="0.6" strokeLinecap="round" />
+                
+                {/* Elegant Gold Bookmark Ribbon */}
+                <path d="M 80 34 C 81 46, 83 62, 76 77 C 72 85, 74 93, 77 101" fill="none" stroke="#d4af37" strokeWidth="2.2" strokeLinecap="round" />
+                <polygon points="77,101 74,105 77,107 80,105" fill="#4f080e" stroke="#d4af37" strokeWidth="0.5" />
+                
+                {/* Sparkles / Magic Glow Stars */}
+                <path d="M 12 18 Q 15 18 15 15 Q 15 18 18 18 Q 15 18 15 21 Q 15 18 12 18 Z" fill="#d4af37" />
+                <path d="M 145 15 Q 147 15 147 13 Q 147 15 149 15 Q 147 15 147 17 Q 147 15 145 15 Z" fill="#d4af37" opacity="0.8" />
+                <path d="M 5 50 Q 7 50 7 48 Q 7 50 9 50 Q 7 50 7 52 Q 7 50 5 50 Z" fill="#d4af37" opacity="0.75" />
+              </svg>
+            </div>
+
             <div className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[#4f080e] border border-gold-400/40 text-gold-400 font-serif font-bold text-[10px] md:text-sm tracking-widest uppercase mb-0.5 shadow-[0_4px_15px_rgba(79,8,14,0.18)] animate-pulse-gold">
               ✦ Masha Allah ✦
             </div>
