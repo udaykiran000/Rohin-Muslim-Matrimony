@@ -253,6 +253,13 @@ const EditProfile = () => {
                 <label className="text-xs font-bold text-slate-500 uppercase tracking-wider pl-0.5">Age</label>
                 <input type="number" name="age" value={formData.age} onChange={handleChange} required className="w-full px-4 py-3 rounded-xl bg-white/70 border border-slate-200 focus:border-gold-500 focus:outline-none transition-all text-sm" />
               </div>
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-500 uppercase tracking-wider pl-0.5">Gender</label>
+                <select name="gender" value={formData.gender} onChange={handleChange} required className="w-full px-4 py-3 rounded-xl bg-white/70 border border-slate-200 focus:border-gold-500 focus:outline-none transition-all text-sm">
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                </select>
+              </div>
               
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-slate-500 uppercase tracking-wider pl-0.5">Height</label>
