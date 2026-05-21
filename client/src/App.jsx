@@ -114,7 +114,7 @@ function AppContent() {
           <Route path="/search" element={<ProtectedRoute><SearchProfiles /></ProtectedRoute>} />
           <Route path="/profile/:id" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
           <Route path="/edit-profile" element={<ProtectedRoute><EditProfile /></ProtectedRoute>} />
-          <Route path="/activity" element={<ProtectedRoute><InterestsPage /></ProtectedRoute>} />
+          <Route path="/interests" element={<ProtectedRoute><InterestsPage /></ProtectedRoute>} />
           <Route path="/chat" element={<ProtectedRoute><div className="block lg:hidden"><MobileChatPage /></div><div className="hidden lg:block text-center mt-20 font-bold">Please use the Interests tab for desktop chat.</div></ProtectedRoute>} />
           <Route path="/chat/:id" element={<ProtectedRoute><div className="block lg:hidden"><MobileChatRoom /></div></ProtectedRoute>} />
 

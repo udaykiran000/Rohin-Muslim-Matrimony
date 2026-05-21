@@ -16,7 +16,7 @@ const BottomNavigation = () => {
 
   const navItems = [
     { label: 'Home', icon: FaHome, path: '/dashboard' },
-    { label: 'Activity', icon: FaHeart, path: '/activity' },
+    { label: 'Activity', icon: FaHeart, path: '/interests' },
     { label: 'Chat', icon: FaComments, path: '/chat' },
     { label: 'Profile', icon: FaUser, path: '/edit-profile' }
   ];
