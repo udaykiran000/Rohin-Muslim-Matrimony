@@ -8,6 +8,7 @@ import {
   FaTimes, FaGraduationCap, FaSave, FaUserShield 
 } from 'react-icons/fa';
 import LogoLoader from '../components/LogoLoader';
+import MobileMatchesFeed from '../components/MobileMatchesFeed';
 
 const Dashboard = () => {
   const { user, profile, refreshUser, getCompleteness } = useContext(AuthContext);
@@ -87,12 +88,19 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-cream-50 pt-24 pb-12 px-4 relative overflow-hidden">
-      {/* Background Decor */}
-      <div className="absolute top-[0%] left-[0%] w-96 h-96 bg-crimson-900/5 rounded-full blur-[100px] -z-10"></div>
-      <div className="absolute bottom-[0%] right-[0%] w-96 h-96 bg-gold-500/5 rounded-full blur-[100px] -z-10"></div>
+    <>
+      {/* MOBILE VIEW (Matches Feed based on image -1) */}
+      <div className="block lg:hidden">
+        <MobileMatchesFeed />
+      </div>
 
-      <div className="max-w-6xl mx-auto relative z-10">
+      {/* DESKTOP VIEW (Standard Dashboard) */}
+      <div className="hidden lg:block min-h-screen bg-cream-50 pt-24 pb-12 px-4 relative overflow-hidden">
+        {/* Background Decor */}
+        <div className="absolute top-[0%] left-[0%] w-96 h-96 bg-crimson-900/5 rounded-full blur-[100px] -z-10"></div>
+        <div className="absolute bottom-[0%] right-[0%] w-96 h-96 bg-gold-500/5 rounded-full blur-[100px] -z-10"></div>
+
+        <div className="max-w-6xl mx-auto relative z-10">
         
         {/* Welcome Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
@@ -526,8 +534,9 @@ const Dashboard = () => {
           </div>
         )}
 
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

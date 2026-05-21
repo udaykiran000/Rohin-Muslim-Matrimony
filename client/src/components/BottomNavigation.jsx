@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { FaHome, FaCrown, FaThLarge, FaSearch, FaHeart } from 'react-icons/fa';
+import { FaHome, FaHeart, FaComments, FaUser } from 'react-icons/fa';
 
 const BottomNavigation = () => {
   const { user } = useContext(AuthContext);
@@ -15,11 +15,10 @@ const BottomNavigation = () => {
   if (hiddenPaths.includes(location.pathname)) return null;
 
   const navItems = [
-    { label: 'Home', icon: FaHome, path: '/' },
-    { label: 'Plans', icon: FaCrown, path: '/plans' },
-    { label: 'Dashboard', icon: FaThLarge, path: '/dashboard' },
-    { label: 'Search', icon: FaSearch, path: '/search' },
-    { label: 'Interests', icon: FaHeart, path: '/interests' }
+    { label: 'Home', icon: FaHome, path: '/dashboard' },
+    { label: 'Activity', icon: FaHeart, path: '/activity' },
+    { label: 'Chat', icon: FaComments, path: '/chat' },
+    { label: 'Profile', icon: FaUser, path: '/edit-profile' }
   ];
 
   const isTabActive = (path) => {

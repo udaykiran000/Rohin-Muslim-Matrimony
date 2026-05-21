@@ -5,6 +5,7 @@ import api, { SOCKET_BASE_URL } from '../services/api';
 import toast from 'react-hot-toast';
 import io from 'socket.io-client';
 import { FaCheckCircle, FaTimesCircle, FaCommentDots, FaPaperPlane } from 'react-icons/fa';
+import MobileActivityPage from '../components/MobileActivityPage';
 
 const InterestsPage = () => {
   const { user } = useContext(AuthContext);
@@ -186,9 +187,19 @@ const InterestsPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-cream-50 pt-24 pb-12 px-4 md:px-8">
-      <div className="max-w-6xl mx-auto">
-        <h1 className="text-3xl font-serif font-bold text-crimson-950 mb-8 border-b border-crimson-900/10 pb-4">Connections & Interests</h1>
+    <>
+      {/* MOBILE VIEW (Activity Page based on image-5) */}
+      <div className="block lg:hidden">
+        <MobileActivityPage 
+          receivedRequests={receivedRequests}
+          sentRequests={sentRequests}
+        />
+      </div>
+
+      {/* DESKTOP VIEW (Standard Interests Dashboard) */}
+      <div className="hidden lg:block min-h-screen bg-cream-50 pt-24 pb-12 px-4 md:px-8">
+        <div className="max-w-6xl mx-auto">
+          <h1 className="text-3xl font-serif font-bold text-crimson-950 mb-8 border-b border-crimson-900/10 pb-4">Connections & Interests</h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           
@@ -309,6 +320,7 @@ const InterestsPage = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

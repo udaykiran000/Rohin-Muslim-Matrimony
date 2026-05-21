@@ -5,6 +5,7 @@ import ProfileCard from '../components/ProfileCard';
 import { FaFilter, FaSearch, FaTimes } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 import LogoLoader from '../components/LogoLoader';
+import MobileSearchPage from '../components/MobileSearchPage';
 
 const SearchProfiles = () => {
   const { user, profile, getCompleteness } = useContext(AuthContext);
@@ -126,8 +127,19 @@ const SearchProfiles = () => {
   };
 
   return (
-    <div className="min-h-screen bg-cream-50 pt-20 pb-12 px-4 md:px-8">
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-8">
+    <>
+      {/* MOBILE VIEW (Search Filters as per image-2) */}
+      <div className="block lg:hidden">
+        <MobileSearchPage 
+          filters={filters} 
+          onFilterChange={handleFilterChange} 
+          onApplyFilters={applyFilters} 
+        />
+      </div>
+
+      {/* DESKTOP VIEW (Standard Search Grid) */}
+      <div className="hidden lg:block min-h-screen bg-cream-50 pt-20 pb-12 px-4 md:px-8">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-8">
         
         {/* Mobile Filter Toggle */}
         <button 
@@ -268,6 +280,7 @@ const SearchProfiles = () => {
 
       </div>
     </div>
+    </>
   );
 };
 
