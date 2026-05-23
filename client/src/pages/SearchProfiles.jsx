@@ -74,6 +74,7 @@ const SearchProfiles = () => {
   });
 
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [showMobileResults, setShowMobileResults] = useState(false);
 
   useEffect(() => {
     fetchProfiles(filters, 1);
@@ -147,6 +148,7 @@ const SearchProfiles = () => {
       setFilters(fullFilters);
       setCurrentPage(1);
       fetchProfiles(fullFilters, 1);
+      setShowMobileResults(true);
     } else {
       setCurrentPage(1);
       fetchProfiles(filters, 1);
@@ -205,29 +207,35 @@ const SearchProfiles = () => {
 
   return (
     <>
-      {/* MOBILE VIEW (Search Filters as per image-2) */}
-      <div className="block lg:hidden">
-        <MobileSearchPage 
-          filters={filters} 
-          onFilterChange={handleFilterChange} 
-          onApplyFilters={applyFilters} 
-        />
-      </div>
+      {/* MOBILE VIEW FILTER */}
+      {!showMobileResults && (
+        <div className="block lg:hidden">
+          <MobileSearchPage 
+            filters={filters} 
+            onFilterChange={handleFilterChange} 
+            onApplyFilters={applyFilters} 
+          />
+        </div>
+      )}
 
-      {/* DESKTOP VIEW (Standard Search Grid) */}
-      <div className="hidden lg:block min-h-screen bg-cream-50 pt-20 pb-12 px-4 md:px-8">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-8">
+      {/* DESKTOP VIEW AND MOBILE RESULTS GRID */}
+      <div className={`${showMobileResults ? 'block' : 'hidden lg:block'} min-h-screen bg-cream-50 pt-20 pb-12 px-4 md:px-8`}>
+        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8">
         
-        {/* Mobile Filter Toggle */}
-        <button 
-          onClick={() => setIsFilterOpen(!isFilterOpen)}
-          className="md:hidden w-full bg-crimson-950 text-white py-3 rounded-xl font-bold flex justify-center items-center gap-2 mb-4"
-        >
-          <FaFilter /> {isFilterOpen ? 'Close Filters' : 'Advanced Search Filters'}
-        </button>
+        {/* Mobile Back Button */}
+        {showMobileResults && (
+          <div className="lg:hidden w-full">
+            <button 
+              onClick={() => setShowMobileResults(false)}
+              className="bg-white text-crimson-900 border border-crimson-200 py-3 rounded-xl font-bold flex justify-center items-center gap-2 mb-4 w-full shadow-sm"
+            >
+              &larr; Back to Search Filters
+            </button>
+          </div>
+        )}
 
-        {/* Filters Sidebar */}
-        <div className={`md:w-1/4 ${isFilterOpen ? 'block' : 'hidden'} md:block transition-all duration-300`}>
+        {/* Filters Sidebar (Desktop) */}
+        <div className="hidden lg:block lg:w-1/4">
           <div className="glass-card p-6 rounded-3xl sticky top-24 border border-crimson-900/10 shadow-sm">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-serif font-bold text-crimson-950 flex items-center gap-2">
@@ -308,7 +316,7 @@ const SearchProfiles = () => {
         </div>
 
         {/* Results Grid */}
-        <div className="md:w-3/4">
+        <div className="lg:w-3/4 w-full">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl md:text-3xl font-serif font-bold text-crimson-950">Discover Matches</h1>
             <span className="text-slate-500 bg-crimson-900/10 px-3 py-1 rounded-full text-sm font-semibold">{totalProfiles} Found</span>

@@ -16,7 +16,34 @@ const usersData = [
     role: 'admin',
     plan: 'elite',
     viewLimit: 99999,
-    isManuallyVerified: true
+    isManuallyVerified: true,
+    profile: {
+      name: 'System Admin',
+      age: 30,
+      gender: 'male',
+      sect: 'Sunni',
+      height: "5'8\"",
+      maritalStatus: 'Never Married',
+      motherTongue: 'Urdu',
+      namazFrequency: 'Always Praying',
+      profession: 'System Administrator',
+      education: 'B.Tech',
+      city: 'Hyderabad',
+      about: 'System Administrator for Rohin Muslim Matrimony.',
+      phoneNumber: '+91 9999999999',
+      profilePhoto: '',
+      isPhotoPublic: true,
+      familyDetails: { 
+        fatherOccupation: 'Retired', 
+        motherOccupation: 'Homemaker', 
+        siblingsCount: 0 
+      },
+      partnerPreferences: { 
+        ageRange: '20-30', 
+        sectPreference: 'No Preference', 
+        educationPreference: "Doesn't Matter" 
+      }
+    }
   }
 ];
 

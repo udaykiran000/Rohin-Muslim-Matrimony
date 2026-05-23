@@ -64,6 +64,11 @@ const ProfileSchema = new mongoose.Schema(
       default: '',
       trim: true,
     },
+    annualIncome: {
+      type: String,
+      default: 'Not Specified',
+      enum: ['Not Specified', 'Under 1 Lakh', '1 - 3 Lakhs', '3 - 5 Lakhs', '5 - 7 Lakhs', '7 - 10 Lakhs', '10 - 15 Lakhs', '15+ Lakhs'],
+    },
     education: {
       type: String,
       default: '',

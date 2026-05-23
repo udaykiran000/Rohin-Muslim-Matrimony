@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FaMapMarkerAlt, FaBriefcase, FaGraduationCap, FaUserLock, FaLock, FaHeart, FaCheckCircle, FaCrown } from 'react-icons/fa';
 import { SOCKET_BASE_URL } from '../services/api';
+import DefaultAvatar from './DefaultAvatar';
 
 const ProfileCard = ({ profile, currentPlan, onSendInterest, onCancelInterest, isSent, isReceived }) => {
   const isFreePlan = currentPlan === 'free';
@@ -12,18 +13,22 @@ const ProfileCard = ({ profile, currentPlan, onSendInterest, onCancelInterest, i
     <div className="glass-card hover:-translate-y-1.5 transition-all duration-300 rounded-2xl overflow-hidden shadow-md flex flex-col group border border-crimson-950/5">
       {/* Profile Image & Gold Gradient Trim */}
       <div className="relative h-60 w-full overflow-hidden bg-slate-900 flex items-center justify-center">
-        {profile.profilePhoto && profile.profilePhoto !== '/uploads/default-avatar.png' ? (
+        {profile.profilePhoto && profile.profilePhoto !== '/uploads/default-avatar.png' && profile.profilePhoto !== '/uploads/blurred-avatar.png' ? (
           <img
             src={`${SOCKET_BASE_URL}${profile.profilePhoto}`}
             alt={profile.name}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
         ) : (
-          <div className="flex flex-col items-center gap-2">
-            <div className="w-16 h-16 rounded-full bg-crimson-900/30 flex items-center justify-center border border-crimson-800/40">
-              <span className="text-2xl font-serif text-gold-500 font-bold uppercase">{profile.name[0]}</span>
-            </div>
-            <span className="text-slate-400 text-xs font-medium uppercase tracking-widest">Matrimony Member</span>
+          <div className="w-full h-full relative">
+            <DefaultAvatar gender={profile.gender} className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ${profile.profilePhoto === '/uploads/blurred-avatar.png' ? 'blur-md opacity-70' : ''}`} />
+            {profile.profilePhoto === '/uploads/blurred-avatar.png' && (
+              <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
+                 <div className="bg-black/40 backdrop-blur-sm rounded-full w-12 h-12 flex items-center justify-center shadow-lg border border-white/10">
+                   <FaLock className="text-xl text-white drop-shadow-md" />
+                 </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -32,16 +37,7 @@ const ProfileCard = ({ profile, currentPlan, onSendInterest, onCancelInterest, i
           {profile.sect || 'Sunni'}
         </span>
 
-        {/* Crown Badge (Plan) */}
-        {(profile.user?.plan === 'premium' || profile.user?.plan === 'elite') && (
-          <span className={`absolute top-3 right-3 p-1.5 rounded-full backdrop-blur-md border text-white shadow-md z-10 flex items-center justify-center ${
-            profile.user.plan === 'elite'
-              ? 'bg-gradient-to-br from-[#d4af37] via-[#f3e3a3] to-[#b28e28] border-[#d4af37]/40 text-[#4f080e]'
-              : 'bg-gradient-to-br from-[#10b981] via-[#6ee7b7] to-[#047857] border-emerald-400/40 text-white'
-          }`} title={profile.user.plan === 'elite' ? 'Elite Member' : 'Premium Member'}>
-            <FaCrown className="text-[10px]" />
-          </span>
-        )}
+
 
         {/* Locked Overlay for Free Users */}
         {isFreePlan && (
@@ -60,11 +56,23 @@ const ProfileCard = ({ profile, currentPlan, onSendInterest, onCancelInterest, i
             <h3 className="text-slate-900 text-xl font-bold font-serif group-hover:text-crimson-850 transition-colors flex items-center gap-1.5 flex-wrap">
               <span>{profile.name}</span>
               {profile.user?.isManuallyVerified && (
-                <FaCheckCircle className="text-emerald-500 text-sm" title="Identity Verified" />
+                <FaCheckCircle className="text-[#3b82f6] text-sm drop-shadow-sm" title="Identity Verified" />
               )}
               <span className="font-sans font-light text-lg text-slate-500">, {profile.age}</span>
             </h3>
-            <span className="text-xs text-slate-400 font-medium tracking-wider uppercase">{profile.religion || 'Islam'}</span>
+            <div className="flex items-center flex-wrap mt-0.5 gap-2">
+              <span className="text-xs text-slate-400 font-medium tracking-wider uppercase">{profile.religion || 'Islam'}</span>
+              {(profile.user?.plan === 'premium' || profile.user?.plan === 'elite') && (
+                <span className={`inline-flex items-center gap-1 text-[9px] font-extrabold px-2 py-0.5 rounded-full shadow-sm border ${
+                  profile.user.plan === 'elite'
+                    ? 'bg-gradient-to-r from-[#d4af37] via-[#f3e3a3] to-[#b28e28] text-[#4f080e] border-[#b28e28]/50'
+                    : 'bg-gradient-to-r from-[#10b981] via-[#6ee7b7] to-[#047857] text-white border-[#047857]/50'
+                }`}>
+                  <FaCrown className={profile.user.plan === 'elite' ? 'text-[#4f080e]' : 'text-white'} /> 
+                  {profile.user.plan === 'elite' ? 'ELITE' : 'PREMIUM'}
+                </span>
+              )}
+            </div>
           </div>
         </div>
 

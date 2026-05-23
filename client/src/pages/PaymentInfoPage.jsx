@@ -1,25 +1,27 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { FaCrown, FaCheckCircle, FaChevronLeft, FaPhoneAlt, FaEye, FaRegCreditCard, FaLock } from 'react-icons/fa';
+import { FaCrown, FaChevronLeft, FaRegCreditCard, FaFileInvoiceDollar, FaCheckCircle, FaExclamationCircle, FaClock } from 'react-icons/fa';
 import api from '../services/api';
 
 const PaymentInfoPage = () => {
   const { user, refreshUser } = useContext(AuthContext);
   const navigate = useNavigate();
-  const [settings, setSettings] = useState(null);
+  const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const initData = async () => {
       try {
-        await refreshUser();
-        const res = await api.get('/settings');
-        if (res.data.success) {
-          setSettings(res.data.data);
+        if (user) {
+          await refreshUser();
+          const res = await api.get('/auth/transactions');
+          if (res.data.success) {
+            setTransactions(res.data.data);
+          }
         }
       } catch (error) {
-        console.error('Failed to load settings:', error);
+        console.error('Failed to load transactions:', error);
       } finally {
         setLoading(false);
       }
@@ -51,41 +53,34 @@ const PaymentInfoPage = () => {
     );
   }
 
-  // Fallback defaults if settings api fails
-  const defaults = {
-    freePlanFeatures: { dailyViewLimit: 5, contactViewLimit: 0, chat: false, viewFullBio: false },
-    premiumPlanFeatures: { dailyViewLimit: 30, contactViewLimit: 50, chat: true, viewFullBio: true },
-    elitePlanFeatures: { dailyViewLimit: 99999, contactViewLimit: 99999, chat: true, viewFullBio: true }
+  const getStatusIcon = (status) => {
+    switch(status) {
+      case 'success': return <FaCheckCircle className="text-emerald-500" />;
+      case 'failed': return <FaExclamationCircle className="text-red-500" />;
+      case 'pending': return <FaClock className="text-amber-500" />;
+      default: return null;
+    }
   };
 
-  const planKey = user.plan === 'elite' 
-    ? 'elitePlanFeatures' 
-    : user.plan === 'premium' 
-    ? 'premiumPlanFeatures' 
-    : 'freePlanFeatures';
-
-  const features = settings ? settings[planKey] : defaults[planKey];
-
-  const viewedCount = user.viewedProfiles?.length || 0;
-  const viewLimit = user.viewLimit || features.dailyViewLimit || 5;
-
-  const contactsCount = user.viewedContacts?.length || 0;
-  const contactsLimit = features.contactViewLimit || 0;
-
-  // Percentage calculations
-  const viewProgressPercent = viewLimit > 9000 ? 0 : Math.min((viewedCount / viewLimit) * 100, 100);
-  const contactProgressPercent = contactsLimit > 9000 ? 0 : contactsLimit === 0 ? 0 : Math.min((contactsCount / contactsLimit) * 100, 100);
+  const getStatusClass = (status) => {
+    switch(status) {
+      case 'success': return 'bg-emerald-50 text-emerald-700 border-emerald-200';
+      case 'failed': return 'bg-red-50 text-red-700 border-red-200';
+      case 'pending': return 'bg-amber-50 text-amber-700 border-amber-200';
+      default: return 'bg-slate-50 text-slate-700 border-slate-200';
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-[#faf8f5] pt-24 pb-20 px-4 md:px-8 relative overflow-hidden font-outfit">
+    <div className="min-h-screen bg-[#faf8f5] pt-16 lg:pt-24 pb-20 px-4 md:px-8 relative overflow-hidden font-outfit">
       {/* Background radial glow */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-[400px] bg-gradient-to-b from-crimson-900/5 to-transparent rounded-full blur-[120px] -z-10"></div>
 
-      <div className="max-w-xl mx-auto">
+      <div className="max-w-3xl mx-auto">
         {/* Back Button */}
         <button 
-          onClick={() => navigate('/edit-profile')} 
-          className="mb-6 text-crimson-900 font-bold flex items-center gap-1.5 bg-white border border-slate-200/80 px-4 py-2 rounded-full shadow-sm hover:bg-slate-50 transition-all text-xs uppercase tracking-wider cursor-pointer"
+          onClick={() => navigate('/my-profile')} 
+          className="mb-6 text-crimson-900 font-bold flex items-center gap-1.5 bg-white border border-slate-200/80 px-4 py-2 rounded-full shadow-sm hover:bg-slate-50 transition-all text-xs uppercase tracking-wider cursor-pointer w-max"
         >
           <FaChevronLeft className="text-[10px]" /> Back to Profile
         </button>
@@ -93,11 +88,11 @@ const PaymentInfoPage = () => {
         {/* Page Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-serif font-bold text-crimson-950 mb-1.5">Payment & Plan Info</h1>
-          <p className="text-sm text-slate-500">Manage your subscription, view limits, and track usage.</p>
+          <p className="text-sm text-slate-500">Manage your subscription and view your transaction history.</p>
         </div>
 
         {/* Current Plan Display Card */}
-        <div className={`rounded-3xl p-6 md:p-8 mb-6 border relative overflow-hidden shadow-md text-white ${
+        <div className={`rounded-3xl p-6 md:p-8 mb-8 border relative overflow-hidden shadow-md text-white ${
           user.plan === 'elite'
             ? 'bg-gradient-to-br from-[#4f080e] via-[#3d060b] to-[#1a0204] border-gold-500/30'
             : user.plan === 'premium'
@@ -145,99 +140,57 @@ const PaymentInfoPage = () => {
           </div>
         </div>
 
-        {/* Dynamic Plan Limits Usage dashboard */}
-        <div className="bg-white border border-slate-200/80 rounded-3xl p-6 shadow-sm mb-6 space-y-6">
-          <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider border-b border-slate-100 pb-3 flex items-center gap-2">
-            📊 Usage & Active Limits
+        {/* Transaction History Section */}
+        <div className="bg-white border border-slate-200/80 rounded-3xl p-6 shadow-sm mb-6">
+          <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider border-b border-slate-100 pb-4 mb-4 flex items-center gap-2">
+            <FaFileInvoiceDollar className="text-crimson-700 text-lg" /> Transaction History & Invoices
           </h3>
 
-          {/* Profile Views Limit */}
-          <div className="space-y-2">
-            <div className="flex justify-between items-center text-xs">
-              <span className="font-bold text-slate-700 flex items-center gap-1.5">
-                <FaEye className="text-slate-400" /> Daily Profile Views
-              </span>
-              <span className="font-extrabold text-slate-900 bg-slate-100 px-2.5 py-1 rounded-md">
-                {viewLimit > 9000 ? 'Unlimited' : `${viewedCount} / ${viewLimit} views`}
-              </span>
+          {transactions.length === 0 ? (
+            <div className="text-center py-10 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+              <FaRegCreditCard className="text-4xl text-slate-300 mx-auto mb-3" />
+              <p className="text-sm font-semibold text-slate-600 mb-1">No Transactions Found</p>
+              <p className="text-xs text-slate-400">You haven't made any payments yet.</p>
             </div>
-            {viewLimit <= 9000 ? (
-              <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
-                <div 
-                  className="bg-gradient-to-r from-crimson-700 to-crimson-900 h-full rounded-full transition-all duration-500"
-                  style={{ width: `${viewProgressPercent}%` }}
-                ></div>
-              </div>
-            ) : (
-              <div className="text-[11px] text-slate-400 italic">No limits applied to your premium account. View as many profiles as you wish.</div>
-            )}
-          </div>
-
-          {/* Contact Details Unlock Limit */}
-          <div className="space-y-2">
-            <div className="flex justify-between items-center text-xs">
-              <span className="font-bold text-slate-700 flex items-center gap-1.5">
-                <FaPhoneAlt className="text-slate-400 text-[10px]" /> Contact Numbers Unlocked
-              </span>
-              <span className="font-extrabold text-slate-900 bg-slate-100 px-2.5 py-1 rounded-md">
-                {contactsLimit > 9000 ? 'Unlimited' : `${contactsCount} / ${contactsLimit} contacts`}
-              </span>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse min-w-[600px]">
+                <thead>
+                  <tr className="bg-slate-50 text-slate-500 text-[10px] uppercase tracking-widest border-b border-slate-100">
+                    <th className="p-4 font-bold rounded-tl-xl">Transaction ID</th>
+                    <th className="p-4 font-bold">Date</th>
+                    <th className="p-4 font-bold">Plan</th>
+                    <th className="p-4 font-bold">Amount</th>
+                    <th className="p-4 font-bold">Status</th>
+                  </tr>
+                </thead>
+                <tbody className="text-sm">
+                  {transactions.map((tx) => (
+                    <tr key={tx._id} className="border-b border-slate-50 hover:bg-slate-50 transition-colors">
+                      <td className="p-4 text-xs font-mono text-slate-600">{tx.transactionId}</td>
+                      <td className="p-4 text-xs text-slate-600">
+                        {new Date(tx.createdAt).toLocaleDateString('en-IN', {
+                          year: 'numeric',
+                          month: 'short',
+                          day: 'numeric'
+                        })}
+                      </td>
+                      <td className="p-4 font-bold text-slate-800 capitalize">{tx.plan}</td>
+                      <td className="p-4 font-bold text-slate-800">
+                        ₹{tx.amount?.toLocaleString('en-IN') || 'N/A'}
+                      </td>
+                      <td className="p-4">
+                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${getStatusClass(tx.status)}`}>
+                          {getStatusIcon(tx.status)}
+                          {tx.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
-            {contactsLimit <= 9000 ? (
-              contactsLimit === 0 ? (
-                <div className="p-3.5 bg-red-50/50 rounded-2xl border border-red-100 text-xs text-red-700 flex items-center gap-2">
-                  <FaLock className="text-red-500" />
-                  <span>Contact number views are locked on the Free Plan.</span>
-                </div>
-              ) : (
-                <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
-                  <div 
-                    className="bg-gradient-to-r from-emerald-500 to-emerald-600 h-full rounded-full transition-all duration-500"
-                    style={{ width: `${contactProgressPercent}%` }}
-                  ></div>
-                </div>
-              )
-            ) : (
-              <div className="text-[11px] text-slate-400 italic">Unlimited contact unlocks available. Reach out to any accepted match instantly.</div>
-            )}
-          </div>
-        </div>
-
-        {/* Benefits/Limits Overview based on active plan */}
-        <div className="bg-white border border-slate-200/80 rounded-3xl p-6 shadow-sm mb-6 space-y-4">
-          <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider border-b border-slate-100 pb-3">
-            ✨ Included Features
-          </h3>
-          <ul className="text-xs text-slate-600 space-y-3">
-            <li className="flex items-center gap-2">
-              <FaCheckCircle className="text-emerald-500" />
-              <span>Halal connection requests matching profiles</span>
-            </li>
-            <li className="flex items-center gap-2">
-              {features.chat ? (
-                <FaCheckCircle className="text-emerald-500" />
-              ) : (
-                <span className="text-slate-300">✕</span>
-              )}
-              <span className={features.chat ? '' : 'text-slate-400 line-through'}>Secure real-time chat with accepted matches</span>
-            </li>
-            <li className="flex items-center gap-2">
-              {features.viewFullBio ? (
-                <FaCheckCircle className="text-emerald-500" />
-              ) : (
-                <span className="text-slate-300">✕</span>
-              )}
-              <span className={features.viewFullBio ? '' : 'text-slate-400 line-through'}>View full biodata including family details</span>
-            </li>
-            <li className="flex items-center gap-2">
-              {features.viewContactDetails ? (
-                <FaCheckCircle className="text-emerald-500" />
-              ) : (
-                <span className="text-slate-300">✕</span>
-              )}
-              <span className={features.viewContactDetails ? '' : 'text-slate-400 line-through'}>View phone numbers of accepted matches</span>
-            </li>
-          </ul>
+          )}
         </div>
 
         {/* CTA Banner if not on Elite */}
@@ -247,16 +200,16 @@ const PaymentInfoPage = () => {
               <FaCrown className="text-3xl animate-bounce" />
             </div>
             <div>
-              <h4 className="font-serif font-bold text-amber-900 text-lg">Need Unlimited Access?</h4>
+              <h4 className="font-serif font-bold text-amber-900 text-lg">Ready to Upgrade?</h4>
               <p className="text-xs text-amber-700 mt-1 max-w-sm mx-auto leading-relaxed">
-                Upgrade to our <strong>Elite Plan</strong> to unlock unlimited profile views, unlimited contact numbers, and get a dedicated relationship manager.
+                Take your profile to the next level with our premium plans and unlock exclusive features.
               </p>
             </div>
             <button 
               onClick={() => navigate('/plans')}
               className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white text-xs font-bold uppercase tracking-wider px-6 py-3 rounded-full shadow-md transition-all transform active:scale-95 cursor-pointer"
             >
-              Upgrade Plan
+              Explore Plans
             </button>
           </div>
         )}

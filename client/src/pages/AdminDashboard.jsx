@@ -6,12 +6,12 @@ import toast from 'react-hot-toast';
 import { 
   FaUsers, FaChartPie, FaExclamationTriangle, FaTrash, 
   FaCheckCircle, FaEdit, FaCrown, FaStar, FaCog, FaRupeeSign,
-  FaHeart, FaPlus, FaMoneyBillWave, FaIdCard, FaHandshake
+  FaHeart, FaPlus, FaMoneyBillWave, FaIdCard, FaHandshake, FaSignOutAlt, FaCopy
 } from 'react-icons/fa';
 import LogoLoader from '../components/LogoLoader';
 
 const AdminDashboard = () => {
-  const { user } = useContext(AuthContext);
+  const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
   
   const [activeTab, setActiveTab] = useState('metrics');
@@ -391,71 +391,71 @@ const AdminDashboard = () => {
 
   if (!user || user.role !== 'admin') return null;
 
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
+
   return (
-    <div className="flex flex-col md:flex-row min-h-[calc(100vh-80px)] bg-slate-900 text-slate-200">
+    <div className="flex flex-col md:flex-row h-[calc(100vh-80px)] bg-slate-900 text-slate-200 overflow-hidden">
       
       {/* SIDEBAR PANEL */}
-      <div className="w-64 bg-slate-950 border-r border-slate-800 hidden md:flex flex-col flex-shrink-0">
-        <div className="p-6">
-          <h2 className="text-xl font-serif font-bold text-white mb-1">Command Center</h2>
-          <p className="text-xs text-crimson-500 font-bold tracking-widest uppercase">Admin</p>
+      <div className="w-64 bg-slate-950 border-r border-slate-800 hidden md:flex flex-col flex-shrink-0 h-full">
+        {/* Sidebar Header */}
+        <div className="p-5 border-b border-slate-800 flex-shrink-0">
+          <h2 className="text-lg font-serif font-bold text-white mb-0.5">Admin Panel</h2>
+          <p className="text-xs text-crimson-400 font-bold tracking-widest uppercase">Rohin Muslim Matrimony</p>
         </div>
         
-        <div className="flex-1 px-4 space-y-2">
+        {/* Nav Items - scrollable area */}
+        <div className="flex-1 overflow-y-auto px-3 py-3 space-y-1">
           <button 
             onClick={() => setActiveTab('metrics')}
-            className={`w-full text-left px-4 py-3 rounded-xl font-bold text-sm flex items-center gap-3 transition-all ${activeTab === 'metrics' ? 'bg-crimson-600 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}
+            className={`w-full text-left px-4 py-2.5 rounded-xl font-bold text-sm flex items-center gap-3 transition-all ${activeTab === 'metrics' ? 'bg-crimson-600 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}
           >
-            <FaChartPie className="text-lg" /> Metrics
-          </button>
-          
-          <button 
-            onClick={() => setActiveTab('approvals')}
-            className={`w-full text-left px-4 py-3 rounded-xl font-bold text-sm flex items-center gap-3 transition-all ${activeTab === 'approvals' ? 'bg-amber-600 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}
-          >
-            <FaCheckCircle className="text-lg" /> Pending Approvals
-          </button>
-
-          <button 
-            onClick={() => setActiveTab('kyc-verification')}
-            className={`w-full text-left px-4 py-3 rounded-xl font-bold text-sm flex items-center gap-3 transition-all ${activeTab === 'kyc-verification' ? 'bg-emerald-600 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}
-          >
-            <FaIdCard className="text-lg" /> KYC Verification
-          </button>
-
-          <button 
-            onClick={() => setActiveTab('suggest-match')}
-            className={`w-full text-left px-4 py-3 rounded-xl font-bold text-sm flex items-center gap-3 transition-all ${activeTab === 'suggest-match' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}
-          >
-            <FaHandshake className="text-lg" /> Suggest Match
+            <FaChartPie className="text-base" /> Dashboard
           </button>
           
           <button 
             onClick={() => setActiveTab('users')}
-            className={`w-full text-left px-4 py-3 rounded-xl font-bold text-sm flex items-center gap-3 transition-all ${activeTab === 'users' ? 'bg-crimson-600 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}
+            className={`w-full text-left px-4 py-2.5 rounded-xl font-bold text-sm flex items-center gap-3 transition-all ${activeTab === 'users' ? 'bg-crimson-600 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}
           >
-            <FaUsers className="text-lg" /> User Database
+            <FaUsers className="text-base" /> Members
+          </button>
+
+          <button 
+            onClick={() => setActiveTab('kyc-verification')}
+            className={`w-full text-left px-4 py-2.5 rounded-xl font-bold text-sm flex items-center gap-3 transition-all ${activeTab === 'kyc-verification' ? 'bg-emerald-600 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}
+          >
+            <FaIdCard className="text-base" /> ID Verification
+          </button>
+
+          <button 
+            onClick={() => setActiveTab('suggest-match')}
+            className={`w-full text-left px-4 py-2.5 rounded-xl font-bold text-sm flex items-center gap-3 transition-all ${activeTab === 'suggest-match' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}
+          >
+            <FaHandshake className="text-base" /> Match Suggestion
           </button>
           
           <button 
             onClick={() => setActiveTab('reports')}
-            className={`w-full text-left px-4 py-3 rounded-xl font-bold text-sm flex items-center gap-3 transition-all ${activeTab === 'reports' ? 'bg-red-600 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}
+            className={`w-full text-left px-4 py-2.5 rounded-xl font-bold text-sm flex items-center gap-3 transition-all ${activeTab === 'reports' ? 'bg-red-600 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}
           >
-            <FaExclamationTriangle className="text-lg" /> Moderation Queue
+            <FaExclamationTriangle className="text-base" /> User Reports
           </button>
 
           <button 
             onClick={() => setActiveTab('success-stories')}
-            className={`w-full text-left px-4 py-3 rounded-xl font-bold text-sm flex items-center gap-3 transition-all ${activeTab === 'success-stories' ? 'bg-pink-700 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}
+            className={`w-full text-left px-4 py-2.5 rounded-xl font-bold text-sm flex items-center gap-3 transition-all ${activeTab === 'success-stories' ? 'bg-pink-700 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}
           >
-            <FaHeart className="text-lg" /> Success Stories
+            <FaHeart className="text-base" /> Success Stories
           </button>
 
           <button 
             onClick={() => setActiveTab('free-interests')}
-            className={`w-full text-left px-4 py-3 rounded-xl font-bold text-sm flex items-center gap-3 transition-all ${activeTab === 'free-interests' ? 'bg-orange-600 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}
+            className={`w-full text-left px-4 py-2.5 rounded-xl font-bold text-sm flex items-center gap-3 transition-all ${activeTab === 'free-interests' ? 'bg-orange-600 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}
           >
-            <FaHeart className="text-lg" /> Free-Tier Interests
+            <FaHeart className="text-base" /> Free Interests
             {freeTierInterests.length > 0 && (
               <span className="ml-auto bg-orange-500 text-white text-[10px] font-extrabold px-1.5 py-0.5 rounded-full">
                 {freeTierInterests.length}
@@ -465,16 +465,26 @@ const AdminDashboard = () => {
 
           <button 
             onClick={() => setActiveTab('payments')}
-            className={`w-full text-left px-4 py-3 rounded-xl font-bold text-sm flex items-center gap-3 transition-all ${activeTab === 'payments' ? 'bg-emerald-700 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}
+            className={`w-full text-left px-4 py-2.5 rounded-xl font-bold text-sm flex items-center gap-3 transition-all ${activeTab === 'payments' ? 'bg-emerald-700 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}
           >
-            <FaMoneyBillWave className="text-lg" /> Payments & Revenue
+            <FaMoneyBillWave className="text-base" /> Revenue
           </button>
 
           <button 
             onClick={() => setActiveTab('settings')}
-            className={`w-full text-left px-4 py-3 rounded-xl font-bold text-sm flex items-center gap-3 transition-all ${activeTab === 'settings' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}
+            className={`w-full text-left px-4 py-2.5 rounded-xl font-bold text-sm flex items-center gap-3 transition-all ${activeTab === 'settings' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}
           >
-            <FaCog className="text-lg" /> Pricing & Settings
+            <FaCog className="text-base" /> Pricing & Settings
+          </button>
+        </div>
+
+        {/* Logout at bottom */}
+        <div className="p-3 border-t border-slate-800 flex-shrink-0">
+          <button
+            onClick={handleLogout}
+            className="w-full text-left px-4 py-2.5 rounded-xl font-bold text-sm flex items-center gap-3 transition-all text-red-400 hover:text-white hover:bg-red-800"
+          >
+            <FaSignOutAlt className="text-base" /> Logout
           </button>
         </div>
       </div>
@@ -482,7 +492,6 @@ const AdminDashboard = () => {
       {/* MOBILE SIDEBAR (Horizontal scroller for very small screens if needed) */}
       <div className="md:hidden flex overflow-x-auto bg-slate-950 border-b border-slate-800 p-2 gap-2 whitespace-nowrap">
           <button onClick={() => setActiveTab('metrics')} className={`px-4 py-2 rounded-lg font-bold text-xs flex items-center gap-2 ${activeTab === 'metrics' ? 'bg-crimson-600 text-white' : 'text-slate-400'}`}><FaChartPie /> Metrics</button>
-          <button onClick={() => setActiveTab('approvals')} className={`px-4 py-2 rounded-lg font-bold text-xs flex items-center gap-2 ${activeTab === 'approvals' ? 'bg-amber-600 text-white' : 'text-slate-400'}`}><FaCheckCircle /> Approvals</button>
           <button onClick={() => setActiveTab('kyc-verification')} className={`px-4 py-2 rounded-lg font-bold text-xs flex items-center gap-2 ${activeTab === 'kyc-verification' ? 'bg-emerald-600 text-white' : 'text-slate-400'}`}><FaIdCard /> KYC</button>
           <button onClick={() => setActiveTab('suggest-match')} className={`px-4 py-2 rounded-lg font-bold text-xs flex items-center gap-2 ${activeTab === 'suggest-match' ? 'bg-indigo-600 text-white' : 'text-slate-400'}`}><FaHandshake /> Match</button>
           <button onClick={() => setActiveTab('users')} className={`px-4 py-2 rounded-lg font-bold text-xs flex items-center gap-2 ${activeTab === 'users' ? 'bg-crimson-600 text-white' : 'text-slate-400'}`}><FaUsers /> Users</button>
@@ -1012,10 +1021,11 @@ const AdminDashboard = () => {
                     <table className="w-full text-left text-sm">
                       <thead className="bg-slate-900/50 text-slate-400 uppercase font-bold text-xs">
                         <tr>
-                          <th className="px-6 py-4">User Details</th>
+                          <th className="px-6 py-4">Member</th>
+                          <th className="px-6 py-4">Member ID</th>
                           <th className="px-6 py-4">Plan</th>
                           <th className="px-6 py-4">View Limit</th>
-                          <th className="px-6 py-4">Verification</th>
+                          <th className="px-6 py-4">Status</th>
                           <th className="px-6 py-4 text-right">Actions</th>
                         </tr>
                       </thead>
@@ -1024,7 +1034,7 @@ const AdminDashboard = () => {
                           <tr key={u._id} className="hover:bg-slate-750 transition-colors">
                             <td className="px-6 py-4">
                               <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-full bg-crimson-900 flex items-center justify-center font-bold text-crimson-400">
+                                <div className="w-10 h-10 rounded-full bg-crimson-900 flex items-center justify-center font-bold text-crimson-400 flex-shrink-0">
                                   {u.profile ? u.profile.name[0] : u.email[0].toUpperCase()}
                                 </div>
                                 <div>
@@ -1032,6 +1042,9 @@ const AdminDashboard = () => {
                                   <p className="text-xs text-slate-400">{u.email}</p>
                                 </div>
                               </div>
+                            </td>
+                            <td className="px-6 py-4">
+                              <p className="font-mono text-[11px] text-slate-300 bg-slate-900 px-2 py-1 rounded-lg border border-slate-700 select-all tracking-tight">{u._id}</p>
                             </td>
                             <td className="px-6 py-4">
                               <div className="flex items-center gap-2">
@@ -1083,15 +1096,20 @@ const AdminDashboard = () => {
                               )}
                             </td>
                             <td className="px-6 py-4 text-right">
-                              <div className="flex justify-end gap-2">
-                                <button onClick={() => handleVerifyUser(u._id)} className="p-2 bg-slate-700 hover:bg-slate-600 text-crimson-400 rounded transition-colors" title="Toggle Verification">
-                                  <FaCheckCircle />
+                              <div className="flex justify-end gap-1.5">
+                                <button
+                                  onClick={() => handleChangePlan(u._id, u.plan)}
+                                  className="flex items-center gap-1.5 px-2.5 py-1.5 bg-slate-700 hover:bg-gold-600 text-gold-400 hover:text-white rounded-lg transition-colors text-xs font-bold"
+                                  title="Change Membership Plan"
+                                >
+                                  <FaCrown /> Plan
                                 </button>
-                                <button onClick={() => handleChangePlan(u._id, u.plan)} className="p-2 bg-slate-700 hover:bg-slate-600 text-gold-400 rounded transition-colors" title="Change Plan">
-                                  <FaCrown />
-                                </button>
-                                <button onClick={() => handleDeleteUser(u._id)} className="p-2 bg-red-900/30 hover:bg-red-900/50 text-red-400 rounded transition-colors" title="Delete User">
-                                  <FaTrash />
+                                <button
+                                  onClick={() => handleDeleteUser(u._id)}
+                                  className="flex items-center gap-1.5 px-2.5 py-1.5 bg-red-900/30 hover:bg-red-700 text-red-400 hover:text-white rounded-lg transition-colors text-xs font-bold"
+                                  title="Delete Member"
+                                >
+                                  <FaTrash /> Delete
                                 </button>
                               </div>
                             </td>
@@ -1147,14 +1165,14 @@ const AdminDashboard = () => {
             {/* REPORTS TAB */}
             {activeTab === 'reports' && (
               <>
-                <h1 className="text-3xl font-serif font-bold text-white mb-2">Moderation Queue</h1>
-                <p className="text-slate-400 mb-8">Review reports submitted by users against policy violators.</p>
+                <h1 className="text-3xl font-serif font-bold text-white mb-2">User Reports</h1>
+                <p className="text-slate-400 mb-8">Review complaints submitted by members against other users.</p>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {reports.length === 0 ? (
                     <div className="col-span-full p-12 text-center text-slate-500 bg-slate-800 rounded-2xl border border-slate-700">
                       <FaCheckCircle className="text-4xl text-crimson-500 mx-auto mb-3" />
-                      <h3 className="text-xl font-bold text-white mb-1">Queue is empty</h3>
-                      <p>No moderation reports pending at this time.</p>
+                      <h3 className="text-xl font-bold text-white mb-1">No Reports</h3>
+                      <p>No complaints from users at this time.</p>
                     </div>
                   ) : (
                     reports.map(r => (

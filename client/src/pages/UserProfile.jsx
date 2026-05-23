@@ -7,9 +7,10 @@ import {
   FaMapMarkerAlt, FaBriefcase, FaGraduationCap, FaLock, 
   FaUserLock, FaHeart, FaExclamationTriangle, FaStar, 
   FaPhoneAlt, FaEnvelope, FaMosque, FaUsers, FaRulerVertical, FaLanguage,
-  FaCheckCircle, FaCrown
+  FaCheckCircle, FaCrown, FaMoneyBillWave
 } from 'react-icons/fa';
 import LogoLoader from '../components/LogoLoader';
+import DefaultAvatar from '../components/DefaultAvatar';
 
 const UserProfile = () => {
   const { id } = useParams();
@@ -232,7 +233,7 @@ const UserProfile = () => {
   };
 
   return (
-    <div className="min-h-screen bg-cream-50 pt-24 pb-12 px-4 md:px-8 relative">
+    <div className="min-h-screen bg-premium-dark-mesh text-slate-100 pt-24 pb-12 px-4 md:px-8 relative">
       <div className="max-w-4xl mx-auto">
         
         {/* Top Action Bar */}
@@ -256,7 +257,7 @@ const UserProfile = () => {
         </div>
 
         {/* Main Profile Card */}
-        <div className="glass-card rounded-3xl border border-crimson-900/10 overflow-hidden shadow-sm">
+        <div className="glass-card-dark rounded-2xl border border-gold-500/20 overflow-hidden shadow-xl">
           
           {/* Header Region */}
           <div className="h-40 md:h-56 bg-crimson-950 relative overflow-hidden">
@@ -268,29 +269,19 @@ const UserProfile = () => {
             <div className="flex flex-col md:flex-row gap-6 relative -top-16">
               
               {/* Photo Area */}
-              <div className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-cream-50 bg-slate-900 shadow-xl overflow-hidden relative flex-shrink-0 mx-auto md:mx-0">
-                {profile.profilePhoto && profile.profilePhoto !== '/uploads/default-avatar.png' ? (
-                  <img src={`${SOCKET_BASE_URL}${profile.profilePhoto}`} alt={profile.name} className="w-full h-full object-cover" />
+              <div className={`w-32 h-32 md:w-40 md:h-40 rounded-full border-4 ${profile.user?.plan === 'elite' ? 'border-[#d4af37] shadow-[0_0_15px_rgba(212,175,55,0.4)] bg-slate-900' : profile.user?.plan === 'premium' ? 'border-[#10b981] shadow-[0_0_15px_rgba(16,185,129,0.4)] bg-slate-900' : 'border-cream-50 bg-slate-900 shadow-xl'} overflow-hidden relative flex-shrink-0 mx-auto md:mx-0 p-1`}>
+                {profile.profilePhoto && profile.profilePhoto !== '/uploads/default-avatar.png' && profile.profilePhoto !== '/uploads/blurred-avatar.png' ? (
+                  <img src={`${SOCKET_BASE_URL}${profile.profilePhoto}`} alt={profile.name} className="w-full h-full object-cover rounded-full" />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-4xl text-gold-500 font-serif font-bold uppercase bg-crimson-900">
-                    {profile.name[0]}
-                  </div>
-                )}
-                
-                {/* Crown Overlay (Premium/Elite Plan) */}
-                {(profile.user?.plan === 'premium' || profile.user?.plan === 'elite') && (
-                  <div className={`absolute top-2 left-2 p-1.5 rounded-full shadow-lg border text-white z-10 flex items-center justify-center ${
-                    profile.user.plan === 'elite' 
-                      ? 'bg-gradient-to-br from-[#d4af37] via-[#f3e3a3] to-[#b28e28] border-gold-400/40 text-[#4f080e]' 
-                      : 'bg-gradient-to-br from-[#10b981] via-[#6ee7b7] to-[#047857] border-emerald-400/40'
-                  }`}>
-                    <FaCrown className="text-xs" />
-                  </div>
-                )}
-
-                {profile.user?.isManuallyVerified && (
-                  <div className="absolute bottom-2 right-2 bg-emerald-500 text-white w-6 h-6 rounded-full flex items-center justify-center border-2 border-white" title="Admin Verified">
-                    ✓
+                  <div className="w-full h-full relative rounded-full overflow-hidden bg-slate-200">
+                    <DefaultAvatar gender={profile.gender} className={`w-full h-full object-cover rounded-full ${profile.profilePhoto === '/uploads/blurred-avatar.png' ? 'blur-md opacity-60' : ''}`} />
+                    {profile.profilePhoto === '/uploads/blurred-avatar.png' && (
+                      <div className="absolute inset-0 flex flex-col items-center justify-center z-10 bg-black/10">
+                        <div className="bg-black/40 backdrop-blur-sm rounded-full w-12 h-12 flex items-center justify-center shadow-lg border border-white/20">
+                          <FaLock className="text-lg md:text-xl text-white drop-shadow-md" />
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
@@ -299,24 +290,24 @@ const UserProfile = () => {
               <div className="pt-2 md:pt-16 flex-1 text-center md:text-left">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div>
-                    <h1 className="text-3xl font-serif font-bold text-crimson-950 mb-1 flex items-center justify-center md:justify-start gap-2 flex-wrap">
+                    <h1 className="text-3xl font-serif font-bold text-white mb-1 flex items-center justify-center md:justify-start gap-2 flex-wrap">
                       <span>{profile.name}</span>
                       {profile.user?.isManuallyVerified && (
-                        <FaCheckCircle className="text-emerald-500 text-xl" title="Identity Verified" />
+                        <FaCheckCircle className="text-[#3b82f6] text-[22px] drop-shadow-sm" title="Identity Verified" />
                       )}
-                      <span className="font-sans font-light text-xl text-slate-500">, {profile.age}</span>
+                      <span className="font-sans font-light text-xl text-gold-300">, {profile.age}</span>
                     </h1>
                     <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 mt-1.5">
-                      <p className="text-slate-500 text-sm font-medium">{profile.profileCreatedBy === 'Self' ? 'Profile created by Self' : `Profile created by ${profile.profileCreatedBy}`}</p>
-                      <span className={`text-[11px] font-extrabold px-2.5 py-0.5 rounded-full tracking-wide flex items-center gap-1 shadow-sm border ${
+                      <p className="text-slate-400 text-sm font-medium">{profile.profileCreatedBy === 'Self' ? 'Profile created by Self' : `Profile created by ${profile.profileCreatedBy}`}</p>
+                      <span className={`text-[11px] font-extrabold px-3 py-1 rounded-full tracking-wide flex items-center gap-1.5 shadow-sm border ${
                         profile.user?.plan === 'elite' 
-                          ? 'bg-gradient-to-r from-amber-500/10 via-amber-400/10 to-amber-500/10 text-amber-800 border-amber-300'
+                          ? 'bg-gradient-to-r from-[#d4af37] via-[#f3e3a3] to-[#b28e28] text-[#4f080e] border-[#b28e28]/50'
                           : profile.user?.plan === 'premium'
-                          ? 'bg-gradient-to-r from-emerald-500/10 via-emerald-400/10 to-emerald-500/10 text-emerald-800 border-emerald-300'
-                          : 'bg-slate-100 text-slate-700 border-slate-200'
+                          ? 'bg-gradient-to-r from-[#10b981] via-[#6ee7b7] to-[#047857] text-white border-[#047857]/50'
+                          : 'bg-slate-100 text-slate-700 border-slate-200 shadow-none'
                       }`}>
-                        {profile.user?.plan === 'elite' && <FaCrown className="text-amber-600 text-[10px]" />}
-                        {profile.user?.plan === 'premium' && <FaCrown className="text-emerald-600 text-[10px]" />}
+                        {profile.user?.plan === 'elite' && <FaCrown className="text-[#4f080e] text-[11px] animate-pulse" />}
+                        {profile.user?.plan === 'premium' && <FaCrown className="text-white text-[11px]" />}
                         <span className="uppercase">{profile.user?.plan || 'Free'} Member</span>
                       </span>
                     </div>
@@ -394,15 +385,15 @@ const UserProfile = () => {
                   )}
                 </div>
 
-                <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 mt-6 text-sm text-slate-600">
-                  <span className="flex items-center gap-1.5 bg-crimson-50 px-3 py-1.5 rounded-lg border border-crimson-100">
-                    <FaMapMarkerAlt className="text-crimson-700" /> {profile.city}
+                <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 mt-6 text-sm text-slate-300">
+                  <span className="flex items-center gap-1.5 bg-crimson-950/50 px-3 py-1.5 rounded-lg border border-gold-500/20 text-gold-300">
+                    <FaMapMarkerAlt className="text-gold-400" /> {profile.city}
                   </span>
-                  <span className="flex items-center gap-1.5 bg-crimson-50 px-3 py-1.5 rounded-lg border border-crimson-100">
-                    <FaMosque className="text-crimson-700" /> {profile.sect}
+                  <span className="flex items-center gap-1.5 bg-crimson-950/50 px-3 py-1.5 rounded-lg border border-gold-500/20 text-gold-300">
+                    <FaMosque className="text-gold-400" /> {profile.sect}
                   </span>
-                  <span className="flex items-center gap-1.5 bg-crimson-50 px-3 py-1.5 rounded-lg border border-crimson-100">
-                    <FaUsers className="text-crimson-700" /> {profile.maritalStatus}
+                  <span className="flex items-center gap-1.5 bg-crimson-950/50 px-3 py-1.5 rounded-lg border border-gold-500/20 text-gold-300">
+                    <FaUsers className="text-gold-400" /> {profile.maritalStatus}
                   </span>
                 </div>
               </div>
@@ -415,14 +406,14 @@ const UserProfile = () => {
               <div className="space-y-8">
                 {/* About Me */}
                 <div>
-                  <h3 className="text-lg font-serif font-bold text-crimson-950 mb-3 border-b border-crimson-900/10 pb-2">About Me</h3>
+                  <h3 className="text-lg font-serif font-bold text-gold-400 mb-3 border-b border-gold-500/20 pb-2">About Me</h3>
                   {isLocked ? (
-                    <div className="bg-slate-100 p-4 rounded-xl text-slate-500 italic text-sm border border-slate-200 flex items-start gap-3">
+                    <div className="bg-slate-900/40 p-4 rounded-xl text-slate-400 italic text-sm border border-gold-500/10 flex items-start gap-3">
                       <FaUserLock className="text-gold-500 text-xl mt-0.5" />
                       <span>{profile.about}</span>
                     </div>
                   ) : (
-                    <p className="text-slate-600 leading-relaxed text-sm whitespace-pre-wrap bg-white p-4 rounded-xl border border-crimson-900/5">
+                    <p className="text-slate-200 leading-relaxed text-sm whitespace-pre-wrap bg-white/5 p-4 rounded-xl border border-gold-500/10">
                       {profile.about}
                     </p>
                   )}
@@ -430,32 +421,32 @@ const UserProfile = () => {
 
                 {/* Personal Attributes */}
                 <div>
-                  <h3 className="text-lg font-serif font-bold text-crimson-950 mb-3 border-b border-crimson-900/10 pb-2">Personal & Religious Attributes</h3>
-                  <div className="bg-white p-4 rounded-xl border border-crimson-900/5 grid grid-cols-2 gap-y-4 text-sm">
+                  <h3 className="text-lg font-serif font-bold text-gold-400 mb-3 border-b border-gold-500/20 pb-2">Personal & Religious Attributes</h3>
+                  <div className="bg-white/5 p-4 rounded-xl border border-gold-500/10 grid grid-cols-2 gap-y-4 text-sm">
                     <div>
-                      <span className="block text-xs text-slate-400 uppercase tracking-wider mb-1 flex items-center gap-1"><FaRulerVertical /> Height</span>
-                      <span className="font-semibold text-slate-700">{profile.height || "Not specified"}</span>
+                      <span className="block text-xs text-slate-400 uppercase tracking-wider mb-1 flex items-center gap-1"><FaRulerVertical className="text-gold-400" /> Height</span>
+                      <span className="font-semibold text-white">{profile.height || "Not specified"}</span>
                     </div>
                     <div>
-                      <span className="block text-xs text-slate-400 uppercase tracking-wider mb-1 flex items-center gap-1"><FaLanguage /> Mother Tongue</span>
-                      <span className="font-semibold text-slate-700">{profile.motherTongue || "Not specified"}</span>
+                      <span className="block text-xs text-slate-400 uppercase tracking-wider mb-1 flex items-center gap-1"><FaLanguage className="text-gold-400" /> Mother Tongue</span>
+                      <span className="font-semibold text-white">{profile.motherTongue || "Not specified"}</span>
                     </div>
-                    <div className="col-span-2 pt-2 border-t border-slate-100">
+                    <div className="col-span-2 pt-2 border-t border-white/10">
                       <span className="block text-xs text-slate-400 uppercase tracking-wider mb-1">Namaz Frequency</span>
-                      <span className="font-semibold text-crimson-800 bg-crimson-50 px-2 py-1 rounded inline-block">{profile.namazFrequency || "Not specified"}</span>
+                      <span className="font-semibold text-gold-400 bg-gold-500/10 px-2 py-1 rounded inline-block border border-gold-500/20">{profile.namazFrequency || "Not specified"}</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Contact Information (Asymmetric Unlock) */}
                 <div>
-                  <h3 className="text-lg font-serif font-bold text-crimson-950 mb-3 border-b border-crimson-900/10 pb-2">Contact Details</h3>
-                  <div className="bg-crimson-950/5 p-4 rounded-xl border border-crimson-900/10 space-y-4">
+                  <h3 className="text-lg font-serif font-bold text-gold-400 mb-3 border-b border-gold-500/20 pb-2">Contact Details</h3>
+                  <div className="bg-white/5 p-4 rounded-xl border border-gold-500/10 space-y-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-crimson-100 text-crimson-700 flex items-center justify-center"><FaPhoneAlt className="text-xs" /></div>
+                      <div className="w-8 h-8 rounded-full bg-gold-500/10 text-gold-400 border border-gold-500/20 flex items-center justify-center"><FaPhoneAlt className="text-xs" /></div>
                       <div className="flex flex-col">
-                        <span className="text-xs text-slate-500 uppercase tracking-wider">Candidate Contact</span>
-                        <span className={`text-sm font-bold ${profile.phoneNumber?.includes('🔒') ? 'text-slate-400 italic' : 'text-slate-800'}`}>
+                        <span className="text-xs text-slate-400 uppercase tracking-wider">Candidate Contact</span>
+                        <span className={`text-sm font-bold ${profile.phoneNumber?.includes('🔒') ? 'text-slate-500 italic' : 'text-white'}`}>
                           {profile.phoneNumber || 'Not provided'}
                         </span>
                       </div>
@@ -463,10 +454,10 @@ const UserProfile = () => {
                     
                     {profile.waliContact && (
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-crimson-100 text-crimson-700 flex items-center justify-center"><FaPhoneAlt className="text-xs" /></div>
+                        <div className="w-8 h-8 rounded-full bg-gold-500/10 text-gold-400 border border-gold-500/20 flex items-center justify-center"><FaPhoneAlt className="text-xs" /></div>
                         <div className="flex flex-col">
-                          <span className="text-xs text-slate-500 uppercase tracking-wider">Chaperone / Wali Contact</span>
-                          <span className={`text-sm font-bold ${profile.waliContact?.includes('🔒') ? 'text-slate-400 italic' : 'text-slate-800'}`}>
+                          <span className="text-xs text-slate-400 uppercase tracking-wider">Chaperone / Wali Contact</span>
+                          <span className={`text-sm font-bold ${profile.waliContact?.includes('🔒') ? 'text-slate-500 italic' : 'text-white'}`}>
                             {profile.waliContact}
                           </span>
                         </div>
@@ -474,10 +465,10 @@ const UserProfile = () => {
                     )}
                     
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-crimson-100 text-crimson-700 flex items-center justify-center"><FaEnvelope className="text-xs" /></div>
+                      <div className="w-8 h-8 rounded-full bg-gold-500/10 text-gold-400 border border-gold-500/20 flex items-center justify-center"><FaEnvelope className="text-xs" /></div>
                       <div className="flex flex-col">
-                        <span className="text-xs text-slate-500 uppercase tracking-wider">Email</span>
-                        <span className={`text-sm font-bold ${profile.user?.email?.includes('🔒') ? 'text-slate-400 italic' : 'text-slate-800'}`}>
+                        <span className="text-xs text-slate-400 uppercase tracking-wider">Email</span>
+                        <span className={`text-sm font-bold ${profile.user?.email?.includes('🔒') ? 'text-slate-500 italic' : 'text-white'}`}>
                           {profile.user?.email || 'Not available'}
                         </span>
                       </div>
@@ -498,20 +489,27 @@ const UserProfile = () => {
                 
                 {/* Professional Info */}
                 <div>
-                  <h3 className="text-lg font-serif font-bold text-crimson-950 mb-3 border-b border-crimson-900/10 pb-2">Education & Career</h3>
-                  <div className="bg-white p-4 rounded-xl border border-crimson-900/5 space-y-4 text-sm">
+                  <h3 className="text-lg font-serif font-bold text-gold-400 mb-3 border-b border-gold-500/20 pb-2">Education & Career</h3>
+                  <div className="bg-white/5 p-4 rounded-xl border border-gold-500/10 space-y-4 text-sm">
                     <div className="flex items-start gap-3">
-                      <FaBriefcase className="text-crimson-700 mt-1 text-lg" />
+                      <FaBriefcase className="text-gold-400 mt-1 text-lg" />
                       <div>
                         <span className="block text-xs text-slate-400 uppercase tracking-wider">Profession</span>
-                        <span className={`font-semibold ${isLocked ? 'text-slate-400 italic' : 'text-slate-700'}`}>{profile.profession}</span>
+                        <span className={`font-semibold ${isLocked ? 'text-slate-500 italic' : 'text-white'}`}>{profile.profession}</span>
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
-                      <FaGraduationCap className="text-crimson-700 mt-1 text-lg" />
+                      <FaMoneyBillWave className="text-gold-400 mt-1 text-lg" />
+                      <div>
+                        <span className="block text-xs text-slate-400 uppercase tracking-wider">Annual Income</span>
+                        <span className={`font-semibold ${isLocked ? 'text-slate-500 italic' : 'text-white'}`}>{profile.annualIncome || 'Not Specified'}</span>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <FaGraduationCap className="text-gold-400 mt-1 text-lg" />
                       <div>
                         <span className="block text-xs text-slate-400 uppercase tracking-wider">Highest Education</span>
-                        <span className={`font-semibold ${isLocked ? 'text-slate-400 italic' : 'text-slate-700'}`}>{profile.education}</span>
+                        <span className={`font-semibold ${isLocked ? 'text-slate-500 italic' : 'text-white'}`}>{profile.education}</span>
                       </div>
                     </div>
                   </div>
@@ -519,26 +517,26 @@ const UserProfile = () => {
 
                 {/* Family Details */}
                 <div>
-                  <h3 className="text-lg font-serif font-bold text-crimson-950 mb-3 border-b border-crimson-900/10 pb-2">Family Background</h3>
-                  <div className="bg-white p-4 rounded-xl border border-crimson-900/5 space-y-3 text-sm">
-                    <div className="flex justify-between items-center border-b border-slate-50 pb-2">
-                      <span className="text-slate-500">Father's Occupation</span>
-                      <span className={`font-semibold ${isLocked ? 'text-slate-400 italic' : 'text-slate-700'}`}>{profile.familyDetails?.fatherOccupation || 'Not specified'}</span>
+                  <h3 className="text-lg font-serif font-bold text-gold-400 mb-3 border-b border-gold-500/20 pb-2">Family Background</h3>
+                  <div className="bg-white/5 p-4 rounded-xl border border-gold-500/10 space-y-3 text-sm">
+                    <div className="flex justify-between items-center border-b border-white/10 pb-2">
+                      <span className="text-slate-300">Father's Occupation</span>
+                      <span className={`font-semibold ${isLocked ? 'text-slate-500 italic' : 'text-white'}`}>{profile.familyDetails?.fatherOccupation || 'Not specified'}</span>
                     </div>
-                    <div className="flex justify-between items-center border-b border-slate-50 pb-2">
-                      <span className="text-slate-500">Mother's Occupation</span>
-                      <span className={`font-semibold ${isLocked ? 'text-slate-400 italic' : 'text-slate-700'}`}>{profile.familyDetails?.motherOccupation || 'Not specified'}</span>
+                    <div className="flex justify-between items-center border-b border-white/10 pb-2">
+                      <span className="text-slate-300">Mother's Occupation</span>
+                      <span className={`font-semibold ${isLocked ? 'text-slate-500 italic' : 'text-white'}`}>{profile.familyDetails?.motherOccupation || 'Not specified'}</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-slate-500">Siblings</span>
-                      <span className={`font-semibold ${isLocked ? 'text-slate-400 italic' : 'text-slate-700'}`}>{isLocked ? '🔒 Locked' : `${profile.familyDetails?.siblingsCount || 0} brothers/sisters`}</span>
+                      <span className="text-slate-300">Siblings</span>
+                      <span className={`font-semibold ${isLocked ? 'text-slate-500 italic' : 'text-white'}`}>{isLocked ? '🔒 Locked' : `${profile.familyDetails?.siblingsCount || 0} brothers/sisters`}</span>
                     </div>
                     {!isLocked && profile.familyDetails?.siblingsList && profile.familyDetails.siblingsList.length > 0 && (
-                      <div className="mt-4 pt-4 border-t border-slate-100 space-y-3 animate-fadeIn">
-                        <span className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Children Birth Order</span>
+                      <div className="mt-4 pt-4 border-t border-white/10 space-y-3 animate-fadeIn">
+                        <span className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2 text-gold-400/80">Children Birth Order</span>
                         <div className="space-y-2">
                           {getSiblingOrderedList()?.map((item, idx) => (
-                            <div key={idx} className={`flex justify-between items-center p-2.5 rounded-xl text-xs ${item.isSelf ? 'bg-gold-500/10 border border-gold-400 font-bold text-crimson-950 shadow-sm' : 'bg-slate-50 text-slate-700 border border-slate-200/50'}`}>
+                            <div key={idx} className={`flex justify-between items-center p-2.5 rounded-xl text-xs ${item.isSelf ? 'bg-gold-500/20 border border-gold-400 font-bold text-white shadow-sm' : 'bg-white/5 text-slate-200 border border-gold-500/10'}`}>
                               <span className="flex items-center gap-1.5">
                                 <span className={`w-1.5 h-1.5 rounded-full ${item.isSelf ? 'bg-gold-600' : 'bg-slate-400'}`}></span>
                                 {item.label}: {item.name}
@@ -554,19 +552,19 @@ const UserProfile = () => {
 
                 {/* Partner Preferences */}
                 <div>
-                  <h3 className="text-lg font-serif font-bold text-crimson-950 mb-3 border-b border-crimson-900/10 pb-2">Partner Preferences</h3>
-                  <div className="bg-white p-4 rounded-xl border border-crimson-900/5 space-y-3 text-sm">
-                    <div className="flex justify-between items-center border-b border-slate-50 pb-2">
-                      <span className="text-slate-500">Age Range</span>
-                      <span className="font-semibold text-slate-700">{profile.partnerPreferences?.ageRange || 'Flexible'}</span>
+                  <h3 className="text-lg font-serif font-bold text-gold-400 mb-3 border-b border-gold-500/20 pb-2">Partner Preferences</h3>
+                  <div className="bg-white/5 p-4 rounded-xl border border-gold-500/10 space-y-3 text-sm">
+                    <div className="flex justify-between items-center border-b border-white/10 pb-2">
+                      <span className="text-slate-300">Age Range</span>
+                      <span className="font-semibold text-white">{profile.partnerPreferences?.ageRange || 'Flexible'}</span>
                     </div>
-                    <div className="flex justify-between items-center border-b border-slate-50 pb-2">
-                      <span className="text-slate-500">Sect Preference</span>
-                      <span className="font-semibold text-slate-700">{profile.partnerPreferences?.sectPreference || 'No Preference'}</span>
+                    <div className="flex justify-between items-center border-b border-white/10 pb-2">
+                      <span className="text-slate-300">Sect Preference</span>
+                      <span className="font-semibold text-white">{profile.partnerPreferences?.sectPreference || 'No Preference'}</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-slate-500">Education</span>
-                      <span className="font-semibold text-slate-700">{profile.partnerPreferences?.educationPreference || "Doesn't matter"}</span>
+                      <span className="text-slate-300">Education</span>
+                      <span className="font-semibold text-white">{profile.partnerPreferences?.educationPreference || "Doesn't matter"}</span>
                     </div>
                   </div>
                 </div>

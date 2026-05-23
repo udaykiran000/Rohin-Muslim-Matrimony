@@ -19,6 +19,7 @@ import UserProfile from './pages/UserProfile';
 import MobileChatPage from './components/MobileChatPage';
 import MobileChatRoom from './components/MobileChatRoom';
 import EditProfile from './pages/EditProfile';
+import MyProfilePage from './pages/MyProfilePage';
 import InterestsPage from './pages/InterestsPage';
 import PlansPage from './pages/PlansPage';
 import AdminDashboard from './pages/AdminDashboard';
@@ -121,6 +122,7 @@ function AppContent() {
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/search" element={<ProtectedRoute><SearchProfiles /></ProtectedRoute>} />
           <Route path="/profile/:id" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
+          <Route path="/my-profile" element={<ProtectedRoute><MyProfilePage /></ProtectedRoute>} />
           <Route path="/edit-profile" element={<ProtectedRoute><EditProfile /></ProtectedRoute>} />
           <Route path="/interests" element={<Navigate to="/activity" replace />} />
           <Route path="/activity" element={<ProtectedRoute><InterestsPage /></ProtectedRoute>} />
@@ -147,7 +149,7 @@ function AppContent() {
 
       {/* Footer */}
       <div className="hidden lg:block">
-        {location.pathname !== '/login' && location.pathname !== '/register' && <Footer />}
+        {location.pathname !== '/login' && location.pathname !== '/register' && location.pathname !== '/admin' && <Footer />}
       </div>
     </div>
   );

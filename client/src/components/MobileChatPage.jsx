@@ -129,7 +129,7 @@ const MobileChatPage = () => {
                 >
                   {/* Avatar */}
                   <div className="relative">
-                    {conn.profilePhoto && conn.profilePhoto !== '/uploads/blurred-avatar.png' ? (
+                    {conn.profilePhoto && conn.profilePhoto !== '/uploads/blurred-avatar.png' && conn.profilePhoto !== '/uploads/default-avatar.png' ? (
                       <img 
                         src={conn.profilePhoto} 
                         alt={conn.name} 

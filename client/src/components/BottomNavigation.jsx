@@ -21,7 +21,7 @@ const BottomNavigation = () => {
     { label: 'Search', icon: FaSearch, path: '/search' },
     { label: 'Activity', icon: FaHeart, path: '/activity', badge: pendingRequestsCount },
     { label: 'Chat', icon: FaComments, path: '/chat', badge: unreadMessagesCount },
-    { label: 'Profile', icon: FaUser, path: '/edit-profile' }
+    { label: 'Profile', icon: FaUser, path: '/my-profile' }
   ];
 
   const isTabActive = (path) => {

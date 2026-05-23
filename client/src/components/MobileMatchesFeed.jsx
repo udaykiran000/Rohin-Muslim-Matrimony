@@ -2,9 +2,10 @@ import React, { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import api, { SOCKET_BASE_URL } from '../services/api';
 import toast from 'react-hot-toast';
-import { FaSearch, FaBookmark, FaComment, FaHeart, FaCrown } from 'react-icons/fa';
+import { FaSearch, FaBookmark, FaComment, FaHeart, FaCrown, FaCheckCircle, FaLock } from 'react-icons/fa';
 import LogoLoader from './LogoLoader';
 import { useNavigate } from 'react-router-dom';
+import DefaultAvatar from './DefaultAvatar';
 
 const MobileMatchesFeed = () => {
   const { user, getCompleteness } = useContext(AuthContext);
@@ -165,20 +166,29 @@ const MobileMatchesFeed = () => {
         ) : (
           profiles.map((p, idx) => {
             return (
-              <div key={p._id} className="w-full h-[65vh] relative rounded-3xl overflow-hidden shadow-xl bg-slate-900">
+              <div 
+                key={p._id} 
+                className="w-full h-[65vh] relative rounded-3xl overflow-hidden shadow-xl bg-slate-900 cursor-pointer"
+                onClick={() => navigate(`/profile/${p.user?._id || p.user}`)}
+              >
                 {/* Background Image/Placeholder */}
                 <div className="absolute inset-0">
-                  {p.profilePhoto && p.profilePhoto !== '/uploads/default-avatar.png' ? (
+                  {p.profilePhoto && p.profilePhoto !== '/uploads/default-avatar.png' && p.profilePhoto !== '/uploads/blurred-avatar.png' ? (
                     <img 
                       src={`${SOCKET_BASE_URL}${p.profilePhoto}`}
                       alt={p.name} 
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <div className="w-full h-full bg-[#111111] flex items-center justify-center">
-                      <div className="w-32 h-32 rounded-full bg-slate-800 flex items-center justify-center text-5xl font-bold text-slate-500">
-                        {p.name ? p.name[0].toUpperCase() : 'M'}
-                      </div>
+                    <div className="w-full h-full relative">
+                      <DefaultAvatar gender={p.gender} className={`w-full h-full object-cover ${p.profilePhoto === '/uploads/blurred-avatar.png' ? 'blur-md opacity-70' : ''}`} />
+                      {p.profilePhoto === '/uploads/blurred-avatar.png' && (
+                        <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
+                           <div className="bg-black/40 backdrop-blur-sm rounded-full w-16 h-16 flex items-center justify-center shadow-lg border border-white/10 mt-[-30px]">
+                             <FaLock className="text-2xl text-white/90 drop-shadow-md" />
+                           </div>
+                        </div>
+                      )}
                     </div>
                   )}
                   {/* Dark Gradient Overlay for text readability */}
@@ -208,9 +218,26 @@ const MobileMatchesFeed = () => {
                        <span className="text-white font-bold text-[11px] uppercase tracking-wider">Online</span>
                      </div>
                   )}
-                  <div className="flex items-center gap-2 mb-1">
-                    <h2 className="text-2xl font-bold text-white tracking-wide">{p.name}, {p.age}</h2>
-                    <FaCrown className="text-gold-400 text-sm drop-shadow-md" />
+                  <div className="flex items-center gap-2 mb-1 flex-wrap">
+                    <h2 className="text-2xl font-bold text-white tracking-wide flex items-center gap-1.5">
+                      {p.name}
+                      {p.user?.isManuallyVerified && (
+                        <FaCheckCircle className="text-[#3b82f6] text-lg drop-shadow-sm" title="Identity Verified" />
+                      )}
+                      <span className="font-light text-white/80">, {p.age}</span>
+                    </h2>
+                  </div>
+                  <div className="flex items-center gap-2 mb-1.5">
+                    {(p.user?.plan === 'premium' || p.user?.plan === 'elite') && (
+                      <span className={`inline-flex items-center gap-1 text-[9px] font-extrabold px-2 py-0.5 rounded-full shadow-sm border ${
+                        p.user.plan === 'elite'
+                          ? 'bg-gradient-to-r from-[#d4af37] via-[#f3e3a3] to-[#b28e28] text-[#4f080e] border-[#b28e28]/50'
+                          : 'bg-gradient-to-r from-[#10b981] via-[#6ee7b7] to-[#047857] text-white border-[#047857]/50'
+                      }`}>
+                        <FaCrown className={p.user.plan === 'elite' ? 'text-[#4f080e]' : 'text-white'} /> 
+                        {p.user.plan === 'elite' ? 'ELITE' : 'PREMIUM'}
+                      </span>
+                    )}
                   </div>
                   
                   <p className="text-white/85 text-xs mb-5 font-medium leading-relaxed tracking-wide">
@@ -228,7 +255,7 @@ const MobileMatchesFeed = () => {
                       <div className="flex items-center justify-between px-3 gap-4 pb-2">
                         <div 
                           className="flex flex-col items-center gap-1.5 cursor-pointer hover:scale-105 transition-transform" 
-                          onClick={() => handleAction('Shortlist', targetUserId)}
+                          onClick={(e) => { e.stopPropagation(); handleAction('Shortlist', targetUserId); }}
                         >
                           <button className={`w-12 h-12 rounded-full flex items-center justify-center text-white shadow-lg border border-white/5 transition-all ${
                             isShortlisted ? 'bg-amber-500 shadow-amber-500/30' : 'bg-[#111111]'
@@ -242,7 +269,7 @@ const MobileMatchesFeed = () => {
 
                         <div 
                           className="flex flex-col items-center gap-1.5 cursor-pointer hover:scale-105 transition-transform" 
-                          onClick={() => handleAction('message', targetUserId)}
+                          onClick={(e) => { e.stopPropagation(); handleAction('message', targetUserId); }}
                         >
                           <button className="w-14 h-14 rounded-full bg-[#5c7cfa] flex items-center justify-center text-white shadow-lg shadow-blue-500/30">
                             <FaComment className="text-xl" />

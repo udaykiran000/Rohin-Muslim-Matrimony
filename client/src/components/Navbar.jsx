@@ -1,8 +1,9 @@
 import React, { useContext, useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { FaMoon, FaUser, FaSignOutAlt, FaCrown, FaBars, FaTimes, FaSearch, FaHeart, FaShieldAlt, FaBell, FaDownload } from 'react-icons/fa';
+import { FaMoon, FaUser, FaSignOutAlt, FaCrown, FaBars, FaTimes, FaSearch, FaHeart, FaShieldAlt, FaBell, FaDownload, FaCheckCircle } from 'react-icons/fa';
 import { SOCKET_BASE_URL } from '../services/api';
+import DefaultAvatar from './DefaultAvatar';
 
 import logo3 from '../assets/logo3.png';
 
@@ -18,12 +19,12 @@ const Navbar = () => {
     markAllAsRead 
   } = useContext(AuthContext);
   const [isOpen, setIsOpen] = useState(false);
-  const [showMobileUserMenu, setShowMobileUserMenu] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [isStandalone, setIsStandalone] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const userMenuRef = useRef(null);
+  const desktopNotifyRef = useRef(null);
+  const mobileNotifyRef = useRef(null);
 
   useEffect(() => {
     setIsStandalone(window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true);
@@ -31,8 +32,11 @@ const Navbar = () => {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
-        setShowMobileUserMenu(false);
+      if (
+        (!desktopNotifyRef.current || !desktopNotifyRef.current.contains(event.target)) &&
+        (!mobileNotifyRef.current || !mobileNotifyRef.current.contains(event.target))
+      ) {
+        setShowNotifications(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -78,8 +82,8 @@ const Navbar = () => {
 
   const isActive = (path) => {
     return location.pathname === path 
-      ? 'text-slate-900 border-b-2 border-crimson-600 font-bold' 
-      : 'text-slate-700 hover:text-slate-900 font-semibold';
+      ? 'text-[#4f080e] border-b-2 border-[#4f080e] font-bold' 
+      : 'text-slate-700 hover:text-[#4f080e] font-semibold';
   };
 
   const renderPlanBadge = (plan) => {
@@ -105,7 +109,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="w-full bg-cream-50/80 backdrop-blur-md border-b border-crimson-900/10 py-3.5 px-4 md:px-8 transition-colors">
+    <nav className="fixed top-0 left-0 right-0 z-50 w-full bg-[#faf9f6] border-b border-[#d4af37]/35 py-3.5 px-4 md:px-8 transition-colors shadow-lg">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         
         {/* Brand Logo */}
@@ -138,8 +142,8 @@ const Navbar = () => {
           )}
           
           {user && user.role === 'admin' && (
-             <Link to="/admin" className={`${isActive('/admin')} flex items-center gap-1.5`}>
-               <FaShieldAlt /> Admin Dashboard
+             <Link to="/admin" className="bg-gradient-to-r from-gold-400 to-gold-600 text-crimson-950 hover:from-gold-300 hover:to-gold-500 font-bold px-5 py-2.5 rounded-xl text-xs tracking-wider uppercase flex items-center gap-2 shadow-lg shadow-gold-500/10 border border-gold-300 hover:scale-105 active:scale-95 transition-all">
+               <FaShieldAlt className="text-crimson-950 text-xs" /> Admin Dashboard
              </Link>
           )}
         </div>
@@ -149,25 +153,39 @@ const Navbar = () => {
           {user ? (
             <div className="flex items-center gap-4">
               <div className="flex flex-col text-right">
-                <span className="text-sm font-bold text-slate-800">{profile?.name || 'Member'}</span>
-                <span className="flex justify-end mt-0.5">{renderPlanBadge(user.plan)}</span>
+                <span className="text-sm font-bold text-slate-800">{user?.role === 'admin' ? 'Administrator' : (profile?.name || 'Member')}</span>
+                <span className="flex justify-end mt-0.5">
+                  {user?.role === 'admin' ? (
+                    <span className="text-[9px] font-extrabold px-2 py-0.5 rounded bg-slate-900 text-white shadow-sm flex items-center gap-1">
+                      <FaShieldAlt className="text-crimson-500 text-[9px]" />
+                      ADMIN
+                    </span>
+                  ) : (
+                    renderPlanBadge(user.plan)
+                  )}
+                </span>
               </div>
-              <Link to="/edit-profile" className="w-9 h-9 rounded-full overflow-hidden border-2 border-gold-500 bg-crimson-950 flex items-center justify-center hover:scale-105 transition-transform">
-                {profile?.profilePhoto && profile.profilePhoto !== '/uploads/default-avatar.png' ? (
-                  <img src={`${SOCKET_BASE_URL}${profile.profilePhoto}`} alt="Profile" className="w-full h-full object-cover" />
-                ) : (
-                  <FaUser className="text-slate-300 text-sm" />
+              <div className="relative">
+                <Link to="/my-profile" className={`block w-10 h-10 rounded-full overflow-hidden border-2 bg-crimson-950 flex items-center justify-center hover:scale-105 transition-transform ${user.plan === 'elite' ? 'border-gold-500 shadow-[0_0_8px_rgba(212,175,55,0.6)]' : user.plan === 'premium' ? 'border-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'border-slate-300'}`}>
+                  {profile?.profilePhoto && profile.profilePhoto !== '/uploads/default-avatar.png' ? (
+                    <img src={`${SOCKET_BASE_URL}${profile.profilePhoto}`} alt="Profile" className="w-full h-full object-cover" />
+                  ) : (
+                    <DefaultAvatar gender={profile?.gender} className="w-full h-full object-cover" />
+                  )}
+                </Link>
+                {user.isManuallyVerified && (
+                  <FaCheckCircle className="absolute -bottom-1 -right-1 text-blue-500 bg-white rounded-full text-sm border-2 border-white" />
                 )}
-              </Link>
+              </div>
               
               {/* Notification Bell Desktop */}
-              <div className="relative">
+              <div className="relative" ref={desktopNotifyRef}>
                 <button 
                   onClick={() => setShowNotifications(!showNotifications)}
-                  className={`w-9 h-9 rounded-full bg-crimson-900/10 text-crimson-950 flex items-center justify-center hover:bg-crimson-900/20 active:scale-95 transition-all relative ${unreadCount > 0 ? 'animate-pulse bg-crimson-900/20' : ''}`}
+                  className={`w-9 h-9 rounded-full bg-slate-100 text-slate-700 flex items-center justify-center hover:bg-slate-200 active:scale-95 transition-all relative ${unreadCount > 0 ? 'animate-pulse bg-slate-200' : ''}`}
                   title="Notifications"
                 >
-                  <FaBell className={`text-sm ${unreadCount > 0 ? 'text-crimson-600' : ''}`} />
+                  <FaBell className={`text-sm ${unreadCount > 0 ? 'text-gold-600' : ''}`} />
                   {unreadCount > 0 && (
                     <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[9px] font-extrabold h-4 w-4 rounded-full flex items-center justify-center border border-white">
                       {unreadCount}
@@ -240,7 +258,7 @@ const Navbar = () => {
             </div>
           ) : (
             <div className="flex items-center gap-3">
-              <Link to="/login" className="text-slate-700 hover:text-slate-900 font-semibold text-sm px-4 py-2 transition-colors">
+              <Link to="/login" className="text-slate-700 hover:text-[#4f080e] font-semibold text-sm px-4 py-2 transition-colors">
                 Sign In
               </Link>
               <Link to="/register" className="bg-gold-gradient text-crimson-950 font-bold text-sm px-5 py-2.5 rounded-full shadow-lg hover:shadow-gold-500/20 hover:scale-105 transition-all">
@@ -255,16 +273,15 @@ const Navbar = () => {
           {user && (
             <>
               {/* Notification Bell Mobile */}
-              <div className="relative">
+              <div className="relative" ref={mobileNotifyRef}>
                 <button 
                   onClick={() => {
                     setShowNotifications(!showNotifications);
-                    setShowMobileUserMenu(false);
                     setIsOpen(false);
                   }}
-                  className={`w-8 h-8 rounded-full bg-crimson-900/10 text-crimson-950 flex items-center justify-center hover:bg-crimson-900/20 transition-colors relative ${unreadCount > 0 ? 'animate-pulse bg-crimson-900/20' : ''}`}
+                  className={`w-8 h-8 rounded-full bg-slate-100 text-slate-700 flex items-center justify-center hover:bg-slate-200 transition-colors relative ${unreadCount > 0 ? 'animate-pulse bg-slate-200' : ''}`}
                 >
-                  <FaBell className={`text-xs ${unreadCount > 0 ? 'text-crimson-600' : ''}`} />
+                  <FaBell className={`text-xs ${unreadCount > 0 ? 'text-gold-600' : ''}`} />
                   {unreadCount > 0 && (
                     <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[8px] font-extrabold h-3.5 w-3.5 rounded-full flex items-center justify-center border border-white">
                       {unreadCount}
@@ -332,44 +349,21 @@ const Navbar = () => {
               </div>
 
               {/* User Avatar */}
-              <div className="relative" ref={userMenuRef}>
-                <button 
-                  onClick={() => {
-                    setShowMobileUserMenu(!showMobileUserMenu);
-                    setIsOpen(false);
-                  }} 
-                  className="w-8 h-8 rounded-full overflow-hidden border border-gold-500 bg-crimson-950 flex items-center justify-center hover:scale-105 transition-transform"
-                  aria-label="User menu"
+              <div className="relative">
+                <Link 
+                  to="/my-profile"
+                  onClick={() => setIsOpen(false)}
+                  className={`block w-9 h-9 rounded-full overflow-hidden border-2 bg-crimson-950 flex items-center justify-center hover:scale-105 transition-transform ${user.plan === 'elite' ? 'border-gold-500 shadow-[0_0_8px_rgba(212,175,55,0.6)]' : user.plan === 'premium' ? 'border-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'border-slate-300'}`}
+                  aria-label="User profile"
                 >
                   {profile?.profilePhoto && profile.profilePhoto !== '/uploads/default-avatar.png' ? (
                     <img src={`${SOCKET_BASE_URL}${profile.profilePhoto}`} alt="Profile" className="w-full h-full object-cover" />
                   ) : (
-                    <FaUser className="text-slate-300 text-[10px]" />
+                    <DefaultAvatar gender={profile?.gender} className="w-full h-full object-cover" />
                   )}
-                </button>
-
-                {/* Mobile User Menu Dropdown (Upgrade & Logout) */}
-                {showMobileUserMenu && (
-                  <div className="absolute right-0 mt-2.5 w-36 bg-white rounded-lg shadow-xl border border-slate-100 py-1.5 z-50 animate-fadeIn">
-                    <button 
-                      onClick={() => {
-                        navigate('/plans');
-                        setShowMobileUserMenu(false);
-                      }} 
-                      className="w-full text-left px-4 py-2 text-xs font-serif font-extrabold text-gold-700 hover:bg-slate-50 flex items-center gap-1.5 transition-colors"
-                    >
-                      <FaCrown className="text-xs text-gold-600" /> Upgrade Plan
-                    </button>
-                    <button 
-                      onClick={() => {
-                        handleLogout();
-                        setShowMobileUserMenu(false);
-                      }} 
-                      className="w-full text-left px-4 py-2 text-xs font-serif font-extrabold text-red-600 hover:bg-slate-50 flex items-center gap-1.5 transition-colors border-t border-slate-100 mt-1 pt-1.5"
-                    >
-                      <FaSignOutAlt className="text-xs" /> Logout
-                    </button>
-                  </div>
+                </Link>
+                {user.isManuallyVerified && (
+                  <FaCheckCircle className="absolute -bottom-0.5 -right-0.5 text-blue-500 bg-white rounded-full text-[12px] border-2 border-white" />
                 )}
               </div>
             </>
@@ -379,9 +373,8 @@ const Navbar = () => {
             <button 
               onClick={() => {
                 setIsOpen(!isOpen);
-                setShowMobileUserMenu(false);
               }} 
-              className="text-slate-700 hover:text-slate-900 text-2xl focus:outline-none p-1.5"
+              className="text-slate-800 hover:text-[#4f080e] text-2xl focus:outline-none p-1.5"
             >
               {isOpen ? <FaTimes /> : <FaBars />}
             </button>
@@ -394,22 +387,22 @@ const Navbar = () => {
         <div className="lg:hidden mt-4 pt-4 border-t border-slate-200 flex flex-col gap-4 font-medium animate-fadeIn">
           {(!user || user.role !== 'admin') && (
             <>
-              <Link to="/" onClick={() => setIsOpen(false)} className="text-slate-700 hover:text-slate-900 font-semibold py-1 transition-colors">Home</Link>
-              <Link to="/plans" onClick={() => setIsOpen(false)} className="text-slate-700 hover:text-slate-900 font-semibold py-1 transition-colors">Plans</Link>
+              <Link to="/" onClick={() => setIsOpen(false)} className="text-slate-700 hover:text-[#4f080e] font-semibold py-1 transition-colors">Home</Link>
+              <Link to="/plans" onClick={() => setIsOpen(false)} className="text-slate-700 hover:text-[#4f080e] font-semibold py-1 transition-colors">Plans</Link>
             </>
           )}
 
           {user && user.role !== 'admin' && (
             <>
-              <Link to="/dashboard" onClick={() => setIsOpen(false)} className="text-slate-700 hover:text-slate-900 font-semibold py-1 transition-colors">Dashboard</Link>
-              <Link to="/search" onClick={() => setIsOpen(false)} className="text-slate-700 hover:text-slate-900 font-semibold py-1 transition-colors">Search Matches</Link>
-              <Link to="/activity" onClick={() => setIsOpen(false)} className="text-slate-700 hover:text-slate-900 font-semibold py-1 transition-colors">Activity</Link>
+              <Link to="/dashboard" onClick={() => setIsOpen(false)} className="text-slate-700 hover:text-[#4f080e] font-semibold py-1 transition-colors">Dashboard</Link>
+              <Link to="/search" onClick={() => setIsOpen(false)} className="text-slate-700 hover:text-[#4f080e] font-semibold py-1 transition-colors">Search Matches</Link>
+              <Link to="/activity" onClick={() => setIsOpen(false)} className="text-slate-700 hover:text-[#4f080e] font-semibold py-1 transition-colors">Activity</Link>
             </>
           )}
           
           {user && user.role === 'admin' && (
-             <Link to="/admin" onClick={() => setIsOpen(false)} className="text-slate-700 hover:text-slate-900 font-semibold py-1 flex items-center gap-1.5 transition-colors">
-               <FaShieldAlt /> Admin Dashboard
+             <Link to="/admin" onClick={() => setIsOpen(false)} className="bg-gradient-to-r from-gold-400 to-gold-600 text-crimson-950 font-bold py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 my-2 shadow-md">
+               <FaShieldAlt className="text-crimson-950 text-sm" /> Admin Dashboard
              </Link>
           )}
 
@@ -419,7 +412,7 @@ const Navbar = () => {
                 alert("To install: Tap your browser menu (⋮) or the 'Share' icon and select 'Install App' or 'Add to Home Screen'.");
                 setIsOpen(false);
               }} 
-              className="text-left text-crimson-600 hover:text-crimson-700 font-bold py-1 flex items-center gap-1.5 transition-colors border-t border-slate-100 mt-1 pt-3"
+              className="text-left text-[#4f080e] hover:text-[#7f181e] font-bold py-1 flex items-center gap-1.5 transition-colors border-t border-slate-200 mt-1 pt-3"
             >
               <FaDownload /> Install App
             </button>
@@ -428,16 +421,30 @@ const Navbar = () => {
           {user ? (
             <div className="border-t border-slate-200 pt-4 mt-2 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <Link to="/edit-profile" onClick={() => setIsOpen(false)} className="w-10 h-10 rounded-full overflow-hidden border-2 border-gold-500 bg-crimson-950 flex items-center justify-center">
-                  {profile?.profilePhoto && profile.profilePhoto !== '/uploads/default-avatar.png' ? (
-                    <img src={`${SOCKET_BASE_URL}${profile.profilePhoto}`} alt="Profile" className="w-full h-full object-cover" />
-                  ) : (
-                    <FaUser className="text-slate-300" />
+                <div className="relative">
+                  <Link to="/my-profile" onClick={() => setIsOpen(false)} className={`block w-11 h-11 rounded-full overflow-hidden border-2 bg-crimson-950 flex items-center justify-center ${user.plan === 'elite' ? 'border-gold-500 shadow-[0_0_8px_rgba(212,175,55,0.6)]' : user.plan === 'premium' ? 'border-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'border-slate-300'}`}>
+                    {profile?.profilePhoto && profile.profilePhoto !== '/uploads/default-avatar.png' ? (
+                      <img src={`${SOCKET_BASE_URL}${profile.profilePhoto}`} alt="Profile" className="w-full h-full object-cover" />
+                    ) : (
+                      <DefaultAvatar gender={profile?.gender} className="w-full h-full object-cover" />
+                    )}
+                  </Link>
+                  {user.isManuallyVerified && (
+                    <FaCheckCircle className="absolute -bottom-0.5 -right-0.5 text-blue-500 bg-white rounded-full text-[14px] border-2 border-white" />
                   )}
-                </Link>
+                </div>
                 <div className="flex flex-col">
-                  <span className="text-slate-800 text-sm font-bold">{profile?.name}</span>
-                  <span className="flex mt-0.5">{renderPlanBadge(user.plan)}</span>
+                  <span className="text-slate-800 text-sm font-bold">{user?.role === 'admin' ? 'Administrator' : (profile?.name || 'Member')}</span>
+                  <span className="flex mt-0.5">
+                    {user?.role === 'admin' ? (
+                      <span className="text-[9px] font-extrabold px-2 py-0.5 rounded bg-slate-900 text-white shadow-sm flex items-center gap-1">
+                        <FaShieldAlt className="text-crimson-500 text-[9px]" />
+                        ADMIN
+                      </span>
+                    ) : (
+                      renderPlanBadge(user.plan)
+                    )}
+                  </span>
                 </div>
               </div>
               <button onClick={handleLogout} className="flex items-center gap-1.5 text-slate-700 hover:text-red-600 font-semibold py-1.5 transition-colors">
@@ -446,7 +453,7 @@ const Navbar = () => {
             </div>
           ) : (
             <div className="border-t border-slate-200 pt-4 mt-2 flex flex-col gap-2.5">
-              <Link to="/login" onClick={() => setIsOpen(false)} className="text-center text-slate-700 hover:text-slate-900 font-semibold py-2 border border-slate-200 rounded-full transition-colors">
+              <Link to="/login" onClick={() => setIsOpen(false)} className="text-center text-slate-700 hover:text-crimson-900 font-semibold py-2 border border-slate-200 rounded-full transition-colors">
                 Sign In
               </Link>
               <Link to="/register" onClick={() => setIsOpen(false)} className="text-center bg-gold-gradient text-crimson-950 font-bold py-2.5 rounded-full transition-all">

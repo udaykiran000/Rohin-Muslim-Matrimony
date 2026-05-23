@@ -259,7 +259,7 @@ const MobileActivityPage = ({ receivedRequests = [], sentRequests = [], connecti
     return (
       <div key={keyVal || profile._id} className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100/80 flex items-center justify-between gap-3 hover:border-crimson-100 transition-all">
         <Link to={`/profile/${profileId}`} className="flex items-center gap-3.5 flex-1 min-w-0">
-          {profile.profilePhoto && profile.profilePhoto !== '/uploads/blurred-avatar.png' ? (
+          {profile.profilePhoto && profile.profilePhoto !== '/uploads/blurred-avatar.png' && profile.profilePhoto !== '/uploads/default-avatar.png' ? (
             <img src={profile.profilePhoto.startsWith('http') ? profile.profilePhoto : `${SOCKET_BASE_URL}${profile.profilePhoto}`} alt={profile.name} className="w-12 h-12 rounded-xl object-cover border border-slate-100 shadow-sm flex-shrink-0" />
           ) : (
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#4f080e] to-[#7f181e] flex items-center justify-center font-bold text-white shadow-sm text-sm flex-shrink-0">

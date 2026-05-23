@@ -2,6 +2,7 @@ const User = require('../models/User');
 const Profile = require('../models/Profile');
 const jwt = require('jsonwebtoken');
 const sendEmail = require('../utils/sendEmail');
+const Transaction = require('../models/Transaction');
 
 // Helper to generate token
 const generateToken = (id) => {
@@ -137,7 +138,16 @@ exports.login = async (req, res) => {
     }
 
     // Get user profile
-    const profile = await Profile.findOne({ user: user._id });
+    let profile = await Profile.findOne({ user: user._id });
+    if (!profile && user.role === 'admin') {
+      profile = await Profile.create({
+        user: user._id,
+        name: 'Administrator',
+        gender: 'male',
+        age: 35,
+        city: 'Admin City'
+      });
+    }
 
     // Generate token
     const token = generateToken(user._id);
@@ -167,7 +177,17 @@ exports.login = async (req, res) => {
 exports.getMe = async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
-    const profile = await Profile.findOne({ user: req.user.id });
+    let profile = await Profile.findOne({ user: req.user.id });
+
+    if (!profile && user?.role === 'admin') {
+      profile = await Profile.create({
+        user: user._id,
+        name: 'Administrator',
+        gender: 'male',
+        age: 35,
+        city: 'Admin City'
+      });
+    }
 
     if (!user) {
       return res.status(404).json({ success: false, message: 'User not found' });
@@ -220,6 +240,18 @@ exports.upgradePlan = async (req, res) => {
 
     await user.save();
 
+    // Create a transaction record for mock payments
+    if (plan !== 'free') {
+      const amount = plan === 'elite' ? 1999 : 999;
+      await Transaction.create({
+        user: user._id,
+        plan: plan,
+        amount: amount,
+        transactionId: `TXN_${Math.random().toString(36).substr(2, 9).toUpperCase()}`,
+        status: 'success'
+      });
+    }
+
     return res.status(200).json({
       success: true,
       message: `Plan upgraded successfully to: ${plan.toUpperCase()}`,
@@ -267,6 +299,41 @@ exports.saveSubscription = async (req, res) => {
   }
 };
 
+// @desc    Change user password
+// @route   PUT /api/auth/change-password
+// @access  Private
+exports.changePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ success: false, message: 'Please provide both current and new passwords' });
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({ success: false, message: 'New password must be at least 6 characters' });
+    }
+
+    const user = await User.findById(req.user.id).select('+password');
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    const isMatch = await user.matchPassword(currentPassword);
+    if (!isMatch) {
+      return res.status(401).json({ success: false, message: 'Incorrect current password' });
+    }
+
+    user.password = newPassword;
+    await user.save();
+
+    res.status(200).json({ success: true, message: 'Password updated successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
 // @desc    Get VAPID public key
 // @route   GET /api/auth/vapid-public-key
 // @access  Private
@@ -275,4 +342,17 @@ exports.getVapidPublicKey = (req, res) => {
     success: true,
     publicKey: process.env.VAPID_PUBLIC_KEY || ''
   });
+};
+
+// @desc    Get current user transactions
+// @route   GET /api/auth/transactions
+// @access  Private
+exports.getMyTransactions = async (req, res) => {
+  try {
+    const transactions = await Transaction.find({ user: req.user.id }).sort({ createdAt: -1 });
+    return res.status(200).json({ success: true, data: transactions });
+  } catch (error) {
+    console.error('GetTransactions Error:', error);
+    return res.status(500).json({ success: false, message: error.message });
+  }
 };

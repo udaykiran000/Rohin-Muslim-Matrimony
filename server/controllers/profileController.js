@@ -2,6 +2,7 @@ const Profile = require('../models/Profile');
 const User = require('../models/User');
 const Settings = require('../models/Settings');
 const GalleryRequest = require('../models/GalleryRequest');
+const mongoose = require('mongoose');
 
 const getPlanFeatures = async (plan) => {
   let settings = await Settings.findOne();
@@ -31,11 +32,11 @@ exports.getProfiles = async (req, res) => {
 
     const isShortlistedQuery = shortlisted === 'true';
 
-    const query = { user: { $ne: req.user.id } };
+    const query = { user: { $ne: new mongoose.Types.ObjectId(req.user.id) } };
 
     if (isShortlistedQuery) {
       // Show all shortlisted profiles regardless of gender
-      query.shortlistedBy = req.user.id;
+      query.shortlistedBy = new mongoose.Types.ObjectId(req.user.id);
     } else {
       const defaultOppositeGender = myProfile.gender === 'male' ? 'female' : 'male';
       if (gender) query.gender = gender;
@@ -220,6 +221,7 @@ exports.getProfileById = async (req, res) => {
         profileData.about = '🔒 Detailed profile description is locked. Upgrade your subscription plan to unlock full details!';
         profileData.education = '🔒 Locked (Premium feature)';
         profileData.profession = '🔒 Locked (Premium feature)';
+        profileData.annualIncome = '🔒 Locked (Premium feature)';
         profileData.sect = '🔒 Locked';
         profileData.familyDetails = { fatherOccupation: '🔒 Locked', motherOccupation: '🔒 Locked', siblingsCount: 0 };
       } else {
@@ -281,7 +283,7 @@ exports.updateMyProfile = async (req, res) => {
       height, maritalStatus, motherTongue, namazFrequency, isPhotoPublic,
       fatherOccupation, motherOccupation, siblingsCount,
       partnerAgeRange, partnerSect, partnerEducation,
-      waliContact
+      waliContact, annualIncome
     } = req.body;
 
     const updateData = {};
@@ -290,6 +292,7 @@ exports.updateMyProfile = async (req, res) => {
     if (gender) updateData.gender = gender;
     if (sect) updateData.sect = sect;
     if (profession !== undefined) updateData.profession = profession;
+    if (annualIncome !== undefined) updateData.annualIncome = annualIncome;
     if (education !== undefined) updateData.education = education;
     if (city) updateData.city = city;
     if (about !== undefined) updateData.about = about;

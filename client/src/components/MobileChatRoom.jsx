@@ -139,7 +139,7 @@ const MobileChatRoom = () => {
           
           {/* Avatar & Details */}
           <div className="flex items-center gap-3 min-w-0">
-            {partnerProfile?.profilePhoto && partnerProfile.profilePhoto !== '/uploads/blurred-avatar.png' ? (
+            {partnerProfile?.profilePhoto && partnerProfile.profilePhoto !== '/uploads/blurred-avatar.png' && partnerProfile.profilePhoto !== '/uploads/default-avatar.png' ? (
               <img 
                 src={partnerProfile.profilePhoto} 
                 alt={partnerProfile.name} 

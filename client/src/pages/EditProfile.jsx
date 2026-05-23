@@ -4,13 +4,11 @@ import api, { SOCKET_BASE_URL } from '../services/api';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { FaCamera, FaSave, FaUserShield, FaRegImage, FaLock, FaGlobe } from 'react-icons/fa';
-import MobileProfilePage from '../components/MobileProfilePage';
+import LogoLoader from '../components/LogoLoader';
 
 const EditProfile = () => {
   const { user, profile, refreshUser, getCompleteness } = useContext(AuthContext);
   const navigate = useNavigate();
-  
-  const [showMobileForm, setShowMobileForm] = useState(false);
   
   const [formData, setFormData] = useState({
     name: '',
@@ -18,6 +16,7 @@ const EditProfile = () => {
     gender: '',
     sect: '',
     profession: '',
+    annualIncome: 'Not Specified',
     education: '',
     city: '',
     about: '',
@@ -50,6 +49,7 @@ const EditProfile = () => {
         gender: profile.gender || '',
         sect: profile.sect || '',
         profession: profile.profession || '',
+        annualIncome: profile.annualIncome || 'Not Specified',
         education: profile.education || '',
         city: profile.city || '',
         about: profile.about || '',
@@ -101,7 +101,7 @@ const EditProfile = () => {
     
     // Compare basic fields
     const basicFields = [
-      'name', 'age', 'gender', 'sect', 'profession', 'education', 
+      'name', 'age', 'gender', 'sect', 'profession', 'annualIncome', 'education', 
       'city', 'about', 'phoneNumber', 'waliContact', 'height', 
       'maritalStatus', 'motherTongue', 'namazFrequency'
     ];
@@ -244,7 +244,6 @@ const EditProfile = () => {
         toast.success('Profile updated successfully!');
         setPhotoFile(null); // Clear selected file state
         await refreshUser(); // Refresh global context
-        setShowMobileForm(false); // Go back to profile view on mobile
       }
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to update profile');
@@ -253,34 +252,27 @@ const EditProfile = () => {
     }
   };
 
-  if (!profile) return null;
+  if (!profile) {
+    return <LogoLoader fullScreen text="Loading Profile Details..." />;
+  }
 
   return (
     <>
-      {/* MOBILE VIEW DASHBOARD */}
-      {!showMobileForm && (
-        <div className="block lg:hidden">
-          <MobileProfilePage onEditClick={() => setShowMobileForm(true)} />
-        </div>
-      )}
-
-      {/* DESKTOP VIEW & MOBILE FORM VIEW */}
-      <div className={`${!showMobileForm ? 'hidden lg:block' : 'block'} min-h-screen bg-cream-50 pt-24 pb-12 px-4 md:px-8`}>
+      <div className="min-h-screen bg-premium-dark-mesh text-slate-200 pt-16 lg:pt-24 pb-40 lg:pb-24 px-4 md:px-8">
         <div className="max-w-4xl mx-auto">
-          {showMobileForm && (
-            <button 
-              onClick={() => setShowMobileForm(false)} 
-              className="lg:hidden mb-6 text-crimson-600 font-bold flex items-center gap-2 bg-crimson-50 px-4 py-2 rounded-full border border-crimson-100"
-            >
-              ← Back to Profile
-            </button>
-          )}
-          <h1 className="text-3xl font-serif font-bold text-crimson-950 mb-2">Edit Your Profile</h1>
-          <p className="text-slate-600 mb-6">Update your biodata, preferences, and privacy settings.</p>
+          <button 
+            onClick={() => navigate('/my-profile')} 
+            className="mb-6 text-slate-300 hover:text-gold-300 font-bold flex items-center gap-2 bg-white/5 px-4 py-2 rounded-full border border-gold-500/20 w-max transition-colors cursor-pointer"
+          >
+            ← Back to Profile
+          </button>
+          <h1 className="text-3xl font-serif font-bold text-white mb-2">Edit Your Profile</h1>
+          <p className="text-slate-300 mb-6">Update your biodata, preferences, and privacy settings.</p>
 
           {/* Real-time Completeness Progress Header */}
-          <div className="bg-gradient-to-r from-crimson-900 to-crimson-950 text-white rounded-3xl p-6 md:p-8 mb-8 border border-gold-500/20 shadow-xl relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-gold-500/10 rounded-full blur-[80px]"></div>
+          {user?.role !== 'admin' && (
+            <div className="bg-gradient-to-r from-crimson-900 to-crimson-950 text-white rounded-3xl p-6 md:p-8 mb-8 border border-gold-500/20 shadow-xl relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-gold-500/10 rounded-full blur-[80px]"></div>
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 relative z-10">
               <div>
                 <h2 className="text-xl font-serif font-bold text-gold-400">Profile Completeness: {score}%</h2>
@@ -297,38 +289,39 @@ const EditProfile = () => {
                 ></div>
               </div>
             </div>
-          </div>
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} className="space-y-8">
             
             {/* Section 1: Photo & Privacy */}
-            <div className="glass-card p-6 md:p-8 rounded-3xl border border-crimson-900/10 shadow-sm relative overflow-hidden">
-               <div className="absolute top-0 right-0 w-64 h-64 bg-crimson-900/5 rounded-full blur-[80px]"></div>
+            <div className="glass-card-dark p-6 md:p-8 rounded-2xl border border-gold-500/20 shadow-xl relative overflow-hidden">
+               <div className="absolute top-0 right-0 w-64 h-64 bg-gold-500/5 rounded-full blur-[80px]"></div>
                
-               <h2 className="text-xl font-serif font-bold text-crimson-950 mb-6 flex items-center gap-2 relative z-10">
+               <h2 className="text-xl font-serif font-bold text-white mb-6 flex items-center gap-2 relative z-10">
                   <FaUserShield className="text-gold-500" /> Photo & Privacy
                </h2>
                
-               <div className="flex flex-col md:flex-row gap-8 items-start relative z-10">
+               <div className="flex flex-col md:flex-row gap-8 items-center md:items-start relative z-10">
                  <div className="flex flex-col items-center gap-4">
-                   <div className="w-40 h-40 rounded-full border-4 border-white shadow-lg overflow-hidden bg-slate-200 relative group cursor-pointer" onClick={() => fileInputRef.current?.click()}>
+                   <div className="w-40 h-40 rounded-full border-4 border-gold-500/30 shadow-lg overflow-hidden bg-slate-900 relative group cursor-pointer" onClick={() => fileInputRef.current?.click()}>
                      {photoPreview ? (
                        <img src={photoPreview} alt="Profile Preview" className={`w-full h-full object-cover transition-all ${!formData.isPhotoPublic && 'blur-md'}`} />
                      ) : (
-                       <div className="w-full h-full flex items-center justify-center text-slate-400 bg-slate-100"><FaRegImage className="text-4xl" /></div>
+                       <div className="w-full h-full flex items-center justify-center text-slate-400 bg-slate-800"><FaRegImage className="text-4xl" /></div>
                      )}
                      <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                        <FaCamera className="text-white text-2xl" />
                      </div>
                    </div>
                    <input type="file" ref={fileInputRef} onChange={handleFileChange} accept="image/*" className="hidden" />
-                   <button type="button" onClick={() => fileInputRef.current?.click()} className="text-sm font-bold text-crimson-800 bg-crimson-50 px-4 py-2 rounded-full hover:bg-crimson-100 transition-colors border border-crimson-200">
+                   <button type="button" onClick={() => fileInputRef.current?.click()} className="text-sm font-bold text-gold-300 bg-white/5 px-4 py-2 rounded-full hover:bg-white/10 transition-colors border border-gold-500/20 cursor-pointer">
                      Change Photo
                    </button>
                  </div>
                  
                  <div className="flex-1 space-y-4">
-                   <div className={`p-4 rounded-xl border transition-colors ${formData.isPhotoPublic ? 'bg-crimson-50 border-crimson-200' : 'bg-slate-100 border-slate-300'}`}>
+                   <div className={`p-4 rounded-xl border transition-colors ${formData.isPhotoPublic ? 'bg-crimson-950/40 border-crimson-800/50' : 'bg-white/5 border-white/10'}`}>
                      <label className="flex items-start gap-3 cursor-pointer">
                        <div className="mt-0.5">
                          <input 
@@ -336,14 +329,14 @@ const EditProfile = () => {
                            name="isPhotoPublic" 
                            checked={formData.isPhotoPublic} 
                            onChange={handleChange} 
-                           className="w-5 h-5 accent-crimson-600 rounded cursor-pointer"
+                           className="w-5 h-5 accent-gold-500 rounded cursor-pointer"
                          />
                        </div>
                        <div>
-                         <span className="font-bold text-slate-800 block mb-1 flex items-center gap-2">
-                           {formData.isPhotoPublic ? <><FaGlobe className="text-crimson-600"/> Public Photo</> : <><FaLock className="text-slate-500"/> Private Photo (Blurred)</>}
+                         <span className="font-bold text-white block mb-1 flex items-center gap-2">
+                           {formData.isPhotoPublic ? <><FaGlobe className="text-gold-400"/> Public Photo</> : <><FaLock className="text-slate-400"/> Private Photo (Blurred)</>}
                          </span>
-                         <p className="text-xs text-slate-500 leading-relaxed">
+                         <p className="text-xs text-slate-300 leading-relaxed">
                            {formData.isPhotoPublic 
                              ? 'Your photo is visible to all registered members on the platform. This increases your chances of finding a match.' 
                              : 'Your photo is blurred for everyone except Premium users who you have accepted an interest request from.'}
@@ -354,13 +347,13 @@ const EditProfile = () => {
                    
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-1.5">
-                         <label className="text-xs font-bold text-slate-500 uppercase tracking-wider pl-0.5">Your Contact Number</label>
-                         <input type="text" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} className="w-full px-4 py-3 rounded-xl bg-white/70 border border-slate-200 focus:border-gold-500 focus:outline-none transition-all text-sm" />
+                         <label className="text-xs font-bold text-slate-400 uppercase tracking-wider pl-0.5">Your Contact Number</label>
+                         <input type="text" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} className="w-full px-4 py-3 rounded-xl bg-white/5 border border-gold-500/20 text-white focus:border-gold-500 focus:outline-none transition-all text-sm" />
                          <p className="text-[10px] text-slate-400 pl-1">This is securely hidden. Only connected premium users can see this.</p>
                       </div>
                       <div className="space-y-1.5">
-                         <label className="text-xs font-bold text-slate-500 uppercase tracking-wider pl-0.5">Chaperone / Wali Contact Number</label>
-                         <input type="text" name="waliContact" value={formData.waliContact} onChange={handleChange} className="w-full px-4 py-3 rounded-xl bg-white/70 border border-slate-200 focus:border-gold-500 focus:outline-none transition-all text-sm" />
+                         <label className="text-xs font-bold text-slate-400 uppercase tracking-wider pl-0.5">Chaperone / Wali Contact Number</label>
+                         <input type="text" name="waliContact" value={formData.waliContact} onChange={handleChange} className="w-full px-4 py-3 rounded-xl bg-white/5 border border-gold-500/20 text-white focus:border-gold-500 focus:outline-none transition-all text-sm" />
                          <p className="text-[10px] text-slate-400 pl-1">Optional (Wali details are not required to reach 100% completeness).</p>
                       </div>
                      </div>
@@ -369,24 +362,25 @@ const EditProfile = () => {
             </div>
 
             {/* Identity Verification Section */}
-            <div className="glass-card p-6 md:p-8 rounded-3xl border border-crimson-900/10 shadow-sm relative overflow-hidden bg-gradient-to-r from-cream-50 to-white">
-              <div className="absolute top-0 right-0 w-48 h-48 bg-gold-500/5 rounded-full blur-[60px]"></div>
+            {user?.role !== 'admin' && (
+              <div className="glass-card-dark p-6 md:p-8 rounded-2xl border border-gold-500/20 shadow-xl relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-48 h-48 bg-gold-500/5 rounded-full blur-[60px]"></div>
               <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 relative z-10">
                 <div>
-                  <h2 className="text-xl font-serif font-bold text-crimson-950 mb-2 flex items-center gap-2">
+                  <h2 className="text-xl font-serif font-bold text-white mb-2 flex items-center gap-2">
                     🛡️ Profile Verification Status
                   </h2>
-                  <p className="text-sm text-slate-600 max-w-xl">
+                  <p className="text-sm text-slate-300 max-w-xl">
                     Get the green verified badge ✅ on your profile by uploading government ID proof (Aadhaar, Passport, driving license). This will build instant trust with other users and get you more matches.
                   </p>
                 </div>
                 <button
                   type="button"
                   onClick={() => navigate('/verify-identity')}
-                  className={`px-6 py-3 rounded-full font-bold shadow-md hover:scale-105 transition-all text-xs uppercase tracking-wider ${
+                  className={`px-6 py-3 rounded-full font-bold shadow-md hover:scale-105 transition-all text-xs uppercase tracking-wider cursor-pointer ${
                     user?.isManuallyVerified
-                      ? 'bg-emerald-50 border border-emerald-200 text-emerald-800 cursor-default shadow-none hover:scale-100'
-                      : 'bg-crimson-950 hover:bg-crimson-900 text-gold-400'
+                      ? 'bg-emerald-950/30 border border-emerald-500/30 text-emerald-300 cursor-default shadow-none hover:scale-100'
+                      : 'bg-gradient-to-r from-gold-400 to-gold-600 text-crimson-950 hover:from-gold-300 hover:to-gold-500 border border-gold-300'
                   }`}
                   disabled={user?.isManuallyVerified}
                 >
@@ -394,184 +388,206 @@ const EditProfile = () => {
                 </button>
               </div>
             </div>
+            )}
 
             {/* Section 2: Core Biodata */}
-            <div className="glass-card p-6 md:p-8 rounded-3xl border border-crimson-900/10 shadow-sm relative overflow-hidden">
-              <h2 className="text-xl font-serif font-bold text-crimson-950 mb-6">Core Biodata</h2>
+            {user?.role !== 'admin' && (
+            <div className="glass-card-dark p-6 md:p-8 rounded-2xl border border-gold-500/20 shadow-xl relative overflow-hidden">
+              <h2 className="text-xl font-serif font-bold text-white mb-6">Core Biodata</h2>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-500 uppercase tracking-wider pl-0.5">Full Name</label>
-                  <input type="text" name="name" value={formData.name} onChange={handleChange} required className="w-full px-4 py-3 rounded-xl bg-white/70 border border-slate-200 focus:border-gold-500 focus:outline-none transition-all text-sm" />
+                  <label className="text-xs font-bold text-slate-400 uppercase tracking-wider pl-0.5">Full Name</label>
+                  <input type="text" name="name" value={formData.name} onChange={handleChange} required className="w-full px-4 py-3 rounded-xl bg-white/5 border border-gold-500/20 text-white focus:border-gold-500 focus:outline-none transition-all text-sm" />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-500 uppercase tracking-wider pl-0.5">Age</label>
-                  <input type="number" name="age" value={formData.age} onChange={handleChange} required className="w-full px-4 py-3 rounded-xl bg-white/70 border border-slate-200 focus:border-gold-500 focus:outline-none transition-all text-sm" />
+                  <label className="text-xs font-bold text-slate-400 uppercase tracking-wider pl-0.5">Age</label>
+                  <input type="number" name="age" value={formData.age} onChange={handleChange} required className="w-full px-4 py-3 rounded-xl bg-white/5 border border-gold-500/20 text-white focus:border-gold-500 focus:outline-none transition-all text-sm" />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-500 uppercase tracking-wider pl-0.5">Gender</label>
-                  <select name="gender" value={formData.gender} onChange={handleChange} required className="w-full px-4 py-3 rounded-xl bg-white/70 border border-slate-200 focus:border-gold-500 focus:outline-none transition-all text-sm">
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
+                  <label className="text-xs font-bold text-slate-400 uppercase tracking-wider pl-0.5">Gender</label>
+                  <select name="gender" value={formData.gender} onChange={handleChange} required className="w-full px-4 py-3 rounded-xl bg-white/5 border border-gold-500/20 text-white focus:border-gold-500 focus:outline-none transition-all text-sm">
+                    <option value="male" className="bg-slate-900 text-white">Male</option>
+                    <option value="female" className="bg-slate-900 text-white">Female</option>
                   </select>
                 </div>
                 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-500 uppercase tracking-wider pl-0.5">Height</label>
-                  <select name="height" value={formData.height} onChange={handleChange} className="w-full px-4 py-3 rounded-xl bg-white/70 border border-slate-200 focus:border-gold-500 focus:outline-none transition-all text-sm">
-                    <option value="5'0&quot;">5'0"</option>
-                    <option value="5'2&quot;">5'2"</option>
-                    <option value="5'4&quot;">5'4"</option>
-                    <option value="5'6&quot;">5'6"</option>
-                    <option value="5'8&quot;">5'8"</option>
-                    <option value="5'10&quot;">5'10"</option>
-                    <option value="6'0&quot;">6'0"</option>
-                    <option value="6'2&quot;">6'2"+</option>
+                  <label className="text-xs font-bold text-slate-400 uppercase tracking-wider pl-0.5">Height</label>
+                  <select name="height" value={formData.height} onChange={handleChange} className="w-full px-4 py-3 rounded-xl bg-white/5 border border-gold-500/20 text-white focus:border-gold-500 focus:outline-none transition-all text-sm">
+                    <option value="5'0&quot;" className="bg-slate-900 text-white">5'0"</option>
+                    <option value="5'2&quot;" className="bg-slate-900 text-white">5'2"</option>
+                    <option value="5'4&quot;" className="bg-slate-900 text-white">5'4"</option>
+                    <option value="5'6&quot;" className="bg-slate-900 text-white">5'6"</option>
+                    <option value="5'8&quot;" className="bg-slate-900 text-white">5'8"</option>
+                    <option value="5'10&quot;" className="bg-slate-900 text-white">5'10"</option>
+                    <option value="6'0&quot;" className="bg-slate-900 text-white">6'0"</option>
+                    <option value="6'2&quot;" className="bg-slate-900 text-white">6'2"+</option>
                   </select>
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-500 uppercase tracking-wider pl-0.5">Marital Status</label>
-                  <select name="maritalStatus" value={formData.maritalStatus} onChange={handleChange} className="w-full px-4 py-3 rounded-xl bg-white/70 border border-slate-200 focus:border-gold-500 focus:outline-none transition-all text-sm">
-                    <option value="Never Married">Never Married</option>
-                    <option value="Divorced">Divorced</option>
-                    <option value="Widowed">Widowed</option>
-                    <option value="Awaiting Divorce">Awaiting Divorce</option>
+                  <label className="text-xs font-bold text-slate-400 uppercase tracking-wider pl-0.5">Marital Status</label>
+                  <select name="maritalStatus" value={formData.maritalStatus} onChange={handleChange} className="w-full px-4 py-3 rounded-xl bg-white/5 border border-gold-500/20 text-white focus:border-gold-500 focus:outline-none transition-all text-sm">
+                    <option value="Never Married" className="bg-slate-900 text-white">Never Married</option>
+                    <option value="Divorced" className="bg-slate-900 text-white">Divorced</option>
+                    <option value="Widowed" className="bg-slate-900 text-white">Widowed</option>
+                    <option value="Awaiting Divorce" className="bg-slate-900 text-white">Awaiting Divorce</option>
                   </select>
                 </div>
-
+ 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-500 uppercase tracking-wider pl-0.5">Sect</label>
-                  <select name="sect" value={formData.sect} onChange={handleChange} className="w-full px-4 py-3 rounded-xl bg-white/70 border border-slate-200 focus:border-gold-500 focus:outline-none transition-all text-sm">
-                    <option value="Sunni">Sunni</option>
-                    <option value="Shia">Shia</option>
-                    <option value="Sufi">Sufi</option>
-                    <option value="Other">Other</option>
-                    <option value="No Preference">No Preference</option>
+                  <label className="text-xs font-bold text-slate-400 uppercase tracking-wider pl-0.5">Sect</label>
+                  <select name="sect" value={formData.sect} onChange={handleChange} className="w-full px-4 py-3 rounded-xl bg-white/5 border border-gold-500/20 text-white focus:border-gold-500 focus:outline-none transition-all text-sm">
+                    <option value="Sunni" className="bg-slate-900 text-white">Sunni</option>
+                    <option value="Shia" className="bg-slate-900 text-white">Shia</option>
+                    <option value="Sufi" className="bg-slate-900 text-white">Sufi</option>
+                    <option value="Other" className="bg-slate-900 text-white">Other</option>
+                    <option value="No Preference" className="bg-slate-900 text-white">No Preference</option>
                   </select>
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-500 uppercase tracking-wider pl-0.5">Namaz Frequency</label>
-                  <select name="namazFrequency" value={formData.namazFrequency} onChange={handleChange} className="w-full px-4 py-3 rounded-xl bg-white/70 border border-slate-200 focus:border-gold-500 focus:outline-none transition-all text-sm">
-                    <option value="Always Praying">Always Praying</option>
-                    <option value="Usually Praying">Usually Praying</option>
-                    <option value="Sometimes Praying">Sometimes Praying</option>
-                    <option value="Only Eid/Jumma">Only Eid/Jumma</option>
+                  <label className="text-xs font-bold text-slate-400 uppercase tracking-wider pl-0.5">Namaz Frequency</label>
+                  <select name="namazFrequency" value={formData.namazFrequency} onChange={handleChange} className="w-full px-4 py-3 rounded-xl bg-white/5 border border-gold-500/20 text-white focus:border-gold-500 focus:outline-none transition-all text-sm">
+                    <option value="Always Praying" className="bg-slate-900 text-white">Always Praying</option>
+                    <option value="Usually Praying" className="bg-slate-900 text-white">Usually Praying</option>
+                    <option value="Sometimes Praying" className="bg-slate-900 text-white">Sometimes Praying</option>
+                    <option value="Only Jummah" className="bg-slate-900 text-white">Only Jummah</option>
+                    <option value="Eid Only" className="bg-slate-900 text-white">Eid Only</option>
                   </select>
                 </div>
-
+ 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-500 uppercase tracking-wider pl-0.5">Mother Tongue</label>
-                  <input type="text" name="motherTongue" value={formData.motherTongue} onChange={handleChange} className="w-full px-4 py-3 rounded-xl bg-white/70 border border-slate-200 focus:border-gold-500 focus:outline-none transition-all text-sm" />
+                  <label className="text-xs font-bold text-slate-400 uppercase tracking-wider pl-0.5">Mother Tongue</label>
+                  <input type="text" name="motherTongue" value={formData.motherTongue} onChange={handleChange} className="w-full px-4 py-3 rounded-xl bg-white/5 border border-gold-500/20 text-white focus:border-gold-500 focus:outline-none transition-all text-sm" />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-500 uppercase tracking-wider pl-0.5">City</label>
-                  <input type="text" name="city" value={formData.city} onChange={handleChange} className="w-full px-4 py-3 rounded-xl bg-white/70 border border-slate-200 focus:border-gold-500 focus:outline-none transition-all text-sm" />
+                  <label className="text-xs font-bold text-slate-400 uppercase tracking-wider pl-0.5">City</label>
+                  <input type="text" name="city" value={formData.city} onChange={handleChange} className="w-full px-4 py-3 rounded-xl bg-white/5 border border-gold-500/20 text-white focus:border-gold-500 focus:outline-none transition-all text-sm" />
                 </div>
                 
                 <div className="space-y-1.5 col-span-1 md:col-span-2">
-                  <label className="text-xs font-bold text-slate-500 uppercase tracking-wider pl-0.5">About Me</label>
-                  <textarea name="about" value={formData.about} onChange={handleChange} rows="4" className="w-full px-4 py-3 rounded-xl bg-white/70 border border-slate-200 focus:border-gold-500 focus:outline-none transition-all text-sm resize-none"></textarea>
+                  <label className="text-xs font-bold text-slate-400 uppercase tracking-wider pl-0.5">About Me</label>
+                  <textarea name="about" value={formData.about} onChange={handleChange} rows="4" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-gold-500/20 text-white focus:border-gold-500 focus:outline-none transition-all text-sm resize-none"></textarea>
                 </div>
               </div>
             </div>
+            )}
 
             {/* Section 3: Professional & Family */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="glass-card p-6 rounded-3xl border border-crimson-900/10 shadow-sm">
+              <div className="glass-card-dark p-6 rounded-2xl border border-gold-500/20 shadow-xl">
                 <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-lg font-serif font-bold text-crimson-950">Education & Career</h2>
+                  <h2 className="text-lg font-serif font-bold text-white">Education & Career</h2>
                   <span className={`text-[10px] px-2.5 py-0.5 rounded-full font-bold border ${
                     isCareerComplete 
-                      ? 'bg-green-500/10 text-green-600 border-green-200' 
-                      : 'bg-amber-500/10 text-amber-600 border-amber-200 animate-pulse'
+                      ? 'bg-emerald-950/40 text-emerald-400 border-emerald-500/30' 
+                      : 'bg-amber-950/40 text-amber-400 border-amber-500/30 animate-pulse'
                   }`}>
                     {isCareerComplete ? '✓ Complete' : 'Required +40%'}
                   </span>
                 </div>
                 <div className="space-y-4">
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider pl-0.5">Profession</label>
+                    <label className="text-xs font-bold text-slate-400 uppercase tracking-wider pl-0.5">Profession</label>
                     <input 
                       type="text" 
                       name="profession" 
                       value={formData.profession} 
                       onChange={handleChange} 
-                      className={`w-full px-4 py-3 rounded-xl bg-white/70 border focus:border-gold-500 focus:outline-none transition-all text-sm ${
-                        isProfessionEmpty ? 'border-amber-500/40 shadow-sm shadow-amber-500/5' : 'border-slate-200'
+                      className={`w-full px-4 py-3 rounded-xl bg-white/5 text-white border focus:border-gold-500 focus:outline-none transition-all text-sm ${
+                        isProfessionEmpty ? 'border-amber-500/50 shadow-sm shadow-amber-500/10' : 'border-gold-500/20'
                       }`} 
                     />
                     {isProfessionEmpty && (
-                      <p className="text-[10px] text-amber-600 font-semibold pl-1 mt-1">* Specify your profession (do not use 'Not Specified').</p>
+                      <p className="text-[10px] text-amber-400 font-semibold pl-1 mt-1">* Specify your profession (do not use 'Not Specified').</p>
                     )}
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider pl-0.5">Highest Education</label>
+                    <label className="text-xs font-bold text-slate-400 uppercase tracking-wider pl-0.5">Annual Income</label>
+                    <select 
+                      name="annualIncome" 
+                      value={formData.annualIncome} 
+                      onChange={handleChange} 
+                      className="w-full px-4 py-3 rounded-xl bg-white/5 border border-gold-500/20 text-white focus:border-gold-500 focus:outline-none transition-all text-sm"
+                    >
+                      <option value="Not Specified" className="bg-slate-900 text-white">Not Specified</option>
+                      <option value="Under 1 Lakh" className="bg-slate-900 text-white">Under 1 Lakh</option>
+                      <option value="1 - 3 Lakhs" className="bg-slate-900 text-white">1 - 3 Lakhs</option>
+                      <option value="3 - 5 Lakhs" className="bg-slate-900 text-white">3 - 5 Lakhs</option>
+                      <option value="5 - 7 Lakhs" className="bg-slate-900 text-white">5 - 7 Lakhs</option>
+                      <option value="7 - 10 Lakhs" className="bg-slate-900 text-white">7 - 10 Lakhs</option>
+                      <option value="10 - 15 Lakhs" className="bg-slate-900 text-white">10 - 15 Lakhs</option>
+                      <option value="15+ Lakhs" className="bg-slate-900 text-white">15+ Lakhs</option>
+                    </select>
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-slate-400 uppercase tracking-wider pl-0.5">Highest Education</label>
                     <input 
                       type="text" 
                       name="education" 
                       value={formData.education} 
                       onChange={handleChange} 
-                      className={`w-full px-4 py-3 rounded-xl bg-white/70 border focus:border-gold-500 focus:outline-none transition-all text-sm ${
-                        isEducationEmpty ? 'border-amber-500/40 shadow-sm shadow-amber-500/5' : 'border-slate-200'
+                      className={`w-full px-4 py-3 rounded-xl bg-white/5 text-white border focus:border-gold-500 focus:outline-none transition-all text-sm ${
+                        isEducationEmpty ? 'border-amber-500/50 shadow-sm shadow-amber-500/10' : 'border-gold-500/20'
                       }`} 
                     />
                     {isEducationEmpty && (
-                      <p className="text-[10px] text-amber-600 font-semibold pl-1 mt-1">* Specify highest education (do not use 'Not Specified').</p>
+                      <p className="text-[10px] text-amber-400 font-semibold pl-1 mt-1">* Specify highest education (do not use 'Not Specified').</p>
                     )}
                   </div>
                 </div>
               </div>
-
-              <div className="glass-card p-6 rounded-3xl border border-crimson-900/10 shadow-sm">
+ 
+              <div className="glass-card-dark p-6 rounded-2xl border border-gold-500/20 shadow-xl">
                 <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-lg font-serif font-bold text-crimson-950">Family Background</h2>
+                  <h2 className="text-lg font-serif font-bold text-white">Family Background</h2>
                   <span className={`text-[10px] px-2.5 py-0.5 rounded-full font-bold border ${
                     isFamilyComplete 
-                      ? 'bg-green-500/10 text-green-600 border-green-200' 
-                      : 'bg-amber-500/10 text-amber-600 border-amber-200 animate-pulse'
+                      ? 'bg-emerald-950/40 text-emerald-400 border-emerald-500/30' 
+                      : 'bg-amber-950/40 text-amber-400 border-amber-500/30 animate-pulse'
                   }`}>
                     {isFamilyComplete ? '✓ Complete' : 'Required +40%'}
                   </span>
                 </div>
                 <div className="space-y-4">
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider pl-0.5">Father's Occupation</label>
+                    <label className="text-xs font-bold text-slate-400 uppercase tracking-wider pl-0.5">Father's Occupation</label>
                     <input 
                       type="text" 
                       name="fatherOccupation" 
                       value={formData.fatherOccupation} 
                       onChange={handleChange} 
-                      className={`w-full px-4 py-3 rounded-xl bg-white/70 border focus:border-gold-500 focus:outline-none transition-all text-sm ${
-                        isFatherOccupationEmpty ? 'border-amber-500/40 shadow-sm shadow-amber-500/5' : 'border-slate-200'
+                      className={`w-full px-4 py-3 rounded-xl bg-white/5 text-white border focus:border-gold-500 focus:outline-none transition-all text-sm ${
+                        isFatherOccupationEmpty ? 'border-amber-500/50 shadow-sm shadow-amber-500/10' : 'border-gold-500/20'
                       }`} 
                     />
                     {isFatherOccupationEmpty && (
-                      <p className="text-[10px] text-amber-600 font-semibold pl-1 mt-1">* Father's Occupation is required to complete Family details.</p>
+                      <p className="text-[10px] text-amber-400 font-semibold pl-1 mt-1">* Father's Occupation is required to complete Family details.</p>
                     )}
                   </div>
                    <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider pl-0.5">Mother's Occupation</label>
-                    <input type="text" name="motherOccupation" value={formData.motherOccupation} onChange={handleChange} className="w-full px-4 py-3 rounded-xl bg-white/70 border border-slate-200 focus:border-gold-500 focus:outline-none transition-all text-sm" />
+                    <label className="text-xs font-bold text-slate-400 uppercase tracking-wider pl-0.5">Mother's Occupation</label>
+                    <input type="text" name="motherOccupation" value={formData.motherOccupation} onChange={handleChange} className="w-full px-4 py-3 rounded-xl bg-white/5 border border-gold-500/20 text-white focus:border-gold-500 focus:outline-none transition-all text-sm" />
                   </div>
                   
-                  <div className="space-y-4 pt-4 border-t border-slate-100 col-span-1">
+                  <div className="space-y-4 pt-4 border-t border-white/10 col-span-1">
                     <div className="flex justify-between items-center">
-                      <label className="text-xs font-bold text-slate-500 uppercase tracking-wider pl-0.5">Siblings Details</label>
+                      <label className="text-xs font-bold text-slate-400 uppercase tracking-wider pl-0.5">Siblings Details</label>
                       <button 
                         type="button" 
                         onClick={handleAddSibling}
-                        className="text-xs font-bold text-crimson-800 bg-crimson-50 hover:bg-crimson-100 px-3 py-1.5 rounded-lg border border-crimson-200 transition-colors"
+                        className="text-xs font-bold text-gold-300 bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-lg border border-gold-500/20 transition-colors cursor-pointer"
                       >
                         + Add Sibling
                       </button>
                     </div>
                     
                     {formData.siblingsList && formData.siblingsList.map((sib, index) => (
-                      <div key={index} className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-3 relative">
+                      <div key={index} className="p-3 bg-white/5 rounded-xl border border-gold-500/10 space-y-3 relative">
                         <button 
                           type="button" 
                           onClick={() => handleRemoveSibling(index)}
-                          className="absolute top-2 right-2 text-xs text-red-500 hover:text-red-700 font-bold"
+                          className="absolute top-2 right-2 text-xs text-red-400 hover:text-red-300 font-bold cursor-pointer"
                         >
                           Remove
                         </button>
@@ -579,39 +595,39 @@ const EditProfile = () => {
                         
                         <div className="grid grid-cols-2 gap-2">
                           <div className="space-y-1">
-                            <label className="text-[10px] font-bold text-slate-500">Relation</label>
+                            <label className="text-[10px] font-bold text-slate-400">Relation</label>
                             <select 
                               value={sib.relation} 
                               onChange={(e) => handleSiblingFieldChange(index, 'relation', e.target.value)}
-                              className="w-full px-2 py-1 rounded bg-white border border-slate-200 text-xs focus:outline-none"
+                              className="w-full px-2 py-1 rounded bg-slate-900/60 border border-gold-500/25 text-white text-xs focus:outline-none focus:border-gold-500"
                             >
-                              <option value="Elder Brother">Elder Brother</option>
-                              <option value="Younger Brother">Younger Brother</option>
-                              <option value="Elder Sister">Elder Sister</option>
-                              <option value="Younger Sister">Younger Sister</option>
+                              <option value="Elder Brother" className="bg-slate-900 text-white">Elder Brother</option>
+                              <option value="Younger Brother" className="bg-slate-900 text-white">Younger Brother</option>
+                              <option value="Elder Sister" className="bg-slate-900 text-white">Elder Sister</option>
+                              <option value="Younger Sister" className="bg-slate-900 text-white">Younger Sister</option>
                             </select>
                           </div>
                           <div className="space-y-1">
-                            <label className="text-[10px] font-bold text-slate-500">Marital Status</label>
+                            <label className="text-[10px] font-bold text-slate-400">Marital Status</label>
                             <select 
                               value={sib.maritalStatus} 
                               onChange={(e) => handleSiblingFieldChange(index, 'maritalStatus', e.target.value)}
-                              className="w-full px-2 py-1 rounded bg-white border border-slate-200 text-xs focus:outline-none"
+                              className="w-full px-2 py-1 rounded bg-slate-900/60 border border-gold-500/25 text-white text-xs focus:outline-none focus:border-gold-500"
                             >
-                              <option value="Unmarried">Unmarried</option>
-                              <option value="Married">Married</option>
+                              <option value="Unmarried" className="bg-slate-900 text-white">Unmarried</option>
+                              <option value="Married" className="bg-slate-900 text-white">Married</option>
                             </select>
                           </div>
                         </div>
                         
                         <div className="space-y-1">
-                          <label className="text-[10px] font-bold text-slate-500">Occupation (optional)</label>
+                          <label className="text-[10px] font-bold text-slate-400">Occupation (optional)</label>
                           <input 
                             type="text" 
                             value={sib.occupation || ''} 
                             onChange={(e) => handleSiblingFieldChange(index, 'occupation', e.target.value)}
                             placeholder="e.g. Student, Software Engineer" 
-                            className="w-full px-2 py-1.5 rounded bg-white border border-slate-200 text-xs focus:outline-none"
+                            className="w-full px-2 py-1.5 rounded bg-slate-900/60 border border-gold-500/25 text-white text-xs focus:outline-none focus:border-gold-500"
                           />
                         </div>
                       </div>
@@ -624,27 +640,27 @@ const EditProfile = () => {
                 </div>
               </div>
             </div>
-
+ 
             {/* Section 4: Partner Preferences */}
-            <div className="glass-card p-6 md:p-8 rounded-3xl border border-crimson-900/10 shadow-sm">
-              <h2 className="text-xl font-serif font-bold text-crimson-950 mb-6">Partner Preferences</h2>
+            <div className="glass-card-dark p-6 md:p-8 rounded-2xl border border-gold-500/20 shadow-xl">
+              <h2 className="text-xl font-serif font-bold text-white mb-6">Partner Preferences</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-500 uppercase tracking-wider pl-0.5">Preferred Age Range</label>
-                  <input type="text" name="partnerAgeRange" value={formData.partnerAgeRange} onChange={handleChange} placeholder="e.g. 20-25" className="w-full px-4 py-3 rounded-xl bg-white/70 border border-slate-200 focus:border-gold-500 focus:outline-none transition-all text-sm" />
+                  <label className="text-xs font-bold text-slate-400 uppercase tracking-wider pl-0.5">Preferred Age Range</label>
+                  <input type="text" name="partnerAgeRange" value={formData.partnerAgeRange} onChange={handleChange} placeholder="e.g. 20-25" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-gold-500/20 text-white focus:border-gold-500 focus:outline-none transition-all text-sm" />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-500 uppercase tracking-wider pl-0.5">Preferred Sect</label>
-                  <select name="partnerSect" value={formData.partnerSect} onChange={handleChange} className="w-full px-4 py-3 rounded-xl bg-white/70 border border-slate-200 focus:border-gold-500 focus:outline-none transition-all text-sm">
-                    <option value="No Preference">No Preference</option>
-                    <option value="Sunni">Sunni</option>
-                    <option value="Shia">Shia</option>
-                    <option value="Sufi">Sufi</option>
+                  <label className="text-xs font-bold text-slate-400 uppercase tracking-wider pl-0.5">Preferred Sect</label>
+                  <select name="partnerSect" value={formData.partnerSect} onChange={handleChange} className="w-full px-4 py-3 rounded-xl bg-white/5 border border-gold-500/20 text-white focus:border-gold-500 focus:outline-none transition-all text-sm">
+                    <option value="No Preference" className="bg-slate-900 text-white">No Preference</option>
+                    <option value="Sunni" className="bg-slate-900 text-white">Sunni</option>
+                    <option value="Shia" className="bg-slate-900 text-white">Shia</option>
+                    <option value="Sufi" className="bg-slate-900 text-white">Sufi</option>
                   </select>
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-500 uppercase tracking-wider pl-0.5">Preferred Education</label>
-                  <input type="text" name="partnerEducation" value={formData.partnerEducation} onChange={handleChange} placeholder="e.g. Graduate" className="w-full px-4 py-3 rounded-xl bg-white/70 border border-slate-200 focus:border-gold-500 focus:outline-none transition-all text-sm" />
+                  <label className="text-xs font-bold text-slate-400 uppercase tracking-wider pl-0.5">Preferred Education</label>
+                  <input type="text" name="partnerEducation" value={formData.partnerEducation} onChange={handleChange} placeholder="e.g. Graduate" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-gold-500/20 text-white focus:border-gold-500 focus:outline-none transition-all text-sm" />
                 </div>
               </div>
             </div>
@@ -672,6 +688,7 @@ const EditProfile = () => {
                       gender: profile.gender || '',
                       sect: profile.sect || '',
                       profession: profile.profession || '',
+                      annualIncome: profile.annualIncome || 'Not Specified',
                       education: profile.education || '',
                       city: profile.city || '',
                       about: profile.about || '',
