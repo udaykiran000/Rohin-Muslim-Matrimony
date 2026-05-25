@@ -3,7 +3,7 @@ import { AuthContext } from '../context/AuthContext';
 import api, { SOCKET_BASE_URL } from '../services/api';
 import toast from 'react-hot-toast';
 import { FaSearch, FaBookmark, FaComment, FaHeart, FaCrown, FaCheckCircle, FaLock } from 'react-icons/fa';
-import LogoLoader from './LogoLoader';
+import SimpleSpinner from './SimpleSpinner';
 import { useNavigate } from 'react-router-dom';
 import DefaultAvatar from './DefaultAvatar';
 
@@ -160,9 +160,9 @@ const MobileMatchesFeed = () => {
       {/* Profile Feed */}
       <div className="flex-1 px-4 space-y-6">
         {loading ? (
-          <LogoLoader text="Finding matches..." />
+          <SimpleSpinner />
         ) : profiles.length === 0 ? (
-           <div className="text-center mt-10 text-slate-500 font-medium">No matches found.</div>
+          <div className="text-center mt-10 text-slate-500 font-medium">No matches found.</div>
         ) : (
           profiles.map((p, idx) => {
             return (

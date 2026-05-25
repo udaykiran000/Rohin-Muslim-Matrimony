@@ -4,7 +4,7 @@ import api, { SOCKET_BASE_URL } from '../services/api';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { FaCamera, FaSave, FaUserShield, FaRegImage, FaLock, FaGlobe } from 'react-icons/fa';
-import LogoLoader from '../components/LogoLoader';
+import SimpleSpinner from '../components/SimpleSpinner';
 
 const EditProfile = () => {
   const { user, profile, refreshUser, getCompleteness } = useContext(AuthContext);
@@ -253,12 +253,12 @@ const EditProfile = () => {
   };
 
   if (!profile) {
-    return <LogoLoader fullScreen text="Loading Profile Details..." />;
+    return <SimpleSpinner fullScreen />;
   }
 
   return (
     <>
-      <div className="min-h-screen bg-premium-dark-mesh text-slate-200 pt-16 lg:pt-24 pb-40 lg:pb-24 px-4 md:px-8">
+      <div className="min-h-screen bg-premium-dark-mesh text-slate-200 pt-6 lg:pt-8 pb-40 lg:pb-24 px-4 md:px-8">
         <div className="max-w-4xl mx-auto">
           <button 
             onClick={() => navigate('/my-profile')} 

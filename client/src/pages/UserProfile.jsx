@@ -9,7 +9,7 @@ import {
   FaPhoneAlt, FaEnvelope, FaMosque, FaUsers, FaRulerVertical, FaLanguage,
   FaCheckCircle, FaCrown, FaMoneyBillWave
 } from 'react-icons/fa';
-import LogoLoader from '../components/LogoLoader';
+import SimpleSpinner from '../components/SimpleSpinner';
 import DefaultAvatar from '../components/DefaultAvatar';
 
 const UserProfile = () => {
@@ -169,7 +169,7 @@ const UserProfile = () => {
   };
 
   if (loading) {
-    return <LogoLoader fullScreen text="Loading Profile Details..." />;
+    return <SimpleSpinner fullScreen />;
   }
 
   if (!profile) return null;
@@ -233,7 +233,7 @@ const UserProfile = () => {
   };
 
   return (
-    <div className="min-h-screen bg-premium-dark-mesh text-slate-100 pt-24 pb-12 px-4 md:px-8 relative">
+    <div className="min-h-screen bg-premium-dark-mesh text-slate-100 pt-8 pb-12 px-4 md:px-8 relative">
       <div className="max-w-4xl mx-auto">
         
         {/* Top Action Bar */}

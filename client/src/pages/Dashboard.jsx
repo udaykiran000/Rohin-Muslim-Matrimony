@@ -7,7 +7,7 @@ import {
   FaBriefcase, FaPhoneAlt, FaUserFriends, FaCheckCircle, 
   FaTimes, FaGraduationCap, FaSave, FaUserShield 
 } from 'react-icons/fa';
-import LogoLoader from '../components/LogoLoader';
+import SimpleSpinner from '../components/SimpleSpinner';
 import MobileMatchesFeed from '../components/MobileMatchesFeed';
 import SupportContactCard from '../components/SupportContactCard';
 
@@ -58,7 +58,7 @@ const Dashboard = () => {
     }
   }, [profile]);
 
-  if (!user || !profile) return <LogoLoader fullScreen text="Loading Dashboard..." />;
+  if (!user || !profile) return <SimpleSpinner fullScreen />;
 
   const { score: completeness, missingFields } = getCompleteness();
 
@@ -98,7 +98,7 @@ const Dashboard = () => {
       </div>
 
       {/* DESKTOP VIEW (Standard Dashboard) */}
-      <div className="hidden lg:block min-h-screen bg-cream-50 pt-24 pb-12 px-4 relative overflow-hidden">
+      <div className="hidden lg:block min-h-screen bg-cream-50 pt-8 pb-12 px-4 relative overflow-hidden">
         {/* Background Decor */}
         <div className="absolute top-[0%] left-[0%] w-96 h-96 bg-crimson-900/5 rounded-full blur-[100px] -z-10"></div>
         <div className="absolute bottom-[0%] right-[0%] w-96 h-96 bg-gold-500/5 rounded-full blur-[100px] -z-10"></div>

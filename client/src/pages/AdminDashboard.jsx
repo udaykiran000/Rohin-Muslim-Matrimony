@@ -8,7 +8,7 @@ import {
   FaCheckCircle, FaEdit, FaCrown, FaStar, FaCog, FaRupeeSign,
   FaHeart, FaPlus, FaMoneyBillWave, FaIdCard, FaHandshake, FaSignOutAlt, FaCopy
 } from 'react-icons/fa';
-import LogoLoader from '../components/LogoLoader';
+import SimpleSpinner from '../components/SimpleSpinner';
 
 const AdminDashboard = () => {
   const { user, logout } = useContext(AuthContext);
@@ -505,7 +505,7 @@ const AdminDashboard = () => {
       {/* MAIN CONTENT AREA */}
       <div className="flex-1 p-6 md:p-10 overflow-y-auto">
         {loading ? (
-          <LogoLoader text="Loading Admin Controls..." />
+          <SimpleSpinner />
         ) : (
           <div className="animate-fadeIn max-w-6xl mx-auto">
             

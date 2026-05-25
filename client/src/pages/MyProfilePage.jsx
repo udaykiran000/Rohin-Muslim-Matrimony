@@ -105,7 +105,7 @@ const MyProfilePage = () => {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col font-outfit pt-20 lg:pt-28 pb-32 relative overflow-hidden bg-premium-dark-mesh text-slate-200">
+    <div className="min-h-screen flex flex-col font-outfit pt-6 lg:pt-8 pb-32 relative overflow-hidden bg-premium-dark-mesh text-slate-200">
       <div className="absolute inset-0 z-0 pointer-events-none">
         <div className="absolute top-[-10%] left-[-5%] w-[500px] h-[500px] bg-crimson-500/10 rounded-full blur-[120px]"></div>
         <div className="absolute bottom-[-10%] right-[-5%] w-[600px] h-[600px] bg-gold-500/15 rounded-full blur-[120px]"></div>

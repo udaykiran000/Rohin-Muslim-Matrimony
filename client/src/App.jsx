@@ -7,6 +7,7 @@ import Footer from './components/Footer';
 import ProfileCompletenessBanner from './components/ProfileCompletenessBanner';
 import BottomNavigation from './components/BottomNavigation';
 import LogoLoader from './components/LogoLoader';
+import SimpleSpinner from './components/SimpleSpinner';
 import PWAInstallPrompt from './components/PWAInstallPrompt';
 
 // Page Imports
@@ -33,7 +34,7 @@ const ProtectedRoute = ({ children }) => {
   const { user, loading } = useContext(AuthContext);
 
   if (loading) {
-    return <LogoLoader fullScreen text="Verifying Credentials..." />;
+    return <SimpleSpinner fullScreen />;
   }
 
   if (!user) {
@@ -48,7 +49,7 @@ const AdminRoute = ({ children }) => {
   const { user, loading } = useContext(AuthContext);
 
   if (loading) {
-    return <LogoLoader fullScreen text="Checking Permissions..." />;
+    return <SimpleSpinner fullScreen />;
   }
 
   if (!user || user.role !== 'admin') {

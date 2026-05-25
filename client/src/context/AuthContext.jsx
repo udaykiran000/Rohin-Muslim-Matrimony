@@ -70,12 +70,12 @@ export const AuthProvider = ({ children }) => {
         }
       }
       const elapsed = Date.now() - startTime;
-      const hasSeenSplash = sessionStorage.getItem('hasSeenSplash');
+      const hasSeenSplash = localStorage.getItem('hasSeenSplash');
       if (!hasSeenSplash) {
         if (elapsed < 3000) {
           await new Promise(r => setTimeout(r, 3000 - elapsed));
         }
-        sessionStorage.setItem('hasSeenSplash', 'true');
+        localStorage.setItem('hasSeenSplash', 'true');
       }
       setLoading(false);
     };

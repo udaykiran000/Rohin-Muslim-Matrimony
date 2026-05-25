@@ -5,7 +5,7 @@ import api from '../services/api';
 import ProfileCard from '../components/ProfileCard';
 import { FaFilter, FaSearch, FaTimes, FaCrown, FaLock } from 'react-icons/fa';
 import toast from 'react-hot-toast';
-import LogoLoader from '../components/LogoLoader';
+import SimpleSpinner from '../components/SimpleSpinner';
 import MobileSearchPage from '../components/MobileSearchPage';
 
 const PremiumWarningModal = ({ isOpen, onClose, featureName, navigate }) => {
@@ -219,7 +219,7 @@ const SearchProfiles = () => {
       )}
 
       {/* DESKTOP VIEW AND MOBILE RESULTS GRID */}
-      <div className={`${showMobileResults ? 'block' : 'hidden lg:block'} min-h-screen bg-cream-50 pt-20 pb-12 px-4 md:px-8`}>
+      <div className={`${showMobileResults ? 'block' : 'hidden lg:block'} min-h-screen bg-cream-50 pt-8 pb-12 px-4 md:px-8`}>
         <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8">
         
         {/* Mobile Back Button */}
@@ -323,7 +323,7 @@ const SearchProfiles = () => {
           </div>
 
           {loading ? (
-            <LogoLoader text="Finding your matches..." />
+            <SimpleSpinner />
           ) : profiles.length === 0 ? (
             <div className="glass-card p-12 rounded-3xl text-center border border-crimson-900/10 flex flex-col items-center justify-center h-64">
                <span className="text-4xl mb-4">🔍</span>

@@ -127,12 +127,12 @@ const LogoLoader = ({ fullScreen = false, text = 'Loading Blessings...' }) => {
         <div className={`absolute ${innerSize} border border-gold-500/20 rounded-full`}></div>
 
         {/* Logo Container for Drawing Reveal */}
-        <div className="relative z-10 flex items-center justify-center">
+        <div className={`relative z-10 flex items-center justify-center ${fullScreen ? 'w-48 h-16 md:w-72 md:h-24' : 'w-36 h-12 md:w-48 md:h-16'}`}>
           {/* Faint logo placeholder to reserve aspect ratio and layout space */}
           <img 
             src={logo3} 
             alt="Rohin Matrimony Logo Template" 
-            className={`${logoHeight} w-auto object-contain opacity-0 pointer-events-none`}
+            className="w-full h-full object-contain opacity-0 pointer-events-none"
           />
 
           {/* The drawing animated layer */}
@@ -144,7 +144,6 @@ const LogoLoader = ({ fullScreen = false, text = 'Loading Blessings...' }) => {
               className="w-full h-full object-contain" 
             />
           </div>
-
           {/* Golden Bouncing Pen-Tip (Sparkle) */}
           <div className="absolute top-0 left-0 h-full w-full pointer-events-none z-20">
             <div className="absolute h-full w-0.5 animated-pen-tip">
