@@ -92,20 +92,20 @@ const LandingPage = () => {
 
   return (
     <>
-      <div className="hidden lg:block bg-cream-50 overflow-hidden">
+      <div className="hidden md:block bg-cream-50 overflow-hidden">
       {/* Premium Hero Section */}
       <section
-        className="relative py-4 md:py-6 px-4 md:px-8 border-b-2 border-gold-500/30 overflow-hidden flex flex-col items-center justify-center text-center lg:h-[calc(100vh-80px)] lg:max-h-[800px] min-h-[220px] md:min-h-[560px]"
+        className="relative py-4 md:py-6 px-4 md:px-8 border-b-2 border-gold-500/30 overflow-hidden flex flex-col items-center justify-center text-center md:h-[calc(100vh-80px)] md:max-h-[800px] min-h-[220px] md:min-h-[560px]"
         style={{ background: 'linear-gradient(135deg, #4f080e 50%, #d4af37 50%)' }}
       >
         <div className="max-w-[1550px] mx-auto w-full relative z-10">
 
 
           {/* Three-Column Banner Content */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-8 items-center mt-1 md:mt-2">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-4 lg:gap-8 items-center mt-1 md:mt-2">
 
             {/* Left Column Features (Visible on Desktop) */}
-            <div className="lg:col-span-3 hidden lg:flex flex-col gap-3 md:gap-4 text-right">
+            <div className="md:col-span-3 hidden md:flex flex-col gap-3 md:gap-4 text-right">
               {/* Feature 1 */}
               <div className="flex gap-3.5 items-center justify-end group">
                 <div className="flex flex-col">
@@ -153,7 +153,7 @@ const LandingPage = () => {
             </div>
 
             {/* Center Column Banner Image styled as Mihrab Islamic Archway */}
-            <div className="lg:col-span-6 flex flex-col justify-center items-center relative px-2 mt-3.5 md:-mt-10 lg:-mt-14">
+            <div className="md:col-span-6 flex flex-col justify-center items-center relative px-2 mt-3.5 md:-mt-10 md:-mt-14">
               {/* Starry Outer Aura Glow */}
               <div className="absolute inset-0 bg-gold-500/5 rounded-2xl blur-xl pointer-events-none"></div>
 
@@ -167,7 +167,7 @@ const LandingPage = () => {
 
               {/* Grand Mobile Auth Action Buttons */}
               {!user && (
-                <div className="lg:hidden flex items-center justify-center gap-3 w-full max-w-[260px] sm:max-w-[310px] mt-3.5 z-20">
+                <div className="md:hidden flex items-center justify-center gap-3 w-full max-w-[260px] sm:max-w-[310px] mt-3.5 z-20">
                   <Link
                     to="/login"
                     className="flex-1 text-center py-1.5 px-3.5 bg-gradient-to-r from-[#3b060a] via-[#5c0b11] to-[#3b060a] text-white font-extrabold rounded-full border border-[#d4af37]/45 shadow-[0_3px_12px_rgba(79,8,14,0.3)] text-[10px] uppercase tracking-widest active:scale-95 transition-all"
@@ -185,7 +185,7 @@ const LandingPage = () => {
             </div>
 
             {/* Right Column Features (Visible on Desktop) */}
-            <div className="lg:col-span-3 hidden lg:flex flex-col gap-3 md:gap-4 text-left">
+            <div className="md:col-span-3 hidden md:flex flex-col gap-3 md:gap-4 text-left">
               {/* Feature 4 */}
               <div className="flex gap-3.5 items-center justify-start group">
                 <div className="relative w-12 h-12 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
@@ -717,7 +717,7 @@ const LandingPage = () => {
     </div>
 
     {/* Mobile Landing Splash Screen View */}
-    <div className="block lg:hidden h-[100dvh] relative overflow-hidden bg-black font-sans text-white">
+    <div className="block md:hidden h-[100dvh] relative overflow-hidden bg-black font-sans text-white">
       {/* Background Image Container */}
       <div className="absolute inset-0 z-0 select-none pointer-events-none">
         <img

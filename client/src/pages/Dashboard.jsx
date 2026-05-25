@@ -58,7 +58,7 @@ const Dashboard = () => {
     }
   }, [profile]);
 
-  if (!user || !profile) return <SimpleSpinner fullScreen />;
+  if (!user || !profile) return <SimpleSpinner />;
 
   const { score: completeness, missingFields } = getCompleteness();
 
@@ -93,12 +93,12 @@ const Dashboard = () => {
   return (
     <>
       {/* MOBILE VIEW (Matches Feed based on image -1) */}
-      <div className="block lg:hidden">
+      <div className="block md:hidden">
         <MobileMatchesFeed />
       </div>
 
       {/* DESKTOP VIEW (Standard Dashboard) */}
-      <div className="hidden lg:block min-h-screen bg-cream-50 pt-8 pb-12 px-4 relative overflow-hidden">
+      <div className="hidden md:block min-h-screen bg-cream-50 pt-8 pb-12 px-4 relative overflow-hidden">
         {/* Background Decor */}
         <div className="absolute top-[0%] left-[0%] w-96 h-96 bg-crimson-900/5 rounded-full blur-[100px] -z-10"></div>
         <div className="absolute bottom-[0%] right-[0%] w-96 h-96 bg-gold-500/5 rounded-full blur-[100px] -z-10"></div>

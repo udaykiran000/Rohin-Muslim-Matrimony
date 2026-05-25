@@ -253,7 +253,7 @@ const EditProfile = () => {
   };
 
   if (!profile) {
-    return <SimpleSpinner fullScreen />;
+    return <SimpleSpinner />;
   }
 
   return (

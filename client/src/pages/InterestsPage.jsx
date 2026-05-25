@@ -471,7 +471,7 @@ const InterestsPage = () => {
   return (
     <>
       {/* MOBILE VIEW */}
-      <div className="block lg:hidden">
+      <div className="block md:hidden">
         <MobileActivityPage 
           receivedRequests={receivedRequests}
           sentRequests={sentRequests}
@@ -484,7 +484,7 @@ const InterestsPage = () => {
       </div>
 
       {/* DESKTOP VIEW */}
-      <div className="hidden lg:block min-h-screen bg-cream-50 pt-24 pb-12 px-4 md:px-8">
+      <div className="hidden md:block min-h-screen bg-cream-50 pt-24 pb-12 px-4 md:px-8">
         <div className="max-w-6xl mx-auto">
           <h1 className="text-3xl font-serif font-bold text-crimson-950 mb-8 border-b border-crimson-900/10 pb-4">Activity Center</h1>
 

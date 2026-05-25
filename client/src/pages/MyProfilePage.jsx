@@ -105,36 +105,36 @@ const MyProfilePage = () => {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col font-outfit pt-6 lg:pt-8 pb-32 relative overflow-hidden bg-premium-dark-mesh text-slate-200">
+    <div className="min-h-screen flex flex-col font-outfit pt-6 lg:pt-8 pb-32 relative overflow-hidden bg-cream-50 text-slate-800">
       <div className="absolute inset-0 z-0 pointer-events-none">
-        <div className="absolute top-[-10%] left-[-5%] w-[500px] h-[500px] bg-crimson-500/10 rounded-full blur-[120px]"></div>
-        <div className="absolute bottom-[-10%] right-[-5%] w-[600px] h-[600px] bg-gold-500/15 rounded-full blur-[120px]"></div>
-        <div className="absolute top-[40%] left-[50%] w-[400px] h-[400px] bg-crimson-800/5 rounded-full blur-[100px] transform -translate-x-1/2"></div>
+        <div className="absolute top-[-10%] left-[-5%] w-[500px] h-[500px] bg-crimson-900/5 rounded-full blur-[120px]"></div>
+        <div className="absolute bottom-[-10%] right-[-5%] w-[600px] h-[600px] bg-gold-500/10 rounded-full blur-[120px]"></div>
+        <div className="absolute top-[40%] left-[50%] w-[400px] h-[400px] bg-crimson-800/2 rounded-full blur-[100px] transform -translate-x-1/2"></div>
       </div>
       <div className={`relative z-10 ${isAdmin ? 'max-w-6xl' : 'max-w-2xl'} mx-auto w-full px-5`}>
         
         {/* Top Bar */}
         <div className="flex justify-between items-center pt-8 pb-4">
-          <h1 className="text-2xl font-serif font-extrabold tracking-tight text-white drop-shadow-md">{isAdmin ? 'Admin Settings' : 'My Profile'}</h1>
-          {!isAdmin && <span className="text-[13px] font-bold text-gold-300 bg-white/5 px-3 py-1.5 rounded-full border border-gold-500/20 shadow-sm">ID: {memberId}</span>}
+          <h1 className="text-2xl font-serif font-extrabold tracking-tight text-[#4f080e] drop-shadow-sm">{isAdmin ? 'Admin Settings' : 'My Profile'}</h1>
+          {!isAdmin && <span className="text-[13px] font-bold text-crimson-900 bg-white px-3 py-1.5 rounded-full border border-[#d4af37]/30 shadow-sm">ID: {memberId}</span>}
         </div>
 
         {/* Content Area */}
         <div className={isAdmin ? "flex flex-col lg:flex-row gap-12 lg:gap-24" : ""}>
           {/* Left Column: Profile Section */}
           <div className={isAdmin ? "lg:w-[40%] flex-shrink-0" : ""}>
-            <div className={`flex flex-col items-center p-10 rounded-2xl border border-gold-500/20 glass-card-dark shadow-xl relative overflow-hidden ${isAdmin ? 'h-full justify-center' : 'mb-8'}`}>
-              <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-gold-400/10 to-transparent rounded-full blur-[60px]"></div>
-              <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-crimson-400/10 to-transparent rounded-full blur-[60px]"></div>
-
+            <div className={`flex flex-col items-center p-10 rounded-2xl border border-[#d4af37]/25 glass-card shadow-xl relative overflow-hidden ${isAdmin ? 'h-full justify-center' : 'mb-8'}`}>
+              <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-gold-400/5 to-transparent rounded-full blur-[60px]"></div>
+              <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-crimson-400/5 to-transparent rounded-full blur-[60px]"></div>
+ 
               {/* Profile Image with Progress Ring */}
               <div 
                 className={`relative w-44 h-44 mb-6 z-10 ${isAdmin ? 'cursor-pointer group' : ''}`}
                 onClick={() => isAdmin && fileInputRef.current?.click()}
               >
                 {!isAdmin && (
-                  <svg className="w-full h-full transform -rotate-90 absolute top-0 left-0">
-                    <circle cx="64" cy="64" r="60" fill="none" stroke="rgba(255, 255, 255, 0.08)" strokeWidth="4" />
+                  <svg viewBox="0 0 128 128" className="w-full h-full transform -rotate-90 absolute top-0 left-0">
+                    <circle cx="64" cy="64" r="60" fill="none" stroke="rgba(79, 8, 14, 0.05)" strokeWidth="4" />
                     <circle 
                       cx="64" 
                       cy="64" 
@@ -149,9 +149,9 @@ const MyProfilePage = () => {
                   </svg>
                 )}
                 {photoUrl ? (
-                  <img src={photoUrl} alt="Profile" className={`w-full h-full rounded-full object-cover p-2 border-2 ${isAdmin ? 'border-gold-500 shadow-[0_0_15px_rgba(212,175,55,0.4)] bg-slate-900 group-hover:scale-105 transition-transform duration-300' : user?.plan === 'elite' ? 'border-[#d4af37] shadow-[0_0_15px_rgba(212,175,55,0.4)] bg-slate-900' : user?.plan === 'premium' ? 'border-[#10b981] shadow-[0_0_15px_rgba(16,185,129,0.4)] bg-slate-900' : 'border-transparent bg-slate-900'}`} />
+                  <img src={photoUrl} alt="Profile" className={`w-full h-full rounded-full object-cover p-2 border-2 ${isAdmin ? 'border-gold-500 shadow-[0_0_15px_rgba(212,175,55,0.15)] bg-white group-hover:scale-105 transition-transform duration-300' : user?.plan === 'elite' ? 'border-[#d4af37] shadow-[0_0_15px_rgba(212,175,55,0.15)] bg-white' : user?.plan === 'premium' ? 'border-[#10b981] shadow-[0_0_15px_rgba(16,185,129,0.15)] bg-white' : 'border-transparent bg-white'}`} />
                 ) : (
-                  <div className={`w-full h-full rounded-full flex items-center justify-center p-2 border-2 ${isAdmin ? 'bg-slate-900 border-gold-500 shadow-[0_0_15px_rgba(212,175,55,0.4)] group-hover:scale-105 transition-transform duration-300' : 'bg-slate-900 ' + (user?.plan === 'elite' ? 'border-[#d4af37] shadow-[0_0_15px_rgba(212,175,55,0.4)]' : user?.plan === 'premium' ? 'border-[#10b981] shadow-[0_0_15px_rgba(16,185,129,0.4)]' : 'border-transparent')}`}>
+                  <div className={`w-full h-full rounded-full flex items-center justify-center p-2 border-2 ${isAdmin ? 'bg-white border-gold-500 shadow-[0_0_15px_rgba(212,175,55,0.15)] group-hover:scale-105 transition-transform duration-300' : 'bg-white ' + (user?.plan === 'elite' ? 'border-[#d4af37] shadow-[0_0_15px_rgba(212,175,55,0.15)]' : user?.plan === 'premium' ? 'border-[#10b981] shadow-[0_0_15px_rgba(16,185,129,0.15)]' : 'border-transparent')}`}>
                     <DefaultAvatar gender={profile?.gender} className={`w-full h-full rounded-full object-cover ${isAdmin ? 'brightness-0 invert opacity-90' : ''}`} />
                   </div>
                 )}
@@ -162,10 +162,10 @@ const MyProfilePage = () => {
                     <span className="text-[10px] text-gold-300 font-bold uppercase tracking-wider">Change Photo</span>
                   </div>
                 )}
-
+ 
                 {/* Percentage Badge */}
                 {!isAdmin && (
-                  <div className={`absolute -bottom-2.5 left-1/2 -translate-x-1/2 text-white text-[12px] font-bold px-3 py-1 rounded-full shadow-md whitespace-nowrap border-2 border-[#2b0306] ${completeness === 100 ? 'bg-emerald-600' : 'bg-crimson-600'}`}>
+                  <div className={`absolute -bottom-2.5 left-1/2 -translate-x-1/2 text-white text-[12px] font-bold px-3 py-1 rounded-full shadow-md whitespace-nowrap border-2 border-[#fffdfa] ${completeness === 100 ? 'bg-emerald-600' : 'bg-crimson-600'}`}>
                     {completeness}%
                   </div>
                 )}
@@ -182,7 +182,7 @@ const MyProfilePage = () => {
 
               {/* Name and Badge */}
               <div className="flex items-center gap-2 mb-2 flex-wrap justify-center z-10">
-                <h2 className="text-3xl font-serif font-bold text-white tracking-tight">{isAdmin ? 'Administrator' : (profile?.name || 'Member')}</h2>
+                <h2 className="text-3xl font-serif font-bold text-crimson-950 tracking-tight">{isAdmin ? 'Administrator' : (profile?.name || 'Member')}</h2>
                 {!isAdmin && user?.isManuallyVerified && (
                   <FaCheckCircle className="text-[#3b82f6] text-[22px] drop-shadow-sm" title="Verified" />
                 )}
@@ -196,7 +196,7 @@ const MyProfilePage = () => {
                       ? 'bg-gradient-to-r from-[#d4af37] via-[#f3e3a3] to-[#b28e28] text-[#4f080e] border-[#b28e28]/50'
                       : user?.plan === 'premium'
                       ? 'bg-gradient-to-r from-[#10b981] via-[#6ee7b7] to-[#047857] text-white border-[#047857]/50'
-                      : 'bg-slate-800 text-slate-300 border-slate-700 shadow-none'
+                      : 'bg-white text-slate-600 border-slate-200 shadow-sm'
                   }`}>
                     {user?.plan === 'elite' && <FaCrown className="text-[#4f080e] text-[12px] animate-pulse" />}
                     {user?.plan === 'premium' && <FaCrown className="text-white text-[12px]" />}
@@ -208,7 +208,7 @@ const MyProfilePage = () => {
               {/* Admin Role Pill */}
               {isAdmin && (
                 <div className="flex items-center justify-center mt-3 z-10">
-                  <span className="bg-gradient-to-r from-crimson-800 to-crimson-950 text-white text-[12px] font-extrabold px-6 py-2.5 rounded-full tracking-widest flex items-center gap-2 shadow-lg shadow-black/30 border border-crimson-500/50">
+                  <span className="bg-gradient-to-r from-[#4f080e] to-[#7f181e] text-white text-[12px] font-extrabold px-6 py-2.5 rounded-full tracking-widest flex items-center gap-2 shadow-md border border-[#d4af37]/35">
                     <FaShieldAlt className="text-gold-400 text-sm" />
                     SYSTEM ADMIN
                   </span>
@@ -230,17 +230,17 @@ const MyProfilePage = () => {
             {/* Verification Card */}
             {!isAdmin && (
               <Link to="/verify-identity" className="block mb-6 hover:-translate-y-0.5 transition-transform">
-                <div className="glass-card-dark border border-gold-500/20 rounded-2xl p-5 md:p-6 flex items-center justify-between shadow-xl cursor-pointer hover:bg-white/5 transition-colors">
+                <div className="glass-card border border-[#d4af37]/25 rounded-2xl p-5 md:p-6 flex items-center justify-between shadow-lg cursor-pointer hover:bg-white transition-colors">
                   <div className="flex items-start gap-3">
                     <FaCheckCircle className="text-[#3b82f6] text-xl md:text-2xl mt-0.5 flex-shrink-0" />
-                    <span className="text-[15px] md:text-base font-bold text-white leading-snug pr-4">
+                    <span className="text-[15px] md:text-base font-bold text-crimson-950 leading-snug pr-4">
                       {user?.isManuallyVerified 
                         ? 'Your profile is identity-verified. Tap to view document details.' 
                         : 'Build trust on your profile with document verification'}
                     </span>
                   </div>
-                  <div className="bg-white/5 p-2 rounded-full shadow-sm border border-gold-500/20">
-                    <FaChevronRight className="text-gold-400 text-xs flex-shrink-0" />
+                  <div className="bg-[#fffdfa] p-2 rounded-full shadow-sm border border-[#d4af37]/25">
+                    <FaChevronRight className="text-gold-600 text-xs flex-shrink-0" />
                   </div>
                 </div>
               </Link>
@@ -249,7 +249,7 @@ const MyProfilePage = () => {
             {/* Premium Plans Section - Only show for free members */}
             {(!user?.plan || user.plan === 'free') && (
               <div className="mb-8">
-                <h3 className="text-lg font-serif font-bold text-white mb-4">Recommended Plans</h3>
+                <h3 className="text-lg font-serif font-bold text-crimson-950 mb-4">Recommended Plans</h3>
               
               <div className="flex overflow-x-auto gap-4 snap-x hide-scrollbar pb-4 -mx-5 px-5 md:mx-0 md:px-0">
                 {premiumPlans.map((plan, idx) => (
@@ -276,28 +276,28 @@ const MyProfilePage = () => {
             )}
 
             {/* Settings Menu List */}
-            <div className={isAdmin ? "flex flex-col gap-6 w-full justify-center h-full" : "glass-card-dark border border-gold-500/20 rounded-2xl overflow-hidden shadow-xl mb-6"}>
+            <div className={isAdmin ? "flex flex-col gap-6 w-full justify-center h-full" : "glass-card border border-[#d4af37]/25 rounded-2xl overflow-hidden shadow-lg mb-6"}>
               {menuItems.map((item, index) => (
                 <div 
                   key={index}
                   onClick={item.action}
                   className={`flex items-center justify-between p-6 cursor-pointer transition-all ${
                     isAdmin 
-                      ? `bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl shadow-lg hover:-translate-y-1 py-9 px-8 h-full group ${item.danger ? 'border-red-500/30 hover:border-red-400 hover:bg-red-500/20' : 'hover:border-gold-400/50 hover:bg-white/20'}` 
-                      : (index !== menuItems.length - 1 ? 'border-b border-gold-500/10 hover:bg-white/5' : 'hover:bg-white/5')
+                      ? `bg-white/40 backdrop-blur-xl border border-[#d4af37]/20 rounded-2xl shadow-lg hover:-translate-y-1 py-9 px-8 h-full group ${item.danger ? 'border-red-500/30 hover:border-red-400 hover:bg-red-500/20' : 'hover:border-gold-400/50 hover:bg-white/50'}` 
+                      : (index !== menuItems.length - 1 ? 'border-b border-[#d4af37]/15 hover:bg-crimson-50/20' : 'hover:bg-crimson-50/20')
                   }`}
                 >
                   <div className="flex items-center gap-4">
-                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all shadow-md ${
+                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all shadow-sm ${
                       item.danger 
-                        ? 'bg-gradient-to-br from-red-500/20 to-red-600/30 text-red-400 border border-red-500/30 group-hover:from-red-500 group-hover:to-red-600 group-hover:text-white' 
-                        : 'bg-white/5 text-gold-400 border border-gold-500/20 group-hover:bg-gold-500 group-hover:text-crimson-950 transition-all'
+                        ? 'bg-red-50 text-red-600 border border-red-200 group-hover:bg-red-600 group-hover:text-white transition-all' 
+                        : 'bg-[#4f080e]/5 text-[#4f080e] border border-[#4f080e]/10 group-hover:bg-[#4f080e] group-hover:text-white transition-all'
                     }`}>
                       {React.cloneElement(item.icon, { className: "text-lg text-current" })}
                     </div>
-                    <span className={`text-[16px] font-extrabold tracking-wide ${item.danger ? 'text-red-400 group-hover:text-white' : 'text-white group-hover:text-gold-300 transition-colors'}`}>{item.label}</span>
+                    <span className={`text-[16px] font-extrabold tracking-wide ${item.danger ? 'text-red-600 group-hover:text-white' : 'text-[#4f080e] group-hover:text-[#8f172b] transition-colors'}`}>{item.label}</span>
                   </div>
-                  <FaChevronRight className={`text-sm transition-transform ${isAdmin ? 'text-slate-300 group-hover:text-gold-400 group-hover:translate-x-1' : 'text-slate-300 group-hover:text-gold-300'}`} />
+                  <FaChevronRight className={`text-sm transition-transform ${isAdmin ? 'text-slate-500 group-hover:text-[#4f080e] group-hover:translate-x-1' : 'text-slate-400 group-hover:text-[#4f080e]'}`} />
                 </div>
               ))}
             </div>
@@ -307,41 +307,41 @@ const MyProfilePage = () => {
 
       {/* Change Password Modal */}
       {showPasswordModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
-          <div className="glass-card-dark border border-gold-500/20 rounded-2xl shadow-2xl w-full max-w-md p-8 relative text-white">
-            <h2 className="text-2xl font-serif font-bold text-white mb-1">Change Password</h2>
-            <p className="text-sm text-slate-300 mb-6">Enter your current password and a new one below.</p>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
+          <div className="glass-card border border-[#d4af37]/35 rounded-2xl shadow-2xl w-full max-w-md p-8 relative text-slate-850">
+            <h2 className="text-2xl font-serif font-bold text-crimson-950 mb-1">Change Password</h2>
+            <p className="text-sm text-slate-500 mb-6">Enter your current password and a new one below.</p>
             <form onSubmit={handleChangePassword} className="space-y-4">
               <div>
-                <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">Current Password</label>
+                <label className="block text-xs font-bold text-[#4f080e]/80 uppercase tracking-wider mb-1.5">Current Password</label>
                 <input
                   type="password"
                   value={pwForm.currentPassword}
                   onChange={e => setPwForm({ ...pwForm, currentPassword: e.target.value })}
                   required
-                  className="w-full border border-gold-500/20 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-gold-500 bg-white/5"
+                  className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 focus:outline-none focus:border-[#d4af37] bg-slate-50/50"
                   placeholder="Enter current password"
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">New Password</label>
+                <label className="block text-xs font-bold text-[#4f080e]/80 uppercase tracking-wider mb-1.5">New Password</label>
                 <input
                   type="password"
                   value={pwForm.newPassword}
                   onChange={e => setPwForm({ ...pwForm, newPassword: e.target.value })}
                   required
-                  className="w-full border border-gold-500/20 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-gold-500 bg-white/5"
+                  className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 focus:outline-none focus:border-[#d4af37] bg-slate-50/50"
                   placeholder="Minimum 6 characters"
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">Confirm New Password</label>
+                <label className="block text-xs font-bold text-[#4f080e]/80 uppercase tracking-wider mb-1.5">Confirm New Password</label>
                 <input
                   type="password"
                   value={pwForm.confirmPassword}
                   onChange={e => setPwForm({ ...pwForm, confirmPassword: e.target.value })}
                   required
-                  className="w-full border border-gold-500/20 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-gold-500 bg-white/5"
+                  className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 focus:outline-none focus:border-[#d4af37] bg-slate-50/50"
                   placeholder="Repeat new password"
                 />
               </div>
@@ -349,7 +349,7 @@ const MyProfilePage = () => {
                 <button
                   type="button"
                   onClick={() => { setShowPasswordModal(false); setPwForm({ currentPassword: '', newPassword: '', confirmPassword: '' }); }}
-                  className="flex-1 py-3 rounded-xl border border-white/20 text-slate-300 font-bold text-sm hover:bg-white/5 transition-colors cursor-pointer"
+                  className="flex-1 py-3 rounded-xl border border-slate-200 text-slate-500 font-bold text-sm hover:bg-slate-100 transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>

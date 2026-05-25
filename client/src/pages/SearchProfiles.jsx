@@ -209,7 +209,7 @@ const SearchProfiles = () => {
     <>
       {/* MOBILE VIEW FILTER */}
       {!showMobileResults && (
-        <div className="block lg:hidden">
+        <div className="block md:hidden">
           <MobileSearchPage 
             filters={filters} 
             onFilterChange={handleFilterChange} 
@@ -219,12 +219,12 @@ const SearchProfiles = () => {
       )}
 
       {/* DESKTOP VIEW AND MOBILE RESULTS GRID */}
-      <div className={`${showMobileResults ? 'block' : 'hidden lg:block'} min-h-screen bg-cream-50 pt-8 pb-12 px-4 md:px-8`}>
+      <div className={`${showMobileResults ? 'block' : 'hidden md:block'} min-h-screen bg-cream-50 pt-8 pb-12 px-4 md:px-8`}>
         <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8">
         
         {/* Mobile Back Button */}
         {showMobileResults && (
-          <div className="lg:hidden w-full">
+          <div className="md:hidden w-full">
             <button 
               onClick={() => setShowMobileResults(false)}
               className="bg-white text-crimson-900 border border-crimson-200 py-3 rounded-xl font-bold flex justify-center items-center gap-2 mb-4 w-full shadow-sm"
@@ -235,7 +235,7 @@ const SearchProfiles = () => {
         )}
 
         {/* Filters Sidebar (Desktop) */}
-        <div className="hidden lg:block lg:w-1/4">
+        <div className="hidden md:block md:w-1/3 lg:w-1/4">
           <div className="glass-card p-6 rounded-3xl sticky top-24 border border-crimson-900/10 shadow-sm">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-serif font-bold text-crimson-950 flex items-center gap-2">

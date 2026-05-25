@@ -169,7 +169,7 @@ const UserProfile = () => {
   };
 
   if (loading) {
-    return <SimpleSpinner fullScreen />;
+    return <SimpleSpinner />;
   }
 
   if (!profile) return null;

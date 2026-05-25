@@ -29,7 +29,7 @@ const BottomNavigation = () => {
   };
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-40 bg-[#faf5ec] border-t border-gold-500/30 shadow-[0_-4px_12px_rgba(79,8,14,0.06)] lg:hidden h-14 flex items-center justify-around px-2">
+    <div className="fixed bottom-0 left-0 right-0 z-40 bg-[#faf5ec] border-t border-gold-500/30 shadow-[0_-4px_12px_rgba(79,8,14,0.06)] md:hidden h-14 flex items-center justify-around px-2">
       {navItems.map((item, idx) => {
         const IconComponent = item.icon;
         const active = isTabActive(item.path);

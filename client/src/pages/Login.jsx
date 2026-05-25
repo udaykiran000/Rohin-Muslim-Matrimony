@@ -44,7 +44,7 @@ const Login = () => {
   return (
     <>
       {/* ===================== MOBILE VIEW ===================== */}
-      <div className="flex lg:hidden flex-col items-center justify-start h-[100dvh] bg-[#FAF8F5] relative px-5 py-3 overflow-hidden font-sans z-0">
+      <div className="flex md:hidden flex-col items-center justify-start h-[100dvh] bg-[#FAF8F5] relative px-5 py-3 overflow-hidden font-sans z-0">
         
         {/* Bottom Decorative Section */}
         <div className="absolute bottom-0 left-0 w-full z-0 flex flex-col justify-end h-[28dvh] pointer-events-none overflow-hidden">
@@ -150,7 +150,7 @@ const Login = () => {
 
       {/* ===================== DESKTOP VIEW ===================== */}
       <div 
-        className="hidden lg:flex min-h-[85vh] items-center justify-center px-4 py-10 sm:py-16 relative bg-cover bg-center overflow-hidden"
+        className="hidden md:flex min-h-[85vh] items-center justify-center px-4 py-10 sm:py-16 relative bg-cover bg-center overflow-hidden"
         style={{ backgroundImage: `url(${islamicBg})` }}
       >
       {/* Dark Overlay to give depth and ensure card contrast */}

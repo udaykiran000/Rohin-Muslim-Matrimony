@@ -71,7 +71,7 @@ const Register = () => {
   return (
     <>
       {/* ===================== MOBILE VIEW ===================== */}
-      <div className="flex lg:hidden flex-col items-center justify-start h-[100dvh] bg-[#FAF8F5] relative px-4 overflow-hidden font-sans z-0">
+      <div className="flex md:hidden flex-col items-center justify-start h-[100dvh] bg-[#FAF8F5] relative px-4 overflow-hidden font-sans z-0">
         
         {/* Bottom Decorative Section */}
         <div className="absolute bottom-0 left-0 w-full z-0 flex flex-col justify-end h-[16dvh] pointer-events-none overflow-hidden">
@@ -201,7 +201,7 @@ const Register = () => {
 
       {/* ===================== DESKTOP VIEW ===================== */}
       <div 
-        className="hidden lg:flex min-h-[90vh] items-center justify-center px-3 sm:px-4 py-2 sm:py-12 relative bg-cover bg-center overflow-hidden"
+        className="hidden md:flex min-h-[90vh] items-center justify-center px-3 sm:px-4 py-2 sm:py-12 relative bg-cover bg-center overflow-hidden"
         style={{ 
           backgroundImage: `linear-gradient(rgba(20, 1, 3, 0.4), rgba(20, 1, 3, 0.55)), url(${islamicBg})`,
           backgroundAttachment: 'scroll' 

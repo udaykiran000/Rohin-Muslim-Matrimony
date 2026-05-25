@@ -3,7 +3,7 @@ import React from 'react';
 const SimpleSpinner = ({ fullScreen = false }) => {
   if (fullScreen) {
     return (
-      <div className="fixed inset-0 min-h-screen w-full bg-[#170204] flex items-center justify-center z-[9999]">
+      <div className="fixed inset-0 min-h-screen w-full bg-[#faf9f6] flex items-center justify-center z-[9999]">
         <div className="w-12 h-12 border-4 border-[#d4af37] border-t-transparent rounded-full animate-spin"></div>
       </div>
     );

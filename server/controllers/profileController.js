@@ -67,6 +67,7 @@ exports.getProfiles = async (req, res) => {
     const totalCount = await Profile.countDocuments(query);
 
     // Retrieve profiles with Profile Boost sorting (Elite > Premium > Free)
+    // Admin users are excluded from all search results
     let profiles = await Profile.aggregate([
       { $match: query },
       {
@@ -78,6 +79,8 @@ exports.getProfiles = async (req, res) => {
         }
       },
       { $unwind: '$user' },
+      // Exclude admin accounts from appearing in search results
+      { $match: { 'user.role': { $ne: 'admin' } } },
       {
         $addFields: {
           planWeight: {
@@ -402,8 +405,8 @@ exports.toggleShortlist = async (req, res) => {
 exports.getProfileVisitors = async (req, res) => {
   try {
     const currentUserId = req.user.id;
-    // Find all users whose viewedProfiles contains currentUserId
-    const visitors = await User.find({ viewedProfiles: currentUserId }).select('_id');
+    // Find all non-admin users whose viewedProfiles contains currentUserId
+    const visitors = await User.find({ viewedProfiles: currentUserId, role: { $ne: 'admin' } }).select('_id');
     const visitorIds = visitors.map(v => v._id);
     const visitorProfiles = await Profile.find({ user: { $in: visitorIds } })
       .populate('user', 'email role plan isManuallyVerified');
@@ -425,8 +428,8 @@ exports.getProfileVisitors = async (req, res) => {
 exports.getContactViewers = async (req, res) => {
   try {
     const currentUserId = req.user.id;
-    // Find all users whose viewedContacts contains currentUserId
-    const viewers = await User.find({ viewedContacts: currentUserId }).select('_id');
+    // Find all non-admin users whose viewedContacts contains currentUserId
+    const viewers = await User.find({ viewedContacts: currentUserId, role: { $ne: 'admin' } }).select('_id');
     const viewerIds = viewers.map(v => v._id);
     const contactViewerProfiles = await Profile.find({ user: { $in: viewerIds } })
       .populate('user', 'email role plan isManuallyVerified');

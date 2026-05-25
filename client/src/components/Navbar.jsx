@@ -64,7 +64,7 @@ const Navbar = () => {
     markAsRead(n._id);
     setShowNotifications(false);
     if (n.type === 'message_received') {
-      if (window.innerWidth < 1024) {
+      if (window.innerWidth < 768) {
         navigate(`/chat/${n.sender}`);
       } else {
         navigate('/activity');
@@ -118,7 +118,7 @@ const Navbar = () => {
         </Link>
 
         {/* Desktop Navigation Links */}
-        <div className="hidden lg:flex items-center gap-6 font-medium text-sm">
+        <div className="hidden md:flex items-center gap-6 font-medium text-sm">
           {(!user || user.role !== 'admin') && (
             <>
               <Link to="/" className={isActive('/')}>Home</Link>
@@ -149,7 +149,7 @@ const Navbar = () => {
         </div>
 
         {/* User Account Controls / Authentication CTAs */}
-        <div className="hidden lg:flex items-center gap-4">
+        <div className="hidden md:flex items-center gap-4">
           {user ? (
             <div className="flex items-center gap-4">
               <div className="flex flex-col text-right">
@@ -269,7 +269,7 @@ const Navbar = () => {
         </div>
 
         {/* Mobile Control Icons */}
-        <div className="flex items-center gap-3 lg:hidden">
+        <div className="flex items-center gap-3 md:hidden">
           {user && (
             <>
               {/* Notification Bell Mobile */}
@@ -384,7 +384,7 @@ const Navbar = () => {
 
       {/* Mobile Menu Slider */}
       {isOpen && (
-        <div className="lg:hidden mt-4 pt-4 border-t border-slate-200 flex flex-col gap-4 font-medium animate-fadeIn">
+        <div className="md:hidden mt-4 pt-4 border-t border-slate-200 flex flex-col gap-4 font-medium animate-fadeIn">
           {(!user || user.role !== 'admin') && (
             <>
               <Link to="/" onClick={() => setIsOpen(false)} className="text-slate-700 hover:text-[#4f080e] font-semibold py-1 transition-colors">Home</Link>

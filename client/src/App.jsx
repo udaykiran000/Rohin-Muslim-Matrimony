@@ -64,6 +64,10 @@ function AppContent() {
   const location = useLocation();
 
   if (loading) {
+    const hasSeenSplash = localStorage.getItem('hasSeenSplash');
+    if (hasSeenSplash) {
+      return <SimpleSpinner fullScreen />;
+    }
     return <LogoLoader fullScreen text="Loading Blessings..." />;
   }
 
@@ -74,9 +78,9 @@ function AppContent() {
   // Dynamic bottom padding for main container to prevent overlap of sticky bottom components
   let pbClass = 'pb-0';
   if (showBottomNav && showBanner) {
-    pbClass = 'pb-24 lg:pb-10'; // Both mobile bottom nav and banner active
+    pbClass = 'pb-24 md:pb-10'; // Both mobile bottom nav and banner active
   } else if (showBottomNav) {
-    pbClass = 'pb-14 lg:pb-0';  // Only mobile bottom nav active
+    pbClass = 'pb-14 md:pb-0';  // Only mobile bottom nav active
   } else if (showBanner) {
     pbClass = 'pb-10';          // Only banner active
   }
@@ -107,9 +111,10 @@ function AppContent() {
       <PWAInstallPrompt />
 
       {/* Sticky Header Wrapper (Navbar) */}
-      <header className={`sticky top-0 z-50 w-full ${(location.pathname === '/' || location.pathname === '/login' || location.pathname === '/register') ? 'hidden lg:block' : ''}`}>
+      <header className={`sticky top-0 z-50 w-full ${(location.pathname === '/' || location.pathname === '/login' || location.pathname === '/register') ? 'hidden md:block' : ''}`}>
         <Navbar />
       </header>
+
 
       {/* Main Routed Views - padded dynamically based on active floating bottom panels */}
       <main className={`flex-grow transition-all duration-300 ${pbClass}`}>
@@ -127,8 +132,8 @@ function AppContent() {
           <Route path="/edit-profile" element={<ProtectedRoute><EditProfile /></ProtectedRoute>} />
           <Route path="/interests" element={<Navigate to="/activity" replace />} />
           <Route path="/activity" element={<ProtectedRoute><InterestsPage /></ProtectedRoute>} />
-          <Route path="/chat" element={<ProtectedRoute><div className="block lg:hidden"><MobileChatPage /></div><div className="hidden lg:block text-center mt-20 font-bold">Please use the Activity tab for desktop chat.</div></ProtectedRoute>} />
-          <Route path="/chat/:id" element={<ProtectedRoute><div className="block lg:hidden"><MobileChatRoom /></div></ProtectedRoute>} />
+          <Route path="/chat" element={<ProtectedRoute><div className="block md:hidden"><MobileChatPage /></div><div className="hidden md:block text-center mt-20 font-bold">Please use the Activity tab for desktop chat.</div></ProtectedRoute>} />
+          <Route path="/chat/:id" element={<ProtectedRoute><div className="block md:hidden"><MobileChatRoom /></div></ProtectedRoute>} />
           <Route path="/verify-identity" element={<ProtectedRoute><KycVerificationPage /></ProtectedRoute>} />
           <Route path="/payment-info" element={<ProtectedRoute><PaymentInfoPage /></ProtectedRoute>} />
           <Route path="/blocked-users" element={<ProtectedRoute><BlockedUsersPage /></ProtectedRoute>} />
@@ -149,7 +154,7 @@ function AppContent() {
       <BottomNavigation />
 
       {/* Footer */}
-      <div className="hidden lg:block">
+      <div className="hidden md:block">
         {location.pathname !== '/login' && location.pathname !== '/register' && location.pathname !== '/admin' && <Footer />}
       </div>
     </div>
